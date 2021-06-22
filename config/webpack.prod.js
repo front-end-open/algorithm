@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-22 01:33:57
  * @LastEditors: wangshan
- * @LastEditTime: 2021-06-22 02:08:59
+ * @LastEditTime: 2021-06-23 00:29:43
  * @Description:
  */
 const path = require("path");
@@ -15,19 +15,19 @@ const common = require("./webpack.common.js");
 // const uglifyJSPlugin = new UglifyJSPlugin();
 
 // 对babel的配置，内容同.babelrc文件
-const babelOptions = {
-  presets: [
-    [
-      "env",
-      {
-        targets: {
-          // The % refers to the global coverage of users from browserslist
-          browsers: [">0.25%", "not ie 11", "not op_mini all"],
-        },
-      },
-    ],
-  ],
-};
+// const babelOptions = {
+//   presets: [
+//     [
+//       "env",
+//       {
+//         targets: {
+//           // The % refers to the global coverage of users from browserslist
+//           browsers: [">0.25%", "not ie 11", "not op_mini all"],
+//         },
+//       },
+//     ],
+//   ],
+// };
 module.exports = merge(common, {
   module: {
     rules: [

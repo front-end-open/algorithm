@@ -1,0 +1,4 @@
+# 目标环境监测配置, 或者通过package.json【browserslist】字段指定目标环境
+last 1 version
+> 1%
+IE 10 
