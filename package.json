@@ -4,8 +4,9 @@
   "description": "wepack构建，typescript开发环境",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack serve --config  config/webpack.dev.js --open --progress",
+    "dev": "./node_modules/.bin/webpack-dev-server --config  config/webpack.dev.js --open --progress",
     "build": "./node_modules/.bin/webpack --config config/webpack.prod.js --progress",
+    "analyz": "NODE_ENV=production npm_config_report=true npm run build",
     "test": "node -v"
   },
   "repository": {
@@ -21,11 +22,18 @@
   "author": "PachVerb",
   "license": "MIT",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "*",
-    "html-webpack-plugin": "^5.3.1",
-    "ts-loader": "^9.2.3",
-    "tslint": "^6.1.3",
+    "copy-webpack-plugin": "^4.6.0",
+    "eslint": "^7.29.0",
+    "html-webpack-plugin": "^4.5.2",
+    "ts-loader": "^8.3.0",
     "typescript": "^4.3.4",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.46.0",
+    "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.8.0"
@@ -33,8 +41,6 @@
   "dependencies": {
     "@babel/core": "^7.14.6",
     "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.14.7",
-    "babel-loader": "^8.2.2",
-    "webpack": "^5.40.0"
+    "@babel/preset-env": "^7.14.7"
   }
 }
