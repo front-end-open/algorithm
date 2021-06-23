@@ -2,10 +2,9 @@
  * @Author: wangshan
  * @Date: 2021-06-22 01:33:57
  * @LastEditors: wangshan
- * @LastEditTime: 2021-06-23 23:47:36
+ * @LastEditTime: 2021-06-24 00:57:53
  * @Description:
  */
-const path = require("path");
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -18,8 +17,8 @@ module.exports = merge(common, {
       {
         pattherns: [
           {
-            from: path.resolve(__dirname, "../public"),
-            to: path.resolve(__dirname, "../dist"),
+            from: "../public",
+            to: "../dist",
           },
         ],
       },
@@ -27,13 +26,12 @@ module.exports = merge(common, {
   ],
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
+      new UglifyJSPlugin({
         //压缩js
         cache: true, // 启用特定模式，用于资源打包时的优化
         parallel: true, //多线程构建
         sourceMap: true, // 启用sourceMap
       }),
-      new OptimizeCssAssetsPlugin({}),
     ],
     splitChunks: {
       //  SplitChunksPlugin  通用分块策略, webpack v4+新提供的开箱即用功能
@@ -67,8 +65,8 @@ module.exports = merge(common, {
   devtool: "source-map", // 源码使用source-map, 用于调试追踪
   //   plugins: [uglifyJSPlugin],
   // 设置出口文件地址与文件名
-  output: {
-    path: path.resolve(__dirname, "../dist"),
-    filename: "[name].[hash:8].js",
-  },
+  //   output: {
+  //     path: path.resolve(__dirname, "../dist"),
+  //     filename: "[name].[hash:8].js",
+  //   },
 });
