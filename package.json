@@ -4,7 +4,7 @@
   "description": "wepack构建，typescript开发环境",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server --config  config/webpack.dev.js --open --progress",
+    "dev": "./node_modules/.bin/webpack server --config  config/webpack.dev.js --open --progress",
     "build": "./node_modules/.bin/webpack --config config/webpack.prod.js --progress",
     "analyz": "NODE_ENV=production npm_config_report=true npm run build",
     "test": "node -v"
@@ -27,6 +27,7 @@
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "*",
     "copy-webpack-plugin": "^4.6.0",
+    "error-overlay-webpack-plugin": "^0.4.2",
     "eslint": "^7.29.0",
     "html-webpack-plugin": "^4.5.2",
     "ts-loader": "^8.3.0",
