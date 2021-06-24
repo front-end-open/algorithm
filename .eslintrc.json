@@ -12,7 +12,6 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/await-thenable": "error", // 禁止 await 非 thenable类型
     "@typescript-eslint/no-explicit-any": "error"
   }
 }

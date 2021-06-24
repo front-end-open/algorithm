@@ -2,7 +2,8 @@
  * @Author: wangshan
  * @Date: 2021-06-22 00:27:02
  * @LastEditors: wangshan
- * @LastEditTime: 2021-06-24 01:16:57
+ * @LastEditTime: 2021-06-24 22:42:35
  * @Description: 入口文件
  */
-console.log("a");
+import "@/utils/index"; // 导入自定义模块
+import "@/sort/index";
