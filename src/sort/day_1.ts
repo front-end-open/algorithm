@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-24 22:17:22
  * @LastEditors: wangshan
- * @LastEditTime: 2021-06-25 00:36:26
+ * @LastEditTime: 2021-06-27 23:27:44
  * @Description: 排序
  */
 // 冒泡
@@ -40,35 +40,36 @@ interface ComePare {
 let compareFn: ComePare = (a, b) => {
   return a > b ? true : false;
 };
-
+const arr1 = [4, 3, 6, 7];
 function bubbleSort(arr: number[], compare = compareFn) {
   let { length } = arr;
   let m = 0;
   for (let i = 0; i < length; i++) {
     for (let j = 0; j < length - 1; j++) {
-      if (!compare(arr[i], arr[j])) {
-        m = arr[i];
-        arr[i] = arr[j];
-        arr[j] = m;
+      if (!compare(arr[j], arr[j + 1])) {
+        m = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = m;
       }
     }
   }
 
   return arr;
 }
-res = bubbleSort(arr);
+res = bubbleSort(arr1);
 console.log(res);
 
 // 改进上面排序算法
 function modifiedBubbleSort(arr: number[], compare = compareFn) {
+  let { length } = arr;
   let m = 0;
   for (let i = 0; i < length; i++) {
     // 内存循环减去外层循环已经走过的轮数，避免再次循环已经排序的。
     for (let j = 0; j < length - 1 - i; j++) {
       if (!compare(arr[i], arr[j])) {
         m = arr[i];
-        arr[i] = arr[j];
-        arr[j] = m;
+        arr[j] = arr[j + 1];
+        arr[j + 1] = m;
       }
     }
   }
