@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-24 22:17:22
  * @LastEditors: wangshan
- * @LastEditTime: 2021-06-27 23:27:44
+ * @LastEditTime: 2021-06-27 23:34:43
  * @Description: 排序
  */
 // 冒泡
@@ -79,3 +79,8 @@ function modifiedBubbleSort(arr: number[], compare = compareFn) {
 
 res = modifiedBubbleSort(arr);
 console.log(res); // [2, 3, 4, 5]
+
+// 总结：
+// 未经过优化复杂度为，O(n^3)
+// 优化过的排序复杂度, O(n^2)
+//
