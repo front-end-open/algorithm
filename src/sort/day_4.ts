@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-07-04 16:36:13
  * @LastEditors: wangshan
- * @LastEditTime: 2021-07-04 18:12:59
+ * @LastEditTime: 2021-07-04 18:15:23
  * @Description: 归并排序
  */
 
@@ -22,6 +22,7 @@ function mergeSort(arr: number[], compare = compareFn) {
 
   return arr;
 }
+wq;
 let arr = [5, 4, 3, 2, 1];
 let res = mergeSort(arr);
 
