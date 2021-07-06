@@ -26,5 +26,6 @@ jobs:
       - run: npm install -g bats
       - run: bats -v
       - name: out-author-info
+      - uses: actions/checkout@v2
       - run: |
           echo "this repo author is $OUT_AUTHOR, and email is $OUT_EMAIL"
