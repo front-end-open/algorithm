@@ -9,6 +9,8 @@
 #     - uses: actions/setup-node@v2  # 下载node, 以使用npm
 #      - run: npm install -g bats  # run关键字告诉作业在运行程序上执行命令
 #      - run: bats -v  # 运行 bat
+
+# 自定义步骤所需要的环境变量
 name: learn-github-actions
 on: [push]
 jobs:
@@ -17,7 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: |
-          echo "$GITHUB_RUN_ID"
       - run: npm install -g bats
       - run: bats -v
+      - run: echo "this workflow of ${{env.OUT_AUTHOR}}, and email ${{env.OUT_EMAIL}}"
+      - env:
+          OUT_AUTHOR: PachVerb
+          OUT_EMAIL: 1506262681@qq.com
