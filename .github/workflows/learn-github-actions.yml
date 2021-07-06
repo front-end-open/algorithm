@@ -16,7 +16,7 @@ on: [push]
 jobs:
   - env:
       OUT_AUTHOR: PachVerb
-      OUT_EMAIL: 1506262681@qq.com
+      OUT_EMAIL: 1506262681
   check-bats-version:
     runs-on: ubuntu-latest
     steps:
