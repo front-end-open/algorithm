@@ -10,21 +10,23 @@
 #      - run: npm install -g bats  # run关键字告诉作业在运行程序上执行命令
 #      - run: bats -v  # 运行 bat
 
-
 name: learn-github-actions
 on: [push]
 jobs:
   check-bats-version:
     runs-on: ubuntu-latest
-    steps:  # 自定义作业中的多个步骤所
-      - name: out-bats-version
+    steps: # 自定义作业中的多个步骤所
+      - name: check-out-code
         uses: actions/checkout@v2
+      - name: out-info
         uses: actions/setup-node@v1
+      - name: Install dep
         run: npm install -g bats
+      - name: out-bat-info
         run: bats -v
       - name: out-author-info
         run: |
           echo "this repo author is $OUT_AUTHOR, and email is $OUT_EMAIL"
-        env:  # 指定步骤需要的环境变量
+        env: # 指定步骤需要的环境变量
           OUT_AUTHOR: PachVerb
           OUT_EMAIL: 1506262681@qq.com
