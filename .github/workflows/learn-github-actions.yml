@@ -16,16 +16,16 @@ on: [push]
 jobs:
   check-bats-version:
     runs-on: ubuntu-latest
-    env:
-      OUT_AUTHOR: PachVerb
-      OUT_EMAIL: 1506262681@qq.com
     steps:
       - name: out-bats-version
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: npm install -g bats
-      - run: bats -v
+          uses: actions/checkout@v2
+          uses: actions/setup-node@v1
+          run: npm install -g bats
+          run: bats -v
       - name: out-author-info
-      - uses: actions/checkout@v2
-      - run: |
-          echo "this repo author is $OUT_AUTHOR, and email is $OUT_EMAIL"
+          uses: actions/checkout@v2
+          run: |
+            echo "this repo author is $OUT_AUTHOR, and email is $OUT_EMAIL"
+          env:
+              OUT_AUTHOR: PachVerb
+              OUT_EMAIL: 1506262681@qq.com
