@@ -3,7 +3,7 @@ on: [push]
 jobs:
   Upload-artifact:
     runs-on: ubuntu-latest
-    stes:
+    steps:
       - shell: bash
         run: |
           expr 1 + 1 > output.log
