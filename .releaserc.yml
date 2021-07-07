@@ -11,4 +11,3 @@ repositoryUrl: https://github.com/front-end-open/wt_run.git
 ci: false
 dryRun: false
 debug: false
-extends: "semantic-release-npm-github-publish"
