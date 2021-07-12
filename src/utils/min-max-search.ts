@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-07-08 22:46:45
  * @LastEditors: wangshan
- * @LastEditTime: 2021-07-09 00:03:21
+ * @LastEditTime: 2021-07-12 23:26:47
  * @Description: 工具函数-查找最小值
  */
 
@@ -50,7 +50,7 @@ export const findMaxValue: GeneriFindMaxValue<number> = <T>(
 
 type TypeFindMinValue = <T>(
   array: Array<T>,
-  compareFn: <U>(a: U, b: U) => number
+  compareFn?: <U>(a: U, b: U) => number
 ) => T | undefined;
 
 export const findMinValue: TypeFindMinValue = <T>(
