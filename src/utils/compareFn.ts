@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-27 23:57:07
  * @LastEditors: wangshan
- * @LastEditTime: 2021-07-08 00:16:15
+ * @LastEditTime: 2021-07-15 22:57:35
  * @Description: 比较函数
  */
 
@@ -12,6 +12,8 @@ export enum Compare {
   EQUALS = 0,
 }
 
+export const DOES_NOT_EXIST = -1;
+
 export function defaultCompare<T>(a: T, b: T): number {
   if (a === b) {
     return Compare.EQUALS;
@@ -20,4 +22,8 @@ export function defaultCompare<T>(a: T, b: T): number {
 }
 export default function compareFn(a: number, b: number): boolean {
   return a > b ? true : false;
+}
+
+export function defaultEquals<T>(a: T, b: T): boolean {
+  return a === b;
 }
