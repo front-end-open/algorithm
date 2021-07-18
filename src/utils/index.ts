@@ -2,10 +2,10 @@
  * @Author: wangshan
  * @Date: 2021-06-24 21:58:10
  * @LastEditors: wangshan
- * @LastEditTime: 2021-07-08 22:51:05
+ * @LastEditTime: 2021-07-18 23:47:08
  * @Description:
  */
-import compareFn from "./compareFn";
+import compareFn, { lesserOrEquals, DOES_NOT_EXIST } from "./compareFn";
 import merge from "./merge";
 import swap from "./Swap";
 import { findMaxValue, findMinValue } from "./min-max-search";
@@ -21,4 +21,6 @@ export {
   defaultCompare,
   findMaxValue,
   findMinValue,
+  lesserOrEquals,
+  DOES_NOT_EXIST,
 };

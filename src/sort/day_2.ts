@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-27 23:35:02
  * @LastEditors: wangshan
- * @LastEditTime: 2021-07-04 14:13:41
+ * @LastEditTime: 2021-07-18 23:54:04
  * @Description: 选择排序
  */
 // import { compareFn } from "../utils/index";
@@ -10,7 +10,7 @@ function compareFns(a: number, b: number) {
   return a > b ? true : false;
 }
 
-function selectionSort(arr: number[], compare = compareFns) {
+export function selectionSort(arr: number[], compare = compareFns) {
   const { length } = arr;
   let indexMin;
   let temp: number;

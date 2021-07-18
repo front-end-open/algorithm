@@ -2,13 +2,13 @@
  * @Author: wangshan
  * @Date: 2021-07-09 11:02:34
  * @LastEditors: wangshan
- * @LastEditTime: 2021-07-11 22:39:55
+ * @LastEditTime: 2021-07-18 23:14:30
  * @Description: 桶排序
  */
 // 创建桶
 import { insertionSort } from "./day_3"; // 使用插入排序
 
-function createBukets(array: number[], bucketsSize: number): number[][] {
+export function createBukets(array: number[], bucketsSize: number): number[][] {
   // 初始化最大最小值，用于桶的size计算
   let minxValue = array[0];
   let maxValue = array[0];
@@ -53,7 +53,7 @@ function sortBukets(bukets: number[][]) {
 }
 
 // 测试
-function buketSort(array: number[], bucketsSize = 5) {
+export function buketSort(array: number[], bucketsSize = 5) {
   if (array.length < 2) {
     return array;
   }

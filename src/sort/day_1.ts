@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-24 22:17:22
  * @LastEditors: wangshan
- * @LastEditTime: 2021-06-27 23:34:43
+ * @LastEditTime: 2021-07-18 23:53:24
  * @Description: 排序
  */
 // 冒泡
@@ -60,7 +60,7 @@ res = bubbleSort(arr1);
 console.log(res);
 
 // 改进上面排序算法
-function modifiedBubbleSort(arr: number[], compare = compareFn) {
+export function modifiedBubbleSort(arr: number[], compare = compareFn) {
   let { length } = arr;
   let m = 0;
   for (let i = 0; i < length; i++) {
