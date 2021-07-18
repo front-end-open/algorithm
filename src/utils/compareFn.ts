@@ -30,6 +30,7 @@ export function defaultCompare<T>(a: T, b: T): number {
 export default function compareFn(a: number, b: number): boolean {
   return a > b ? true : false;
 }
+
 // *值相等比较
 export function defaultEquals<T>(a: T, b: T): boolean {
   return a === b;
@@ -40,3 +41,4 @@ export function lesserOrEquals<T>(a: T, b: T, compareFn: ICompareFunction<T>) {
 
   return compare === Compare.LESS_THAN || compare === Compare.BIGGER_THAN;
 }
+
