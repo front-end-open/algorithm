@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-08 23:49:00
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-10 19:14:56
+ * @LastEditTime: 2021-10-11 21:08:39
  * @Description:List-线性表
  */
 // 线性存储结构的List，在js中可以用数组表示，数组就是一个线性存储结构的序列(List)
@@ -53,7 +53,13 @@ interface InsertEle<T> {
  *
  *
  */
-export let insert: InsertEle<number> = (lineList, Status, Max, V, index) => {
+export let insert: InsertEle<number> = (
+  lineList: number[],
+  Status: { OK: number; Error: number },
+  Max: number,
+  V: number,
+  index: number
+) => {
   let len = lineList.length;
   if (index > len + 1 || index < 1) return Status.Error; // 插入元素位置，不再线性表内部
   if (len === Max) return Status.Error; // 插入元素位置超过数组长度
@@ -93,7 +99,11 @@ interface DeleteEle<T> {
  *
  *
  */
-export let deleteEle: DeleteEle<number> = (lineList, Status, index) => {
+export let deleteEle: DeleteEle<number> = (
+  lineList: number[],
+  Status: { OK: number; Error: number },
+  index: number
+) => {
   //   debugger;
   let len = lineList.length;
 

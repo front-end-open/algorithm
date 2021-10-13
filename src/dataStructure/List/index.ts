@@ -2,12 +2,12 @@
  * @Author: wangshan
  * @Date: 2021-10-08 23:49:00
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-11 11:09:09
+ * @LastEditTime: 2021-10-11 20:59:14
  * @Description:List-线性表
  */
 // 线性表顺序存储结构-插入元素
 import { insert, Status, lineList, deleteEle } from "./utils/List";
-import { removeDuplicates } from "./utils/LinkedList";
+
 // 正常插入元素
 // 末尾插入元素
 insert(lineList, Status, 8, 1, 1);
@@ -33,9 +33,3 @@ deleteEle(lineList, Status, 7); // 尾部移除
 deleteEle(lineList, Status, 0);
 deleteEle(lineList, Status, 7);
 console.log(lineList);
-
-let num = [1, 1, 2];
-let num1 = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4];
-console.log(removeDuplicates(num));
-
-console.log(removeDuplicates(num1));
