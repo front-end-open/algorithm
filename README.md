@@ -1,4 +1,4 @@
-<h3 align="center">algorithm</h3>
+<h3 align="center">Algorithm</h3>
 
 ---
 
