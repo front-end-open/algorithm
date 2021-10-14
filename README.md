@@ -1,4 +1,4 @@
-# algorithm
+<h3 align="center">algorithm</h3>
 
 一个使用 js 构建的数据结构与算法的 box
 
