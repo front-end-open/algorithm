@@ -5,9 +5,9 @@
  * @LastEditTime: 2021-10-13 01:20:47
  * @Description: 命名空间
  */
-let console: console = {
-  log() {},
-};
+// let console: console = {
+//   log() {},
+// };
 namespace Validation {
   export interface StringValidator {
     isAcceptable(s: string): boolean;
@@ -40,10 +40,10 @@ validators["Letters only"] = new Validation.LettersOnlyValidator();
 // Show whether each string passed each validator
 for (let s of strings) {
   for (let name in validators) {
-    console.log(
-      `"${s}" - ${
-        validators[name].isAcceptable(s) ? "matches" : "does not match"
-      } ${name}`
-    );
+    // console.log(
+    //   `"${s}" - ${
+    //     validators[name].isAcceptable(s) ? "matches" : "does not match"
+    //   } ${name}`
+    // );
   }
 }

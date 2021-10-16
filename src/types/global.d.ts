@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-13 01:16:39
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-13 21:29:24
+ * @LastEditTime: 2021-10-16 19:32:25
  * @Description: 全局库声明文件
  */
 // 库类型：作为全局库存在时，使用此默模版作为类型声明文件
@@ -11,6 +11,11 @@
 //   log;
 // }
 
+declare let console;
+
+declare interface Console {
+  log(): any;
+}
 declare namespace myLib {
   //~ We can write 'myLib.timeout = 50;'
   let timeout: number;

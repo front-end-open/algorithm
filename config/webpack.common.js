@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-22 01:31:05
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-11 20:56:23
+ * @LastEditTime: 2021-10-16 17:20:09
  * @Description:
  */
 // import "@babel/polyfill"; // 所有模块项导入前导入babel/polyfill
@@ -14,10 +14,7 @@ const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin; // 分析打包后包体积
 const currdir = __dirname;
 module.exports = {
-  entry: {
-    index: path.resolve(currdir, "../src/index.ts"),
-    tsModule: path.resolve(currdir, "../src/tsBase/index.ts"),
-  },
+  entry: path.resolve(currdir, "../src/index.ts"),
   output: {
     path: path.resolve(currdir, "../dist"),
     filename: "js/[name].[hash:8].js",
@@ -28,7 +25,12 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        use: "ts-loader",
+        use: {
+          loader: "ts-loader",
+          options: {
+            transpileOnly: true, // 只做语言转换，而不做类型检查
+          },
+        },
       },
       {
         test: /\.js$/,

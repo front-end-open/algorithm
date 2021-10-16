@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-22 01:31:57
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-10 14:33:36
+ * @LastEditTime: 2021-10-16 16:13:05
  * @Description:
  */
 
@@ -17,12 +17,12 @@ const path = require("path");
 module.exports = merge(common, {
   mode: "development",
   // 开发工具
-  //   devtool: "eval-cheap-module-source-map", // 开发环境下特定source-map
+  devtool: "eval-cheap-module-source-map", // 开发环境下特定source-map
   // 对 webpack-dev-server 进行配置
 
   devServer: {
     contentBase: "../dist",
-    compress: true,
+    port: 9000,
     hot: true, //热更新
   },
   plugins: [

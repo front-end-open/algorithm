@@ -2,51 +2,38 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-15 01:18:57
+ * @LastEditTime: 2021-10-16 19:28:17
  * @Description:  链表(链式线性表）
  */
-import { defaultEqual, Equal } from "@/dataStructure/List/utils/utils";
-declare namespace Node {
-  type Evalue = number | string | undefined | boolean;
+import { Equal } from "../List/utils";
 
-  interface NodeE {
-    element: Evalue;
+namespace Node {
+  export type Evalue = number | string | undefined | boolean;
+
+  export interface NodeE {
+    element: number;
     next: Node.NodeE | null;
   }
 }
 
 class Node {
-  public element: Node.Evalue;
-  public next: Node;
+  element: Node.Evalue;
+  next: Node;
   constructor(element: Node.Evalue, next?: Node) {
     this.element = element;
     this.next = next as Node;
   }
 }
-class LinkList {
+
+export class LinkList {
   public count: number;
   private head: null | Node;
   private Equal: Equal<number>;
   constructor(equalsFn: Equal<number>) {
-    this.count = 0;
-    this.head = null; // 头节点
+    // 头结点
+    this.count = 0; // 头节点数据域
+    this.head = null; // 头结点指针域
     this.Equal = equalsFn;
-  }
-
-  push(element: Node.Evalue) {
-    const node = new Node(element);
-    let current: Node;
-
-    if (!this.head) {
-      this.head = node;
-    } else {
-      current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = node;
-    }
-    this.count++;
   }
   // 指定位置插入元素
   /**
@@ -56,6 +43,7 @@ class LinkList {
    * 总的来说，情况都一样，符合标准的插入表达式, p-next = s, s-> next = p-next
    *
    */
+  // 指定位置插入元素
   insert(element: Node.Evalue, index: number) {
     if (index >= 1 && index <= this.count) {
       const node = new Node(element);
@@ -74,7 +62,24 @@ class LinkList {
     }
     return false;
   }
+  // 尾部添加元素
+  push(element: Node.Evalue) {
+    const node = new Node(element);
+    let current: Node;
 
+    if (!this.head) {
+      this.head = node;
+    } else {
+      current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = node;
+    }
+    this.count++;
+  }
+
+  // 获取指定位置元素
   getElementAt(index: number) {
     if (index >= 1 && index <= this.count) {
       let node = this.head; // p --> a1
@@ -88,12 +93,23 @@ class LinkList {
 
     return;
   }
+  // 查找元素索引
+  indexOf(element: Node.Evalue) {
+    let current = this.head as Node;
+    for (let i = 0; i < this.count && current != null; ++i) {
+      if (this.Equal(element as number, current.element as number)) {
+        return i;
+      }
+      current = current.next;
+    }
+    return -1;
+  }
 
+  // 删除元素
   remove(element: Node.Evalue) {
     const index = this.indexOf(element);
     return this.removeAt(index);
   }
-
   removeAt(index: number) {
     if (index >= 1 && index < this.count) {
       let current = this.head as Node;
@@ -112,17 +128,6 @@ class LinkList {
       return current.element;
     }
     return undefined;
-  }
-
-  indexOf(element: Node.Evalue) {
-    let current = this.head as Node;
-    for (let i = 0; i < this.count && current != null; ++i) {
-      if (this.Equal(element as number, current.element as number)) {
-        return i;
-      }
-      current = current.next;
-    }
-    return -1;
   }
 
   isEmpty() {
@@ -152,5 +157,43 @@ class LinkList {
   getHead() {
     // 获取head
     return this.head;
+  }
+  // 单链表的整表初始化
+  // 指定数据范围
+  // 数据类型 number
+  // 头插入
+  public createListHead(r: number) {
+    if (r < 0 || this.count > 0) return false;
+    let current = this.head;
+    let node: Node | null;
+
+    for (let i = 1; i <= r; i++) {
+      node = new Node(i);
+      node.next = current as Node;
+      this.head = node;
+      current = node;
+      this.count++;
+    }
+  }
+  // 尾部插入
+  public createListTail(r: number) {
+    if (r < 0 || this.count > 0) return false;
+    let end = this.head;
+    let node: Node;
+    for (let i = 1; i <= r; i++) {
+      node = new Node(i);
+
+      if (this.count === 0) {
+        this.head = node;
+        end = node;
+      }
+
+      (end as Node).next = node;
+      end = node;
+
+      if (i === r) (node as any).next = null;
+
+      this.count++;
+    }
   }
 }

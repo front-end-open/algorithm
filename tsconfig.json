@@ -21,8 +21,8 @@
 
     /* Basic Options */
     // "incremental": true,                         /* Enable incremental compilation */
-    "target": "ESNext" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', 'ES2021', or 'ESNEXT'. */,
-    "module": "umd" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
+    "target": "es2015" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', 'ES2021', or 'ESNEXT'. */,
+    "module": "es2015" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "lib": [
       "es6"
     ] /* Specify library files to be included in the compilation.  至此配置这个，TypeScript 将 DOM 类型用于全局执行环境，改为其他环境以解决*/,
@@ -66,7 +66,7 @@
     // "moduleResolution": "node",                  /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                              /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
@@ -92,7 +92,7 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
-  "files": [],
+  "files": ["src/index.ts"],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
