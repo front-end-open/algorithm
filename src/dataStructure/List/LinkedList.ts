@@ -2,12 +2,12 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-16 19:28:17
+ * @LastEditTime: 2021-10-17 00:34:11
  * @Description:  链表(链式线性表）
  */
-import { Equal } from "../List/utils";
+import { Equal, free } from "../List/utils";
 
-namespace Node {
+declare namespace Node {
   export type Evalue = number | string | undefined | boolean;
 
   export interface NodeE {
@@ -16,7 +16,7 @@ namespace Node {
   }
 }
 
-class Node {
+export class Node {
   element: Node.Evalue;
   next: Node;
   constructor(element: Node.Evalue, next?: Node) {
@@ -27,7 +27,7 @@ class Node {
 
 export class LinkList {
   public count: number;
-  private head: null | Node;
+  protected head: null | Node;
   private Equal: Equal<number>;
   constructor(equalsFn: Equal<number>) {
     // 头结点
@@ -40,14 +40,14 @@ export class LinkList {
    * 这里考虑两点
    * 1. 头部
    * 2. 中间尾部插入.
-   * 总的来说，情况都一样，符合标准的插入表达式, p-next = s, s-> next = p-next
-   *
+   * 总的来说，情况都一样，符合标准的插入表达式,
+   * p-next = s, s-> next = p-next
    */
   // 指定位置插入元素
   insert(element: Node.Evalue, index: number) {
-    if (index >= 1 && index <= this.count) {
+    if (index >= 0 && index <= this.count) {
       const node = new Node(element);
-      if (index == 1) {
+      if (index == 0) {
         // 空表情况
         const current = this.head as Node;
         node.next = current;
@@ -111,10 +111,10 @@ export class LinkList {
     return this.removeAt(index);
   }
   removeAt(index: number) {
-    if (index >= 1 && index < this.count) {
+    if (index >= 0 && index < this.count) {
       let current = this.head as Node;
       let previous: Node | null = null;
-      if (index == 1) {
+      if (index == 0) {
         // 移除头部
         this.head = current.next;
       } else {
@@ -195,5 +195,114 @@ export class LinkList {
 
       this.count++;
     }
+  }
+  //链表的整表删除
+  /**
+   * 特点： 每次删除当前结点，保存下一个结点的快照
+   */
+  public clearList() {
+    if (!(this.head as Node)) return "Error";
+    // debugger;
+    let p: Node = this.head as Node,
+      q: Node;
+
+    // 是否尾部
+    while (p) {
+      q = p.next;
+      //   free(p);
+      (p as any) = free(p);
+      p = q;
+    }
+    this.head = p;
+    this.count = 0;
+
+    return "OK";
+  }
+  // 简便的一种方法就是，直接，从链表头部直接释放，因为结点是通过指针关联的。删除头部指针引用，自然而然其余结点内存也会被一起释放.
+  public clearListCopy() {
+    if (this.head) {
+      this.head = null;
+      this.count = 0;
+      return "Ok";
+    }
+    return "Error";
+  }
+}
+
+export class CircleLinkList extends LinkList {
+  constructor(equalsFn: Equal<number | any>) {
+    super(equalsFn);
+  }
+  push(element: Node.Evalue) {
+    const node = new Node(element);
+    let current;
+    if (this.head == null) {
+      this.head = node;
+    } else {
+      current = this.getElementAt(this.size());
+      (current as Node).next = node;
+    }
+    node.next = this.head;
+    this.count++;
+  }
+  insert(element: Node.Evalue, index: number) {
+    // 根据链表特点，需要在指定位置插入元素，链表需是非空表.
+    if (index >= 0 && index <= this.count) {
+      const node = new Node(element);
+      let current = this.head;
+      // 头部插入
+      if (index === 0) {
+        // 判断空表的情况
+        if (this.head == null) {
+          this.head = node;
+          node.next = this.head; // +
+        } else {
+          node.next = current as Node;
+          current = this.getElementAt(this.size()) as Node; // +
+          this.head = node;
+          current.next = this.head; // +
+        }
+      } else {
+        // 中间或者尾部插入
+        const previous = this.getElementAt(index) as Node;
+        node.next = previous.next;
+        previous.next = node;
+      }
+      this.count++;
+
+      return true;
+    }
+    return false;
+  }
+
+  removeAt(index: number) {
+    if (index >= 0 && index < this.count) {
+      let current = this.head;
+
+      if (index == 0) {
+        // 只有一个元素的链表
+        if (this.size() === 1) {
+          this.head = null;
+        } else {
+          // 长度> 1
+          const removed = this.head;
+          current = this.getElementAt(this.size()) as Node;
+          this.head = (this.head as Node).next;
+          current.next = this.head;
+
+          current = removed; // 保留移除元素的值, 供返回
+        }
+      } else {
+        let previous: Node | null = null;
+        for (let i = 0; i <= index; ++i) {
+          previous = current as Node;
+          current = (current as Node).next;
+        }
+        (previous as Node).next = (current as Node).next;
+      }
+      this.count--;
+      return (current as Node).element;
+    }
+    return undefined;
   }
 }
