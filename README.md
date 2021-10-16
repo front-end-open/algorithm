@@ -8,7 +8,6 @@
 
 - 数据结构
  1. [线性表(List)](https://github.com/front-end-open/algorithm/blob/15cb2689016dd361bff00138365fe6432f73af7f/src/dataStructure/List/LinkedList.ts)
- 更行中...
 - 算法
 
 ## Document
