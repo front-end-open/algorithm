@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-14 00:17:25
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-16 23:02:19
+ * @LastEditTime: 2021-10-18 00:36:48
  * @Description: 工具库
  */
 
@@ -17,6 +17,6 @@ export let defaultEqual: Equal<number> = (a, b) => {
 };
 
 // 结点释放
-export let free: (p: Node | null) => void = () => {
+export let free: (p: Node.NodeE | null) => void = () => {
   return null;
 };
