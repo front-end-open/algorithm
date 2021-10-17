@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-17 17:59:11
+ * @LastEditTime: 2021-10-17 23:21:58
  * @Description:  链表(链式线性表）
  */
 import { Equal, free } from "../List/utils";
@@ -75,18 +75,20 @@ export class LinkList {
       while (current.next !== null) {
         current = current.next;
       }
+      node.next = current.next;
       current.next = node;
     }
     this.count++;
   }
 
   // 获取指定位置元素
+  //
   getElementAt(index: number) {
     if (index >= 1 && index <= this.count) {
       let node = this.head; // p --> a1
-
-      for (let i = 1; i <= index && node != null; ++i) {
-        node = node.next; //
+      //   debugger;
+      for (let i = 1; i < index; ++i) {
+        node = (node as Node).next; //
       }
 
       return node;
@@ -97,7 +99,8 @@ export class LinkList {
   // 查找元素索引
   indexOf(element: Node.Evalue) {
     let current = this.head as Node;
-    for (let i = 1; i <= this.count && current != null; ++i) {
+    // debugger;
+    for (let i = 1; i <= this.count; ++i) {
       if (this.Equal(element as number, current.element as number)) {
         return i;
       }
@@ -112,14 +115,17 @@ export class LinkList {
     return this.removeAt(index);
   }
   removeAt(index: number) {
+    // 空列表处理
     if (index >= 1 && index <= this.count) {
       let current = this.head as Node;
       let previous: Node | null = null;
+      debugger;
       if (index == 1) {
         // 移除头部
         this.head = current.next;
       } else {
-        for (let i = 1; i <= index; ++i) {
+        // 查找 i - 1
+        for (let i = 1; i < index; ++i) {
           previous = current; // 获取前一个节点
           current = current.next; // 获取最后index位置的元素
         }
@@ -235,28 +241,32 @@ export class CircleLinkList extends LinkList {
     super(equalsFn);
   }
   push(element: Node.Evalue) {
+    // 变化不大
     const node = new Node(element);
     let current;
     if (this.head == null) {
       this.head = node;
     } else {
       current = this.getElementAt(this.size());
+
       (current as Node).next = node;
     }
     node.next = this.head;
     this.count++;
   }
-  insert(element: Node.Evalue, index: number) {
+
+  public insert(element: Node.Evalue, index: number) {
     if (index >= 0 && index <= this.count) {
       const node = new Node(element);
       let current = this.head;
       // 头部插入
-      if (index === 0) {
+      if (index === 1) {
         // 判断空表的情况
         if (this.head == null) {
           this.head = node;
           node.next = this.head; // +
         } else {
+          // 非空表头部插入时，头尾部结点的指针域需要从新定位
           node.next = current as Node;
           current = this.getElementAt(this.size()) as Node; // +
           this.head = node;
@@ -264,7 +274,7 @@ export class CircleLinkList extends LinkList {
         }
       } else {
         // 中间或者尾部插入
-        const previous = this.getElementAt(index) as Node;
+        const previous = this.getElementAt(index - 1) as Node;
         node.next = previous.next;
         previous.next = node;
       }
@@ -275,11 +285,11 @@ export class CircleLinkList extends LinkList {
     return false;
   }
 
-  removeAt(index: number) {
-    if (index >= 0 && index < this.count) {
+  public removeAt(index: number) {
+    if (index >= 1 && index <= this.count) {
       let current = this.head;
 
-      if (index == 0) {
+      if (index == 1) {
         // 只有一个元素的链表
         if (this.size() === 1) {
           this.head = null;
@@ -294,7 +304,7 @@ export class CircleLinkList extends LinkList {
         }
       } else {
         let previous: Node | null = null;
-        for (let i = 0; i <= index; ++i) {
+        for (let i = 1; i < index; ++i) {
           previous = current as Node;
           current = (current as Node).next;
         }
@@ -304,5 +314,46 @@ export class CircleLinkList extends LinkList {
       return (current as Node).element;
     }
     return undefined;
+  }
+  // 头插入初始化
+  public createCircleListHead(r: number) {
+    if (r < 0 || this.count > 0) return false;
+    let current = this.head;
+    let node: Node | null;
+
+    for (let i = 1; i <= r; i++) {
+      node = new Node(i);
+
+      node.next = current as Node;
+      this.head = node;
+      current = node;
+
+      this.count++;
+    }
+    // 通过外部API, 对末尾结点到头部结点的引用, 来实现循环链表
+    let end = this.getElementAt(this.size()) as Node;
+    end.next = this.head as Node;
+  }
+
+  // 尾插入初始化
+  public createCircleListTail(r: number) {
+    if (r < 0 || this.count > 0) return false;
+    let end = this.head;
+    let node: Node;
+    for (let i = 1; i <= r; i++) {
+      node = new Node(i);
+
+      if (this.count === 0) {
+        this.head = node;
+        end = node;
+      }
+
+      (end as Node).next = node;
+      end = node;
+
+      if (i === r) (node as any).next = this.head; // 保证对头部的引用
+
+      this.count++;
+    }
   }
 }
