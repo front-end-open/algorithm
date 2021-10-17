@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-17 00:34:11
+ * @LastEditTime: 2021-10-17 17:59:11
  * @Description:  链表(链式线性表）
  */
 import { Equal, free } from "../List/utils";
@@ -45,15 +45,16 @@ export class LinkList {
    */
   // 指定位置插入元素
   insert(element: Node.Evalue, index: number) {
-    if (index >= 0 && index <= this.count) {
+    if (index > 0 && index <= this.count) {
       const node = new Node(element);
-      if (index == 0) {
-        // 空表情况
+      // 头部插入
+      if (index == 1) {
         const current = this.head as Node;
         node.next = current;
         this.head = node;
       } else {
-        const previous = this.getElementAt(index) as Node;
+        // 中间插入
+        const previous = this.getElementAt(index - 1) as Node; // 或组插入位置，前一个元素
         const current = previous.next;
         previous.next = node;
         node.next = current;
@@ -96,7 +97,7 @@ export class LinkList {
   // 查找元素索引
   indexOf(element: Node.Evalue) {
     let current = this.head as Node;
-    for (let i = 0; i < this.count && current != null; ++i) {
+    for (let i = 1; i <= this.count && current != null; ++i) {
       if (this.Equal(element as number, current.element as number)) {
         return i;
       }
@@ -111,10 +112,10 @@ export class LinkList {
     return this.removeAt(index);
   }
   removeAt(index: number) {
-    if (index >= 0 && index < this.count) {
+    if (index >= 1 && index <= this.count) {
       let current = this.head as Node;
       let previous: Node | null = null;
-      if (index == 0) {
+      if (index == 1) {
         // 移除头部
         this.head = current.next;
       } else {
@@ -246,7 +247,6 @@ export class CircleLinkList extends LinkList {
     this.count++;
   }
   insert(element: Node.Evalue, index: number) {
-    // 根据链表特点，需要在指定位置插入元素，链表需是非空表.
     if (index >= 0 && index <= this.count) {
       const node = new Node(element);
       let current = this.head;
