@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-18 00:35:54
+ * @LastEditTime: 2021-10-18 00:50:14
  * @Description:  链表(链式线性表）
  */
 import { Equal, free } from "../List/utils";
@@ -29,7 +29,7 @@ export class Node {
 export class LinkList {
   public count: number;
   protected head: null | Node.NodeE;
-  private Equal: Equal<number>;
+  public Equal: Equal<number>;
   constructor(equalsFn: Equal<number>) {
     // 头结点
     this.count = 0; // 头节点数据域
