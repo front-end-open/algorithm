@@ -1,5 +1,3 @@
 node_modules
 .temp
 .cache
-package-lock.json
-package.json
