@@ -2,10 +2,11 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-18 01:18:35
+ * @LastEditTime: 2021-10-18 21:18:45
  * @Description: 应用配置
  */
 module.exports = {
+  base: "algorithm",
   lang: "zh-CN",
   title: "你好， VuePress ！",
   description: "这是我的第一个 VuePress 站点",
