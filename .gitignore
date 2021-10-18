@@ -1,6 +1,5 @@
 node_modules
 .temp
 .cache
-artitle
 package-lock.json
 package.json
