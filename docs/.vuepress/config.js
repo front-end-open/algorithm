@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-19 00:38:32
+ * @LastEditTime: 2021-10-20 00:46:42
  * @Description: 应用配置
  */
 module.exports = {
@@ -103,6 +103,12 @@ module.exports = {
       "/views/leecode/": [
         {
           text: "leetcode",
+          children: [
+            {
+              text: "链表",
+              link: "/views/leecode/LinkList.md",
+            },
+          ],
         },
       ],
     },

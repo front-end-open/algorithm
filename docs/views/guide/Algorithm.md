@@ -1,7 +1,3 @@
----
-sidebar: "auto"
----
-
 # Algorithm
 
 ## 目的：
