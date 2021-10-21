@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-20 00:46:42
+ * @LastEditTime: 2021-10-21 22:07:32
  * @Description: 应用配置
  */
 module.exports = {
@@ -57,6 +57,18 @@ module.exports = {
       },
       {
         text: "leetcode",
+        children: [
+          {
+            text: "初级",
+            link: "/views/leecode/",
+            activeMatch: "/views/leecode/primary/",
+          },
+          {
+            text: "中级",
+            link: "/views/leecode/intermediate/",
+            activeMatch: "/views/leecode/intermediate/",
+          },
+        ],
         link: "/views/leecode/",
       },
       //   {
@@ -106,7 +118,11 @@ module.exports = {
           children: [
             {
               text: "链表",
-              link: "/views/leecode/LinkList.md",
+              link: "/views/leecode/primary/LinkList.md",
+            },
+            {
+              text: "数组",
+              link: "/views/leecode/primary/Array.md",
             },
           ],
         },
