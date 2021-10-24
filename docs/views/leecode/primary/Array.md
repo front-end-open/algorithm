@@ -127,7 +127,81 @@ var containsDuplicate = function (nums) {
 解答：
 
 ```js
+// 方案
+// 双指针
+// 1
+let intersect = function (nums1, nums2) {
+  let i = 0,
+    j = 0;
+  let res = [];
+  nums1.sort();
+  nums2.sort();
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+      // 如果i指向的值小于j指向的值，，说明i指向
+      // 的值小了，i往后移一步
+      i++;
+    } else if (nums1[i] > nums2[j]) {
+      // 如果i指向的值大于j指向的值，说明j指向的值
+      // 小了，j往后移一步
+      j++;
+    } else {
+      // 如果i和j指向的值相同，说明这两个值是重复的，
+      // 把他加入到集合list中，然后i和j同时都往后移一步
+      res.push(nums1[i]);
+      i++;
+      j++;
+    }
+  }
+  return res;
+};
+// 2
+let copyintersect2 = function (nums1, nums2) {
+  let i = 0,
+    j = 0;
+  let res = [];
+  // 先排序
+  nums1.sort((a, b) => {
+    return a - b;
+  });
+  nums2.sort((a, b) => {
+    return a - b;
+  });
+  while (i < nums1.length && j < nums2.length) {
+    // 相同就压入，不同，较小的元素指针往前走
+    if (nums1[i] == nums2[j]) {
+      res.push(nums1[i]);
+      i++;
+      j++;
+    } else {
+      nums1[i] < nums2[j] ? i++ : j++;
+    }
+  }
 
+  return res;
+};
+// 哈希表
+let copyintersect1 = function (nums1, nums2) {
+  const map = {},
+    res = [];
+  for (const i of nums1) {
+    // 统计nums1中每个元素的个数
+    if (map[i]) {
+      map[i]++;
+    } else {
+      map[i] = 1;
+    }
+  }
+  for (const j of nums2) {
+    // 记住当前元素的个数
+    const num = map[j];
+    // 判断当前元素个数，并一次压入arr中
+    if (num > 0) {
+      res.push(j);
+      map[j]--;
+    }
+  }
+};
 ```
 
 4. 加一
