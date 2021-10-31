@@ -12,7 +12,7 @@
 - 测试(Jest)
 
 ## Document
-更新中...
+[see](https://front-end-open.github.io/algorithm/)
 
 ## Example
 更新中...
