@@ -7,7 +7,7 @@
     "dev": "./node_modules/.bin/webpack server --config  config/webpack.dev.js --open --progress",
     "build": "./node_modules/.bin/webpack --config config/webpack.prod.js --progress",
     "analyz": "NODE_ENV=production npm_config_report=true npm run build",
-    "test": "node -v"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
