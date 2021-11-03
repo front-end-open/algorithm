@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-06-22 00:27:02
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-31 23:07:19
+ * @LastEditTime: 2021-11-03 23:17:01
  * @Description: 入口文件
  */
 // import "@/utils/index"; // 导入自定义模块
@@ -14,4 +14,5 @@
 // import "./examples/LIst/07";
 
 // stack
-import "./examples/stack/01";
+// import "./examples/stack/01";
+import "./examples/stack/02";

@@ -2,20 +2,15 @@
  * @Author: wangshan
  * @Date: 2021-10-31 20:12:48
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-03 21:58:53
+ * @LastEditTime: 2021-11-03 23:18:12
  * @Description: 栈(基于数组栈的实现)
  */
 // 使用数组实现栈
-export declare enum ConstVariable {
+export enum ConstVariable {
   MAXSIZE = 5,
   ERROR = -1,
   OK = 0,
 }
-
-const Con = {
-  Error: ConstVariable.ERROR,
-  Ok: ConstVariable.OK,
-};
 
 abstract class Stack {
   protected item: Array<number | string | object | boolean>;

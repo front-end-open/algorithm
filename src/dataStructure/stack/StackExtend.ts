@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-11-03 21:58:25
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-03 23:10:06
+ * @LastEditTime: 2021-11-03 23:22:38
  * @Description:基于对象数组的实现
  */
 import { ConstVariable } from "./Stack";
@@ -52,9 +52,13 @@ export class StackExtend extends Stack {
     return ConstVariable.OK;
   }
   push(element: globalType) {
+    // debugger;
+    if (this._top === this._max - 1) return ConstVariable.ERROR;
+
     this._item[this._count] = element;
     this._count++;
     this._top++;
+
     return ConstVariable.OK;
   }
   isEmpty() {
