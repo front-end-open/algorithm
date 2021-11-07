@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-18 00:50:14
+ * @LastEditTime: 2021-11-08 01:25:12
  * @Description:  链表(链式线性表）
  */
 import { Equal, free } from "../List/utils";
@@ -67,16 +67,20 @@ export class LinkList {
   // 尾部添加元素
   push(element: Node.Evalue) {
     const node = new Node(element);
-    let current: Node.NodeE;
-
+    // let current: Node.NodeE;
+    let current;
+    // debugger;
     if (!this.head) {
       this.head = node as Node.NodeE;
     } else {
-      current = this.head;
-      while (current.next !== null) {
-        current = current.next as Node.NodeE;
-      }
-      (node as Node.NodeE).next = (current as Node.NodeE).next;
+      // current = this.head;
+      //   while (current.next !== null) {
+      //     current = current.next as Node.NodeE;
+      //   }
+      //   (node as Node.NodeE).next = (current as Node.NodeE).next;
+      //   current.next = node as Node.NodeE;
+      current = this.getElementAt(this.size()) as Node;
+
       current.next = node as Node.NodeE;
     }
     this.count++;
