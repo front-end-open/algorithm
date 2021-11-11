@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-10-21 22:07:32
+ * @LastEditTime: 2021-11-12 00:06:31
  * @Description: 应用配置
  */
 module.exports = {
@@ -70,6 +70,21 @@ module.exports = {
           },
         ],
         link: "/views/leecode/",
+      },
+      {
+        text: "css",
+        children: [
+          {
+            text: "概念",
+            link: "/views/css/index.md",
+            activeMatch: "/views/css/index.md",
+          },
+          {
+            text: "效果",
+            link: "/views/css/practice.md",
+            activeMatch: "/views/css/practice.md",
+          },
+        ],
       },
       //   {
       //     text: "选择语言",
