@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-12 00:06:31
+ * @LastEditTime: 2021-11-13 15:52:49
  * @Description: 应用配置
  */
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
   },
 
   themeConfig: {
-    sidebarDepth: 2,
+    sidebarDepth: 6,
     lastUpdated: true,
     lastUpdatedText: "最近更新于",
     logo: "https://avatars.githubusercontent.com/u/43908467?v=4",
@@ -149,7 +149,7 @@ module.exports = {
         level: [1, 2, 3, 4, 5, 6],
       },
       extractHeaders: {
-        level: [1, 2, 3, 4, 5, 6],
+        level: [2, 3, 4, 5, 6],
       },
     },
   },
