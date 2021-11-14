@@ -121,3 +121,228 @@ sidebar: auto
   圣杯布局-grid</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
+
+### 网格布局(Grid)
+
+> 网页格局，css 内的二位布局解决方案. 主要用于页面的局部布局和小型组件布局.
+>
+> > 网格布局定义: 网格是一组相交的水平线和垂直线，它定义了网格的列和行。我们可以将网格元素放置在与这些行和列相关的位置上
+
+特点:
+
+- 元素位置确定
+
+1. 元素位置确定，使用行号，行名或标定一个网格区域来精确定位一个元素位置。网格同时还给出一个算法来控制未给出准确网格位置的元素。
+2. 使用网格定义显示网格布局，但是根据规范它会处理你加在网格外面的内容，当必要时它会自动增加行和列，它会尽可能多的容纳所有的列。（创建额外的轨道来包含元素）
+
+- 对齐控制
+
+> 网格包含准确控制，包含在网格布中的元素的特点，以便我们可以控制一旦放置到网格区域中的物体对齐，以及整个网格如何对齐。
+
+- 控制重叠
+
+> 多个元素可以放在单元格中，或区域可以彼此重叠。然后使用 z-index 来控制重叠的优先级。
+
+总结:
+
+> 使用 Grid 并结合 flex 可以创建出不同的布局.
+
+网格(grid)概念:
+
+**网格容器**：在元素上使用，`display:grid`或`display: inline-grid`来创建一个网格布局。在网格容器中，所有直系子元素将会成为网格元素.
+来看个例子:
+
+**项目**: 这里的项目就是，让网格容器中的直系子元素.
+
+css:
+
+```css
+/*
+    伪代码
+*/
+.g-container {
+  display: grid;
+  ...;
+}
+```
+
+html:
+
+```html
+<div class="g-container">
+  <div class="item">
+    <p>grid-1</p>
+  </div>
+  <div class="item"></div>
+  <div class="item"></div>
+  ....
+</div>
+```
+
+例上面的例子，其中 `.g-container`容器，设置网格属性`display: grid`,此时的容器就是网格容器，容器中的`.item`就是项目.
+
+:::warning 注意
+项目中的元素，不能作为子元素。布局也并不会生效。
+:::
+
+**行和列**
+
+> 网格布局，将容器划分为确定的"行"和"列"，其中在水平方向表示行，垂直方向表示列.
+
+**单元格**
+
+> 网格中的，行和列的交叉区域。
+
+**网格线**
+
+> 划分网格的线，水平的网格线划分出行，垂直的网格线划分列.
+
+正常情况，n 行有，n+1 根水平网格线；m 列， 有 m+1 列垂直网格线.
+
+对比 flex 布局:
+
+1. flex 是轴线布局，只能指定项目相对轴线的位置，可以看做是*一维布局*.
+2. grid 布局是将容器划分为‘行’和‘列’，产生单元格，然后指定项目所在的单元格，可以看做是*二维布局*, 相对 flex 布局，功能更加强大，布局也更加准确。
+
+#### 容器属性
+
+> grid 布局属性，分两类。一个是作用在容器上的，另一个是作用在项目上的。
+
+先来说容器:
+
+1. display 属性:`display: grid`指定一个容器设置网格布局。除使用`display: grid`，指定一个块级特性，也可以使块级元素表现为行内特点， `display: inline-grid`
+
+现在使用一个网格布局，来实现一个矩阵
+
+效果，在线 demo:
+
+`display: inline-grid`
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="网格布局-容器属性display:grid(inline)" src="https://codepen.io/pachverb/embed/xxLyjaM?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/xxLyjaM">
+  网格布局-容器属性display:grid(inline)</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+`display: grid`
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="网格布局-容器属性display:grid(block)" src="https://codepen.io/pachverb/embed/RwZeyQw?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/RwZeyQw">
+  网格布局-容器属性display:grid(block)</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+::: tip 注意
+设为网格布局以后，容器子元素（项目）的 float、display: inline-block、display: table-cell、vertical-align 和 column-\*等设置都将失效。
+:::
+
+2. **grid-template-columns 和 grid-template-rows**
+
+> 指定了网格容器过后，需要定义行和列的宽度。
+>
+> > grid-template-columns,用于隐式创建列的宽度。mdn 官方的描述是： CSS 属性 grid-auto-columns 指定了隐式创建的网格纵向轨道（track）的宽度。
+>
+> > grid-template-rows, 用于隐式创建行的大小，mdn 官方的描述是: CSS 属性 grid-auto-rows 用于指定隐式创建的行轨道大小。
+
+除了显示定义出确定的每个行和列的大小，也可以只定义部分尺寸.
+
+::: details 提示
+如果定位到某行中的网格元素没有使用 grid-template-rows 来指定大小，则会隐式创建 grid 轨道来保存它。这可能在显示定位到超出范围的行，或者由自动放置算法创建额外的行时发生。
+:::
+
+使用个值的场景示列代码:
+
+```css
+/* Keyword values */
+grid-auto-rows: min-content;
+grid-auto-rows: max-content;
+grid-auto-rows: auto;
+
+/* <length> values */
+grid-auto-rows: 100px;
+grid-auto-rows: 20cm;
+grid-auto-rows: 50vmax;
+
+/* <percentage> values */
+grid-auto-rows: 10%;
+grid-auto-rows: 33.3%;
+
+/* <flex> values */
+grid-auto-rows: 0.5fr;
+grid-auto-rows: 3fr;
+
+/* minmax() values */
+grid-auto-rows: minmax(100px, auto);
+grid-auto-rows: minmax(max-content, 2fr);
+grid-auto-rows: minmax(20%, 80vmax);
+
+/* multiple track-size values */ 上面，第一个列子就是使用多个值来定义行和列的尺寸的
+grid-auto-rows: min-content max-content auto;
+grid-auto-rows: 100px 150px 390px;
+grid-auto-rows: 10% 33.3%;
+grid-auto-rows: 0.5fr 3fr 1fr;
+grid-auto-rows: minmax(100px, auto) minmax(max-content, 2fr) minmax(20%, 80vmax);
+grid-auto-rows: 100px minmax(100px, auto) 10% 0.5fr fit-content(400px);
+
+/* Global values */
+grid-auto-rows: inherit;
+grid-auto-rows: initial;
+grid-auto-rows: unset;
+```
+
+使用百分比, 定义行或列的宽度
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid[-template-rows/columns]-values(px/percentice)-px" src="https://codepen.io/pachverb/embed/xxLyzVv?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/xxLyzVv">
+  grid[-template-rows/columns]-values(px/percentice)-px</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+小技巧: 上面在定义行或列的宽度时，会重复定义某个单位值，使用`repeat`函数，来简化此过程。
+
+> repeat, 使用说明，该函数接收两个参数，第一重复次数，第二个参数接收重复的值，模式。
+
+**`repeat`使用示范**
+
+改进上面的列子, 结果，查看 less 部分示列.
+
+重复某个值:
+
+```css
+repeat: (3, calc(100% / 3));
+```
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid[-template-rows/columns]-values(px/percentice)-px" src="https://codepen.io/pachverb/embed/xxLyzVv?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/xxLyzVv">
+  grid[-template-rows/columns]-values(px/percentice)-px</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+重复一组值:
+
+```css
+... repeat(2, 50px 50px 50px) ...;
+```
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="网格布局先关之-repeat" src="https://codepen.io/pachverb/embed/XWaxYgL?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/XWaxYgL">
+  网格布局先关之-repeat</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**auto-fill 关键字**
+
+> repeat，次数也可以使用 auto-fill 关键字，有时候网格容器的大小是不确定的，但是单元格的大小固定，此时，希望尽可能容纳多的单元格，可以使用 auto-fill 自动填充.
+
+```css
+grid-tempate-columns: repeat(auto-fill, 100px);
+```
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="网格布局-auto-fill" src="https://codepen.io/pachverb/embed/ExvdRLa?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/ExvdRLa">
+  网格布局-auto-fill</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**fr 关键字**
+
