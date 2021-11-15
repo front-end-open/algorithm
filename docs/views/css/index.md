@@ -346,3 +346,178 @@ grid-tempate-columns: repeat(auto-fill, 100px);
 
 **fr 关键字**
 
+> 为了方便表示比列关系, 可以使用 fr 关键字，作为网格轨道值的单位。如果两列的宽度为 1fr 和 2fr, 则前后两者的列宽比列为 1:2
+
+基本使用:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-fr" src="https://codepen.io/pachverb/embed/wvqQWrN?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/wvqQWrN">
+  grid-fr</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+和绝对单位组合使用, 比如 pixel
+
+```
+...
+grid-template-columns: 150px 1fr 2fr;
+...
+```
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-fr-2" src="https://codepen.io/pachverb/embed/JjyeKar?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/JjyeKar">
+  grid-fr-2</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**minmax()关键字**
+`minmax`产生一个长度范围，表示长度就在这个范围中，它接收两个参数，分别是最小和最大值。例如， minmax(100px, 1fr),就表示长度在 100px 和 1fr 之间.
+
+使用 minmax,来实现一个圣杯布局,
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-minmax" src="https://codepen.io/pachverb/embed/RwZqGrd?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/RwZqGrd">
+  grid-minmax</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+:::tip 注意
+类似实现一个双飞翼或者圣杯布局。
+但是没有完全体现出圣杯布局和双飞翼布局内容优先加载的特点.
+:::
+
+**auto 关键字**
+表示由浏览器自己计算长度
+
+```
+grid-template-columns: 100px auto 100px;
+```
+
+上面的代码，中间的列表示尺寸为 auto, 基本占据该列最大单元格宽度，除非设置该单元格最小宽度`min-width`，否则就是自动 auto 计算的最大单元格尺寸.
+
+auto: 实现圣杯布局
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-auto" src="https://codepen.io/pachverb/embed/vYJQXro?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/vYJQXro">
+  grid-auto</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**网格线名称**
+
+> 使用网格属性`grid-template-columns`和`grid-template-rows`设置网格尺寸是，还可以在属性值中，附带网格线名称. 名称使用 `[]`包裹. 且每一个网格线可以有多个名称, [c4 col4], 多个值之间空格分离.
+
+```css
+grid-template-columns: [c1] 100px [c2] 100px [c3] 100px [c4];
+/**/
+grid-template-rows: [r1] 100px r2 100px r3 100px r4;
+```
+
+**网格布局实例**
+
+1. 双飞翼布局
+   ....
+2. 圣杯布局
+   ....
+3. 两栏布局
+   > 两栏布局，且左右自适应
+
+```
+grid-template-columns: 70% 30%;
+```
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-double-layout" src="https://codepen.io/pachverb/embed/ExvOgBO?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/ExvOgBO">
+  grid-double-layout</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+1. 十二列布局
+一行代码实现十二列布局   
+```
+grid-template-columns: repeat(12, auto)
+```
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-12-columns-layout" src="https://codepen.io/pachverb/embed/jOLQVOa?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/jOLQVOa">
+  grid-12-columns-layout</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+3.  **grid-row-gap 属性，grid-column-gap 属性，grid-gap 属性**
+
+grid-row-cap 设置行与行之间的间隔
+grid-column-cap 设置列与列之间的间隔
+
+例如：
+
+```css
+.container {
+  griid-row-gap: 20px;
+  grid-column-gap: 20px;
+}
+```
+
+当然，上面的两个属性也可以简写为: `grid-gap: 20px 20px;`, 同时，第二个值，也可以省略。如果省略第二个值，则表示第二个值和第一个值相同。
+例子:
+
+```css
+grid-gap: 20px 20px 或
+grid-gap: 20px
+```
+
+:::tip 注意
+根据最新标准，行列间距属性的前缀可以省略。即，grid-，现在的行列属性，表示为 `row-gap`, `column-gap`, 缩写属性，`gap`.
+:::
+
+在线列子:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-gap" src="https://codepen.io/pachverb/embed/yLoQVKQ?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/yLoQVKQ">
+  grid-gap</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+4. **grid-template-areas**
+
+> 网格布局区域定义，一个区域由一个或多个单元格组成. grid-template-areas 用于定义区域
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-areas: "a b c" "d e f" "g h i";
+}
+```
+
+上面的网格，划分了一个 3 x 3 的布局。这个网格由 a 到 i 连续的 9 个区域组成。分别对应 9 个单元格。
+
+多个单元格合并到一个区域,
+其中头部区域是 header, 内容区是 main, 页脚区是 footer.
+
+```
+grid-template-areas: "header header header" "main main main" "footer footer footer";
+```
+
+如果某个区域不需要，可以利用 `.` 代替, 表示该区域没有使用，不含任何单元格。
+
+:::warning 注意
+注意，区域的命名会影响到网格线。每个区域的起始网格线，会自动命名为区域名-start，终止网格线自动命名为区域名-end。
+
+比如，区域名为 header，则起始位置的水平网格线和垂直网格线叫做 header-start，终止位置的水平网格线和垂直网格线叫做 header-end。
+:::
+
+在线列子:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-areas" src="https://codepen.io/pachverb/embed/qBXQRNR?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/qBXQRNR">
+  grid-areas</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+grid-template-areas 和 grid-area 结合使用:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-area-pro" src="https://codepen.io/pachverb/embed/rNzQjoW?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/rNzQjoW">
+  grid-area-pro</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
