@@ -1,15 +1,56 @@
 {
-  "name": "docs",
-  "version": "1.0.0",
-  "description": "",
+  "name": "pchengineers",
+  "version": "0.0.1",
+  "description": "wepack构建，typescript开发环境",
   "main": "index.js",
   "scripts": {
-    "docs:dev": "vuepress dev docs --temp .temp",
-    "docs:build": "vuepress build docs"
+    "dev": "./node_modules/.bin/webpack server --config  config/webpack.dev.js --open --progress",
+    "build": "./node_modules/.bin/webpack --config config/webpack.prod.js --progress",
+    "analyz": "NODE_ENV=production npm_config_report=true npm run build",
+    "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/front-end-open/wt_run.git"
+  },
+  "keywords": [
+    "node",
+    "webpack",
+    "javascript",
+    "typescript"
+  ],
+  "author": "PachVerb",
+  "license": "MIT",
   "devDependencies": {
-    "vuepress": "^2.0.0-beta.26"
+    "@types/mocha": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^4.28.2",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "copy-webpack-plugin": "^4.6.0",
+    "error-overlay-webpack-plugin": "^0.4.2",
+    "eslint": "^8.0.1",
+    "html-webpack-plugin": "^4.5.2",
+    "jest": "^27.3.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.46.0",
+    "webpack-bundle-analyzer": "^4.4.2",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-typescript": "^7.16.0",
+    "core-js": "^3.18.2",
+    "semantic-release": "^17.4.4",
+    "ts-loader": "~8.2.0"
+  },
+  "publishConfig": {
+    "registry": "https://github.com/front-end-open/wt_run.git"
   }
 }
