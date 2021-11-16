@@ -521,3 +521,125 @@ grid-template-areas 和 grid-area 结合使用:
   grid-area-pro</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
+
+**grid-auto-flow**
+
+> 设置网格容器内，项目的排列顺序. 默认划分好网格后，项目按照 "先行后列"的顺序排列.
+> `grid-auto-flow: row | column | row dense | column dense`
+
+默认 row, 即"先行后列"排列单元格
+
+...
+
+现在设置，“先列后行”, `column`
+
+在线 demo：
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="Untitled" src="https://codepen.io/pachverb/embed/vYJvBeL?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/vYJvBeL">
+  Untitled</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+除了，设置,`row`, `column`两个值，还可以指定 `row dense`, `column dense`. 主要用于，某些项目指定位置后，剩下的项目应该怎么自动放置。这两个值，还附带一个紧密排列含义，尽量不出现空格.
+
+看一个列子:
+
+> 默认下面的布局设置，在默认的 grid-auto-flow: row 排列下， 且第一个项目，和第一个项目各占两个单元格位置.
+> 则，第一个项目后面后空出.
+> 这是项目 3 跟随第二个项目排列，所以会空出一个单元格.
+> 现在设置 grid-auto-flow: row dense, 先行后列 排列元素，并且元素尽量紧密排列，不出现空格。
+
+在线列子:
+
+> 下面的列子描述了两种情况. `row dense `, `column dense`
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-auto-flow-row dense" src="https://codepen.io/pachverb/embed/PoKXYMO?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/PoKXYMO">
+  grid-auto-flow-row dense</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**justify-items, align-items, place-items**
+
+justify-item, 与 align-items 设置单元格内容的水平与垂直对齐方式.
+
+::: warning 注意
+目前，Flexbox 和 CSS 网格布局支持此属性。在 Flexbox 中，它控制十字轴上项目的对齐方式，在网格布局中，它控制块轴上项目的对齐方式。而不是对单元格内的内容对齐方式，目标是项目对齐。
+
+:::
+
+place-items: 是上上面两种的结合简写方式
+
+语法:
+
+```
+justify-items: start | end | center | strech
+align-items: start | end | center | strech
+
+place-items: <align-items>  <justify-items>
+```
+
+两种写法一致， 各个值的含义:
+
+- start: 对齐单元格的起始位置
+- end: 对齐单元格的结束边缘
+- center: 居中对齐单元格内容
+- strech: 拉伸沾满整个单元格
+
+在线例子:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-place-items" src="https://codepen.io/pachverb/embed/MWvZWqw?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/MWvZWqw">
+  grid-place-items</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**justify-content, align-content, place-content**
+
+> > justify-content 属性是*整个内容区域*在容器里面的水平位置（左中右），align-content 属性是整个内容区域的垂直位置. place-content 是前面两者的简写. 该属性同时，也可以用来控制项目在容器内对齐方式.
+
+语法:
+
+```
+ justify-content: start | end | center | stretch | space-around | space-between | space-evenly;
+  align-content: start | end | center | stretch | space-around | space-between | space-evenly;
+  place-content: <align-content> <justify-content>
+```
+
+值解释:
+
+- start: 对齐容器的结束边框。
+- center: 容器内部居中。
+- stretch: 项目大小没有指定时，拉伸占据整个网格容器。(项目没有指定大小就是 fr, auto 等情况)
+- space-around: 每个项目两侧的间隔相等。所以，项目之间的间隔比项目与容器边框的间隔大一倍。
+- space-between: 项目与项目的间隔相等，项目与容器边框之间没有间隔。
+- space-evenly: 项目与项目的间隔相等，项目与容器边框之间也是同样长度的间隔。
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="Untitled" src="https://codepen.io/pachverb/embed/RwZENLd?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/RwZENLd">
+  Untitled</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**grid-auto-columns 属性，
+grid-auto-rows 属性**
+
+有时候，一些项目的指定位置，在现有网格的外部。比如网格只有 3 列，但是某一个项目指定在第 5 行。这时，浏览器会自动生成多余的网格，以便放置项目。
+
+grid-auto-columns 属性和 grid-auto-rows 属性用来设置，浏览器自动创建的多余网格的列宽和行高。它们的写法与 grid-template-columns 和 grid-template-rows 完全相同。如果不指定这两个属性，浏览器完全根据单元格内容的大小，决定新增网格的列宽和行高。
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-grid-auto-rows/columns" src="https://codepen.io/pachverb/embed/porqvYw?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/porqvYw">
+  grid-grid-auto-rows/columns</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**grid-template 属性，grid 属性**
+grid-template 属性是 grid-template-columns、grid-template-rows 和 grid-template-areas 这三个属性的合并简写形式。
+
+grid 属性是 grid-template-rows、grid-template-columns、grid-template-areas、 grid-auto-rows、grid-auto-columns、grid-auto-flow 这六个属性的合并简写形式
+
+:::tip 提示
+从易读易写的角度考虑，还是建议不要合并属性，所以这里就不详细介绍这两个属性了。
+:::
