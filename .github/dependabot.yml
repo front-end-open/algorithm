@@ -8,8 +8,10 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-
+    commit-message:
+      prefix: "deps"
+    target-branch: "docs"
     reviewers:
-      - "https://github.com/front-end-open"
+      - "front-end-open"
     assignees:
-      - "PachVerb"
+      - "new/bird"
