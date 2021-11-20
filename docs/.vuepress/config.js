@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-13 15:52:49
+ * @LastEditTime: 2021-11-20 18:10:47
  * @Description: 应用配置
  */
 module.exports = {
@@ -10,7 +10,22 @@ module.exports = {
   lang: "zh-CN",
   title: "你好， VuePress ！",
   description: "这是我的第一个 VuePress 站点",
-
+  head: [
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        href: "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css",
+      },
+    ],
+  ],
   locales: {
     "/": {
       lang: "zh-CN",
@@ -143,14 +158,17 @@ module.exports = {
         },
       ],
     },
-
-    markdown: {
-      anchor: {
-        level: [1, 2, 3, 4, 5, 6],
-      },
-      extractHeaders: {
-        level: [2, 3, 4, 5, 6],
-      },
+  },
+  markdown: {
+    extendMarkdown: (md) => {
+      md.set({ breaks: true });
+      md.use(require("markdown-it-katex"));
+    },
+    anchor: {
+      level: [1, 2, 3, 4, 5, 6],
+    },
+    extractHeaders: {
+      level: [2, 3, 4, 5, 6],
     },
   },
 };
