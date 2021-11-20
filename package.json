@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "./node_modules/.bin/webpack server --config  config/webpack.dev.js --open --progress",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "build": "./node_modules/.bin/webpack --config config/webpack.prod.js --progress",
     "analyz": "NODE_ENV=production npm_config_report=true npm run build",
     "test": "jest"
