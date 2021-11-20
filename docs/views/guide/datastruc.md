@@ -155,7 +155,7 @@ Operation 操作
 
 ### 队列的存储结构分类:
 
-- 顺序存储结构
+#### 顺序存储结构
 
 1. 普通队列
 2. 循环队列
@@ -202,14 +202,129 @@ Operation 操作
 > 使用队列一个空闲位置，作为判定队列是否为满的条件; 判定是否为空仍然使用队列`head == teil`
 
 结论如下:
-条件:
+
+:::tip 条件:
 
 1. 队头 `head`
 2. 队尾 `tail`
 3. 队列最大长度 `QueueSize`
 
-- 队列满的条件: $ \{\(tail + 1\) \% QueueSize \=== head $
-- 队列实际长度: `{(tail - head) + QueueSize} % Queue`
-- 链式存储结构
+:::
 
-$\sqrt{3x-1}+(1+x)^2$
+- 队列满的条件: `{(tail + 1) % QueueSize === head`
+- 队列实际长度: `{(tail - head) + QueueSize} % Queue`
+
+算法设计:
+
+```javascript
+/*
+ * @Author: wangshan
+ * @Date: 2021-11-17 23:25:55
+ * @LastEditors: wangshan
+ * @LastEditTime: 2021-11-20 20:39:18
+ * @Description: 循环队列
+ */
+import { ResStatus as Status } from "../../utils/index";
+interface QueueElement<T> {
+  [idx: number]: T;
+}
+
+export class CircleQueue<T> {
+  private size: number; // 记录栈的长度
+  private head: number; // 记录指向队列队首的指针
+  private tail: number; // 记录指向队列尾部的指针
+  private data: QueueElement<T>;
+
+  constructor(k: number) {
+    this.size = k;
+    this.head = 0;
+    this.tail = 0;
+    this.data = {};
+  }
+  /**
+   * Insert an element into the circular queue. Return true if the operation is successful.
+   * @param {number} value
+   * @return {boolean}
+   */
+  endQueue(value: T) {
+    debugger;
+    if (this.isFull()) {
+      return Status.ERROR;
+    }
+    this.data[this.tail] = value;
+    this.tail = (this.tail + 1) % this.size;
+    return true;
+  }
+  /**
+   * init new Queue
+   * @param {number} k
+   * @returns Circle
+   */
+  createNew(k: number) {
+    return new CircleQueue(k);
+  }
+
+  /**
+   * Delete an element from the circular queue. Return true if the operation is successful.
+   * @return {boolean}
+   */
+
+  deQueue() {
+    if (!this.isEmpty()) {
+      if (this.tail === this.head) {
+        this.tail = -1;
+        this.head = -1;
+        this.data = {};
+      } else {
+        delete this.data[this.head];
+        this.head = (this.head + 1) % this.size;
+      }
+      return Status.OK;
+    }
+    return Status.ERROR;
+  }
+  /**
+   * 获取队列长度
+   * @return {number}
+   */
+  QueueLength() {
+    return (this.tail - this.head + this.size) % this.size;
+  }
+  /**
+   * Get the last item from the queue.
+   * @return {number}
+   */
+  Rear() {
+    return this.tail === -1 ? Status.ERROR : this.data[this.tail];
+  }
+  /**
+   * Get the front item from the queue.
+   * @return {number}
+   */
+  peek() {
+    return this.head === -1 ? Status.ERROR : this.data[this.head];
+  }
+
+  isEmpty() {
+    return this.tail === this.head;
+  }
+  /**
+   * Checks whether the circular queue is full or not.
+   * @return {boolean}
+   */
+  isFull() {
+    return (this.tail + 1) % this.size === this.head;
+  }
+}
+
+
+
+```
+
+::: tip 提示
+队列满时，队列需要空余一个位置。通过此方式，来区分通过 head === rear,来判断队列是否为空时，所造成的误解.
+:::
+
+#### 链式存储结构
+
+> 由于单线表，和单线表的循环队列，分别存在位置移动的性能消耗，以及数组溢出。而选用指针的方式来实现队列，完全不需要考虑上面的问题。链表就是为了解决位置索引问题。链队列需要指针来维护元素的值，所以这是用空间性能来换取时间性能。
