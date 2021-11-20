@@ -1,8 +1,8 @@
 /*
  * @Author: wangshan
- * @Date: 2021-11-20 23:42:30
+ * @Date: 2021-11-21 00:01:26
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-20 23:42:30
+ * @LastEditTime: 2021-11-21 00:01:27
  * @Description:
  */
 class Person {
@@ -28,3 +28,4 @@ class Employee extends Person {
 let howard = new Employee("Howard", "Sales");
 console.log(howard.getElevatorPitch());
 console.log(howard.name); // 错误
+    
