@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-10 21:21:55
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-08 01:25:12
+ * @LastEditTime: 2021-11-20 21:16:38
  * @Description:  链表(链式线性表）
  */
 import { Equal, free } from "../List/utils";
@@ -20,7 +20,7 @@ export declare namespace Node {
 export class Node {
   element: Node.Evalue;
   next: Node.NodeE;
-  constructor(element: Node.Evalue, next?: Node.NodeE) {
+  constructor(element: Node.Evalue, next?: Node.NodeE | null) {
     this.element = element;
     this.next = next as Node.NodeE;
   }
@@ -66,7 +66,7 @@ export class LinkList {
   }
   // 尾部添加元素
   push(element: Node.Evalue) {
-    const node = new Node(element);
+    const node = new Node(element, null);
     // let current: Node.NodeE;
     let current;
     // debugger;
@@ -124,7 +124,7 @@ export class LinkList {
     if (index >= 1 && index <= this.count) {
       let current = this.head as Node.NodeE;
       let previous: Node.NodeE | null = null;
-      debugger;
+
       if (index == 1) {
         // 移除头部
         this.head = current.next as Node.NodeE;
