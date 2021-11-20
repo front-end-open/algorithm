@@ -7,7 +7,7 @@ branches:
     { name: "beta", prerelease: true },
     { name: "alpha", prerelease: true },
   ]
-repositoryUrl: https://github.com/front-end-open/wt_run.git
+repositoryUrl: https://github.com/front-end-open/algorithm.git
 ci: false
 dryRun: false
 debug: false
