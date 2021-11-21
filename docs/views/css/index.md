@@ -814,3 +814,16 @@ place-self: <align-self> <justify-self>;
 
 - [MDN-Grid](https://developer.mozilla.org/zh-CN/docs/Glossary/Grid)
 - [CSS Grid 网格布局教程-阮一峰](https://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)
+
+### css 瀑布流布局
+
+关键点:
+
+- column-count: 元素内容被划分为最佳列数
+- break-inside: 避免在元素内部插入分页符
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="css-瀑布流" src="https://codepen.io/pachverb/embed/abyxwYx?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/abyxwYx">
+  css-瀑布流</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
