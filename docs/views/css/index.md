@@ -643,3 +643,174 @@ grid 属性是 grid-template-rows、grid-template-columns、grid-template-areas�
 :::tip 提示
 从易读易写的角度考虑，还是建议不要合并属性，所以这里就不详细介绍这两个属性了。
 :::
+
+#### 项目属性
+
+**1.grid-column-start, grid-column-end, grid-row-start, grid-row-end**
+
+> 指定当个项目在所在得网格单元格中的位置,指定方法是指定项目的四个边框，分别定为在那根网格线上。
+
+```
+grid-column-start: 左边框所在的垂直网格线上。
+grid-column-end: 右边框所在的垂直网格上.
+grid-row-start: 上边框所在的水平网格线
+grid-row-end: 下边框所在的水平网格线.
+```
+
+使用上面的属性:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="Item-grid-column/row-start/end" src="https://codepen.io/pachverb/embed/QWMPdor?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/QWMPdor">
+  Item-grid-column/row-start/end</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+分析:
+设置 第一个单元格位置, grid-column-start: 2, grid-column-end: 4. 如果按照 grid-auto-flow: 网格中第一个位置，会空余出多余位置. 再次设置 grid-auto-flow: row dense, 使得第二个项目充分利用网格第一个位置， 因此第二个项目被放置到项目一。如果设置网格项目排列顺序，column, 则会多余出的空间，也就是第九个项目被挤出网格中，由浏览器从新分配空间.
+
+使用四个边框定位:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="设置四个边框的位置-grid-column/row-start/end" src="https://codepen.io/pachverb/embed/xxLeqgZ?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/xxLeqgZ">
+  设置四个边框的位置-grid-column/row-start/end</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+使用网格线名字: grid-template-area, grid-column/row-start/end, 实现上一个类似例子:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="区域定位-grid-template-area" src="https://codepen.io/pachverb/embed/rNzbyza?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/rNzbyza">
+  区域定位-grid-template-area</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+位置属性，使用跨行关键字 `span [number]`, 表示 左右边框（上下边框）之间跨越多少个网格。
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-column/row-start/end: span [number]" src="https://codepen.io/pachverb/embed/WNEWpKm?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/WNEWpKm">
+  grid-column/row-start/end: span [number]</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+::: tip 提示
+通过 span 关键字来控制项目位置，实际并不能改变项目原来所在单元格，仅仅通过改变项目单元格左右边框间距，来达到改变项目大小为目的。
+
+使用这四个属性，如果产生了项目的重叠，则使用 z-index 属性指定项目的重叠顺序。
+:::
+
+**grid-column, grid-row**
+
+> grid-column 属性是 grid-column-start 和 grid-column-end 的合并简写形式，grid-row 属性是 grid-row-start 属性和 grid-row-end 的合并简写形式。
+
+语法:
+
+```css
+grid-column: <start-line> / <end-line>;
+grid-row: <start-line> / <end-line>;
+```
+
+使用简写属性，结合 span 关键字
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-row/column----span" src="https://codepen.io/pachverb/embed/PoKgpvx?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/PoKgpvx">
+  grid-row/column----span</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+代码中:
+
+```css
+grid-column: 1 / span 2;
+grid-row: 1 / span 2;
+
+// 等价于
+grid-column-start: 1;
+grid-column-end: 3;
+grid-row-start: 1;
+grid-row-end: 3;
+
+// 使用简写
+grid-column: 1 / 3;
+grid-row: 1 / 3;
+```
+
+::: tip
+斜杠以及后面的部分可以省略，默认跨越一个网格。
+
+即
+grid-row: 1
+grid-column: 1
+:::
+
+**grid-area**
+
+> grid-area 属性指定项目放在哪一个区域。grid-area 属性还可用作 grid-row-start、grid-column-start、grid-row-end、grid-column-end 的合并简写形式，直接指定项目的位置。
+
+用于指定元素所在区域:
+
+`grid-area: [区域]`
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="grid-area" src="https://codepen.io/pachverb/embed/vYJMmZQ?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/vYJMmZQ">
+  grid-area</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+作为简写: 语法
+
+```css
+grid-area: <row-start> / <column-start> / <row-end> / <column-end>;
+```
+
+比如:
+项目水平/垂直起始网格线在第一个网格线位置，垂直结束位置在水平/垂直第三个水平线。
+
+```css
+grid-area: 1 / 1 / 3 / 3;
+```
+
+**justify-self 属性，align-self 属性，place-self 属性**
+
+> justify-self 属性设置单元格内容的水平位置（左中右），跟 justify-items 属性的用法完全一致，但只作用于单个项目。
+> align-self 属性设置单元格内容的垂直位置（上中下），跟 align-items 属性的用法完全一致，也是只作用于单个项目。
+> place-self 作为上面两个属性简写
+
+语法:
+
+```css
+justify-self: start | end | center | stretch;
+align-self: start | end | center | stretch;
+place-self: <align-self> <justify-self>;
+```
+
+取值说明:
+
+- start：对齐单元格的起始边缘。
+- end：对齐单元格的结束边缘。
+- center：单元格内部居中。
+- stretch：拉伸，占满单元格的整个宽度（默认值）。
+
+使用属性:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="place-self" src="https://codepen.io/pachverb/embed/GRvLmQa?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/GRvLmQa">
+  place-self</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+这里仍然是设置第一个单元格内，项目的位置。
+
+::: tip
+在划分网格时，元素与网格一一对于。但是，单元格是虚拟的网格，区别于容器内的实际 html 元素，因此在设置单元格的内容相对位置时，每一个元素被当作内容看待，相对位置而是取决于虚拟的单元格。
+:::
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="place-self" src="https://codepen.io/pachverb/embed/GRvLmQa?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/GRvLmQa">
+  place-self</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+**参考**
+
+- [MDN-Grid](https://developer.mozilla.org/zh-CN/docs/Glossary/Grid)
+- [CSS Grid 网格布局教程-阮一峰](https://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)
