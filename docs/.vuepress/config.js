@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-21 01:13:41
+ * @LastEditTime: 2021-11-26 21:37:02
  * @Description: 应用配置
  */
 module.exports = {
@@ -115,6 +115,10 @@ module.exports = {
             activeMatch: "/views/css/practice.md",
           },
         ],
+      },
+      {
+        text: "编程",
+        link: "/views/program/",
       },
       //   {
       //     text: "选择语言",
