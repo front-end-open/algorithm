@@ -817,6 +817,16 @@ place-self: <align-self> <justify-self>;
 
 ### css 瀑布流布局
 
+> 采用 css 的多列布局属性 column-count,来划分容器指定列数的布局. 列等宽，而项目高度不等。自动进行排列。
+
+相关属性:
+
+- column-count: 划分容器列
+- column-gap: 指定列之间的间距
+- column-width: 指定列的宽度.
+- column-rule: 指定列的边框样式
+- column-span: 指定多列布局容器内元素，夸列数.
+
 关键点:
 
 - column-count: 元素内容被划分为最佳列数
@@ -827,3 +837,42 @@ place-self: <align-self> <justify-self>;
   css-瀑布流</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
+
+::: tip 小技巧
+在划分列过后，如果需要指定列元素宽度，那么整个列容器的列的划分数，会根据容器动态计算调整。而如果不指定列宽度，列元素会根据容器自适应缩放。且列数不变。
+:::
+
+### flex 实现瀑布流
+
+> 使用`display: flex`, 来实现瀑布流布局
+
+**关键点**
+
+- 横向的 flex， 划分列
+- 纵向的 flex 划分内容数
+
+在线 demo:
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="瀑布流-flex" src="https://codepen.io/pachverb/embed/yLzBNxd?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/yLzBNxd">
+  瀑布流-flex</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+::: warning 提示
+使用 flex 布局，来实现的瀑布流，需要配合后端，返回 map-list 数据结构.相比，多列布局属性实现的瀑布流，flex 就不是很灵活。因为列的划分，需要精准设置元素来对应。而多列布局，仅仅需要一个 list 数据结构就可以渲染数据.
+:::
+
+### grid 实现瀑布流
+
+> 使用 grid-template-columns, grid-template-rows.来划分行和列. 另外指定项目 grid-row 属性，来设置项目的大小。
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="瀑布流-grid" src="https://codepen.io/pachverb/embed/preview/wvrwKXw?default-tab=html%2Cresult&editable=true" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/wvrwKXw">
+  瀑布流-grid</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+::: tip 提示
+网格实现的瀑布流不是很理想，因为网格划分的单元格的都是呈现矩阵的。如果需要内容容器自适应内容区域，就非常鸡肋。需要单独对项目进行控制大小。不够灵活。
+:::
