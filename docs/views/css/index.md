@@ -876,3 +876,67 @@ place-self: <align-self> <justify-self>;
 ::: tip 提示
 网格实现的瀑布流不是很理想，因为网格划分的单元格的都是呈现矩阵的。如果需要内容容器自适应内容区域，就非常鸡肋。需要单独对项目进行控制大小。不够灵活。
 :::
+
+### 六种多列等高实现
+
+> 多列等高，要求左右两列高度自适应且一样，分别设置不同背景色。此布局重点在于，**列的高度随内容自适应**，即使出现列之间的内容导致列高度不相等，列的高度也始终保持相等。
+
+方法一: 使用`margin + padding + float + overflow实现`.
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="padding+margin+overflow" src="https://codepen.io/pachverb/embed/preview/BawayyB?default-tab=css%2Cresult&editable=true&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/BawayyB">
+  padding+margin+overflow</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+方法二: border 实现多列等高，左边框宽度为 200px，左列浮动，伪元素清除浮动
+
+关键点：
+
+- 为容器元素设置一定宽度等于左边列，用于预留左边列的位置。
+- 左边列，在使用 margin-left。回退到左边预留位置。
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="Untitled" src="https://codepen.io/pachverb/embed/preview/xxXxOVE?default-tab=css%2Cresult&editable=true&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/xxXxOVE">
+  Untitled</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+方法三: 父元素渐变实现多列等高
+
+> 同理 border 实现，算是一种颜色障眼法。
+> 关键点:
+
+- 子列使用浮动实现多列。
+- overflow 清除浮动
+- 线性渐变，使列的高度一致.
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="渐变实现多列等高" src="https://codepen.io/pachverb/embed/preview/OJxJXOr?default-tab=css%2Cresult&editable=true&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/OJxJXOr">
+  渐变实现多列等高</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+方法四: flex 实现多列等高
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="flex实现多列等高布局" src="https://codepen.io/pachverb/embed/preview/OJxJXoq?default-tab=css%2Cresult&editable=true&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/OJxJXoq">
+  flex实现多列等高布局</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+方法五：display：grid 实现多列等高
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="display:grid多列等高" src="https://codepen.io/pachverb/embed/preview/wvrvzww?default-tab=css%2Cresult&editable=true&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/wvrvzww">
+  display:grid多列等高</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+方法六: table-cell 实现多列等高
+
+<iframe height="300" style="width: 100%;" scrolling="no" title="display:table-cell多列等高" src="https://codepen.io/pachverb/embed/preview/dyVypyq?default-tab=css%2Cresult&editable=true&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/pachverb/pen/dyVypyq">
+  display:table-cell多列等高</a> by new/bird (<a href="https://codepen.io/pachverb">@pachverb</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
