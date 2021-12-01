@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-11-26 21:37:02
+ * @LastEditTime: 2021-12-01 23:46:40
  * @Description: 应用配置
  */
 module.exports = {
@@ -113,6 +113,21 @@ module.exports = {
             text: "效果",
             link: "/views/css/practice.md",
             activeMatch: "/views/css/practice.md",
+          },
+        ],
+      },
+      {
+        text: "Javascript",
+        children: [
+          {
+            text: "语法",
+            link: "/views/js/index.md",
+            activeMatch: "/views/js/index.md",
+          },
+          {
+            text: "技巧",
+            link: "/views/js/tips.md",
+            activeMatch: "/views/js/tips.md",
           },
         ],
       },
