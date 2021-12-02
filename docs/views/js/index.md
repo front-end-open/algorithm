@@ -26,7 +26,48 @@ sidebar: auto
 
 ### 闭包
 
-> 函数字面量被定义在其他函数内部时，此时隐式的创建一个连接到外部父级函数的上下文的连接，称为闭包。此时内部函数对象可以自有访问外部上下文中的变量和参数。
+> 函数字面量被定义在其他函数内部时，此时隐式的创建一个连接到外部父级函数的上下文的连接，称为闭包。此时内部函数对象可以自有访问外部上下文中的变量和参数。常见的函数嵌套声明，内部函数拥有比外部函数更长的生命周期。
+
+使用函数声明一个维护着私有属性的对象
+
+```js
+// 此时value, 相对于外部作用域是不可见的，仅对返回的对象方法可见.
+// 此处的testobj, 并没有存储函数，而是存储了立即执行函数返回的一个对象。 即使函数执行完毕，返回对象的方法仍然保持有对内部变量value 访问权限.
+let testobj = (function () {
+  let value = 0;
+
+  return {
+      increment(inc) {
+          value += typeof inc ==== 'number' ? inc : 1;
+      },
+      getValue() {
+          return value
+      }
+  }
+})();
+
+console.log(testobj, testobj.getValue()) // {increment: func.. , getValue: func}, 0
+```
+
+::: tip 注意
+
+js 面向对象编程，并不存在一种私有属性一说，最多也是人为约定，或者对实例对象的键做特殊处理，这种方式，最多也是规避用户通过键访问私有属性。
+
+:::
+
+另外建议中私有属性实现:
+
+```js
+// 声明一个quo构造, 实际并不真正作为构造使用
+// 此构造的特点就是，外部数据，并不作与实例this绑定，而是作为函数内部变量声明，来维护数据不被修改，也就达到了保护私有状态的目的。
+let quo = function (status) {
+  return {
+    get_status() {
+      return status;
+    },
+  };
+};
+```
 
 ### 函数调用
 
@@ -110,4 +151,147 @@ let catchError = function () {
 catchError();
 ```
 
+### 基本类型扩充
 
+> js 允许对基本类型进行属性扩充。扩充方式是在基本对象包装器的原型对象上，添加属性。即`Object.prototype`, Object 是 js 中，所有对象的基本构造器，所有对象都是此构造器的实列.
+> 由于基本类型构造器，本身也是函数，而函数既可以作为函数本身，也同时在 js 中，作为对象存在。所以扩充基本类型方法的时候，可以选择 Object.prototype,或者 Function.prototype
+
+```js
+// 扩充为所有函数实例添加方法的简便方式,
+Function.prototype.methods = function (name, func) {
+  this.prototype[name] = func;
+
+  return this;
+};
+
+// 现在使用此方法，为数字基本类型添加一个通用的取整方法，并且需要根据数字正负来取整
+Number.methods("integer", () => {
+  return Math[this > 0 ? "floor" : "cell"](this);
+});
+
+// 测试
+console.log((3.14).integer()); // 3
+console.log((-3.14).integer()); // -4
+```
+
+::: warning 注意
+基本类型的原型是共有结构，使用类库混合时，切记防止冲突，覆盖。稳当的处理方式，便是在扩充原型方法时，确保该方法不存在时，在添加。
+:::
+
+```js
+// 改进上面的原型扩充
+Function.prototype.methods = function (name, func) {
+  if (!this.prototype[name]) {
+    this.prototype[name] = func;
+  }
+
+  return this;
+};
+```
+
+### 递归
+
+> 函数的自调用，实际体现的思想是，将实际问题，分解为若干个相似的子问题，然后逐一解决.
+
+#### 经典递归问题
+
+##### 汉诺塔
+
+```js
+/*
+@param disc, 圆盘个数，用于递归给圆盘编号
+@param src, 源柱子
+@param aux 辅助柱子
+@param dst 目标柱子
+*/
+let hanoi = function (disc, src, aux, dst) {
+  debugger;
+  if (disc > 0) {
+    hanoi(disc - 1, src, dst, aux);
+    document.writeln(
+      "Move disc " + disc + " from " + src + " to " + dst + "<div></div>"
+    );
+    hanoi(disc - 1, aux, src, dst);
+  }
+};
+hanoi(3, "Src", "Aux", "Dst");
+
+/*
+
+Move disc 1 from Src to Dst
+Move disc 2 from Src to Aux
+Move disc 1 from Dst to Aux
+Move disc 3 from Src to Dst
+Move disc 1 from Aux to Src
+Move disc 2 from Aux to Dst
+Move disc 1 from Src to Dst
+*/
+```
+
+##### Dom 树操作
+
+```js
+// 定义walk_Dom函数用于访问指定父节点下的所有子节点
+let walk_the_DOM = function walk(node, func) {
+  func(node);
+  node = node.firstChild;
+  while (node) {
+    walk(node, func);
+    node = node.nextSibling;
+  }
+};
+
+// 定义调用walk-The_dom函数，来获取每一个节点熟悉的函数
+let getElementByAttributes = function (att, value) {
+  let results = [];
+
+  walk_the_DOM(document.body, function (node) {
+    let actual = node.nodeType === 1 && node.getAttribute(att);
+    if (
+      typeof actual === "string" &&
+      (value === actual || typeof value !== "string")
+    ) {
+      results.push(node);
+    }
+  });
+
+  return results;
+};
+```
+
+##### 阶乘
+
+> 阶乘就是一种尾递归
+
+```js
+let factorial = function (i, a) {
+  let a = a || 1;
+  if (i < 2) {
+    return a;
+  }
+
+  return factorial(i - 1, a);
+};
+```
+
+##### 斐波拉契数列
+
+```js
+
+```
+
+### 尾递归优化
+
+> 尾递归: 一种在函数结尾递归调用自己，并返回自调用的方式.
+>
+> > 一些语言提供尾递归优化, 即是将尾递归转化为一个循环，以提高速度。
+
+::: tip 注意
+
+js 并未提供尾递归转换，但是在程序中，能够实现尾递归。_阶乘就是尾递归一种实现_
+
+:::
+
+### 作用域
+
+> 作用域控制变量和参数的可见性和生命周期. 生命周期在维护变量和参数的可见性和生命周期的同时，也减少了程序命名冲突，并提供自动的内存管理。
