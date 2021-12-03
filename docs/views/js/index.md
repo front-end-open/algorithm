@@ -60,13 +60,7 @@ js 面向对象编程，并不存在一种私有属性一说，最多也是人�
 ```js
 // 声明一个quo构造, 实际并不真正作为构造使用
 // 此构造的特点就是，外部数据，并不作与实例this绑定，而是作为函数内部变量声明，来维护数据不被修改，也就达到了保护私有状态的目的。
-let quo = function (status) {
-  return {
-    get_status() {
-      return status;
-    },
-  };
-};
+s;
 ```
 
 ### 函数调用
@@ -295,3 +289,209 @@ js 并未提供尾递归转换，但是在程序中，能够实现尾递归。_�
 ### 作用域
 
 > 作用域控制变量和参数的可见性和生命周期. 生命周期在维护变量和参数的可见性和生命周期的同时，也减少了程序命名冲突，并提供自动的内存管理。
+
+### 回调
+
+> 异步编程中，应对同步代码的对立情况。目的在于解决，对于客户端的异步代码，如果采用同步方式，就会导致客户端假死状态，即阻塞。采用回调，异步的方式，当结果返回时，才做响应，即非阻塞。
+
+### 模块
+
+> js 中，使用函数和闭包来构造模块。通过函数来创建模块，可完全摒弃全局变量的使用。缓解 js 全局变量的糟糕特性。
+
+模块实现作用:
+
+- 提供接口，隐藏状态
+- 实现函数或对象。
+
+例如实现匹配一个字符串中，html 字符实体并替换对应的标记。
+
+分析:
+
+1. 首先我们需要一个对象保存字符实体和对应字符。
+2. 这个字符实体保存地方，首先不能是在全局，否则会污染全局。也不能直接保存在业务函数内部，不然会导致函数执行时，每次计算此对象。
+3. 此字符模板对象，保存在闭包中。使用闭包去维护。免去了全局污染，同时提升业务函数性能。
+
+```js
+// 使用之前原型扩展添加的methods方法，添加deentityfy
+
+String.methods("deentityfy", () => {
+  // 此处维护模板对象
+  let entity = {
+      quot: '"',
+      lt: "<",
+      gt: ">"
+  }
+    // 此处实现业务函数
+  return function() {
+      this.replace(/&([^&;]+)/g, (a, b) => {
+          let r = entity[b];
+
+          return typeof r === "string" ? r : a;
+      })
+  }
+}());
+
+/**
+ * methods，回调使用立即执行函数，函数在方法添加后，即被销毁，但是内部的业务函数通过闭包，可以再次访问模板对象。
+ *
+ *
+*/
+```
+
+::: tip 提示
+
+模板的一般模式: 一个定义了私有变量和函数的函数，利用闭包创建可以访问私有变量的函数的特权函数。最后返回业务函数，或者保存可以访问的地方，此特权函数通常就是具体业务的实现函数。
+
+:::
+
+模块作用:
+
+- 促进信息隐藏和其他优秀设计实践.
+- 应用程序封装
+- 构建**单列**对象。
+
+::: tip 提示
+单列模式，在 js 中就是通过对象字面量方式表示对象，对象的属性值可以时函数或数值。并且属性值在该对象生命周期中不会变化。通常为工具和程序提供功能支持。
+:::
+
+模块模式结合单列模式,实践:
+
+```js
+// 返回一个用来生成唯一字符串的对象
+// 对象方法: 设前缀， 设置序列号, 产生唯一字符串方法。
+// 唯一字符串：前缀(prefix) + 序列号(seq)
+let serial_maker = function () {
+  let prefix = " ";
+  let seq = 0;
+
+  return {
+    set_prefix() {
+      prefix = String(p);
+    },
+    set_seq(s) {
+      seq = s;
+    },
+    gensym() {
+      let result = prefix + seq;
+      seq += 1;
+      return result;
+    },
+  };
+};
+
+// 测试
+let seqer = serial_maker();
+seqer.set_prefix("Q");
+seqer.set_seq(1000);
+let unique = seqer.gensym(); // Q1000
+```
+
+### 级联
+
+> 级联的表现就是，一些方法的执行没有实际的运算返回值，而是返回该方法实体`this`（比较常见的就是这种手法）。从而达到一条龙的方式实现操作。常见的就是 jquery 类库的 dom 操作，就是这种实现。此为级联。
+
+级联技术作用:
+
+- 构造比较语义化的接口
+- 引导接口单一功能实践。
+
+### 柯里化
+
+> 函数也是值，柯里化允许把函数和传递给他的参数结合，产生新函数
+
+```js
+// 创建 curry
+Function.methods("curry", function () {
+  let slice = Array.prototype.slice,
+    args = slice.apply(arguments),
+    that = this;
+
+  return function () {
+    return that.apply(null, args.concat(slice.apply(arguments)));
+  };
+});
+// todo: 实现 add 函数
+```
+
+### 记忆
+
+> 函数可以将每次的计算值保存在对象中，以避免重复复的计算.这种优化被称为`记忆`
+
+反面列子
+
+```js
+// 实现求斐波拉契数列
+
+let fibonacci = function (n) {
+  return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+};
+
+// 打印
+for (let i = 0; i <= 10; i++) {
+  console.log(`// ${i}: fibonacci(i)`);
+}
+// 输出
+/**
+ * 0 : 0
+ * 1 : 1
+ * 2 : 1
+ * 3 : 2
+ * 4 : 3
+ * 5 : 5
+ * 6 : 8
+ * 7 : 13
+ * 8 : 21
+ * 9 : 34
+ * 10 : 55
+ */
+```
+
+分析上面的原始实现:
+
+1. 程序正常实现
+2. feibonacci 函数被调用了 453 次，其中初始调用 11 次，而自调用 442. 自调用是其中，包括之前已经运算的值。
+3. 重复计算
+
+优化: 保存函数每次运算结果(即记忆)
+
+```js
+let feibonacci = function (n) {
+  let memo = [0, 1];    // 存储每次运算结果.
+  let fib = function (n) {
+    let result = memo[n];
+    if(typeof !== 'number') {
+        result = fib(n -1) + fib(n -2);
+        memo[n] = result;
+    }
+  };
+};
+```
+
+分析: 经过重构 feibonacci 函数后
+
+- 函数调用次数由原来的 453，变为 40. 其中自调用 29, 初始调用还是 11 次. 性能明显得到提升。
+
+归纳: 声明一个实现构造记忆函数的接口
+
+```js
+let memoizer = function (memo, formula) {
+  let recur = function (n) {
+    let result = memo[n];
+    if (typeof result !== "number") {
+      result = formula(recur, n);
+      memo[n] = result;
+    }
+    return result;
+  };
+  return recur;
+};
+
+// 现在使用此api，来构造我们的刚刚的feibonacci函数
+let fibonacci = memoizer([0, 1], function (recur, i) {
+  return recur(n - 1) + recur(n - 2);
+});
+// 再比如实现阶乘的记忆函数
+let factorial = memoizer([1, 1], function(recur, 0) {
+    return n * recur(n -1)
+})
+```
