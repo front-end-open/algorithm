@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-12-01 23:46:40
+ * @LastEditTime: 2021-12-11 23:41:15
  * @Description: 应用配置
  */
 module.exports = {
@@ -135,21 +135,10 @@ module.exports = {
         text: "编程",
         link: "/views/program/",
       },
-      //   {
-      //     text: "选择语言",
-      //     children: [
-      //       {
-      //         text: "中文",
-      //         link: "/",
-      //         activeMatch: "/s",
-      //       },
-      //       {
-      //         text: "English",
-      //         link: "/zh/",
-      //         activeMatch: "/zh/",
-      //       },
-      //     ],
-      //   },
+      {
+        text: "词汇",
+        link: "/views/english",
+      },
 
       {
         text: "GitHub",

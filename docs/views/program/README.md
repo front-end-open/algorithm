@@ -158,4 +158,243 @@ const French = makeSaluteClass("BON JOUR");
 fullSalute(French, "EPSILON", "ZETA"); // EPSILON says  BON JOUR to ZETA
 ```
 
--
+## 思考函数式
+
+> 从一个 web 业务开始，引发对函数式的应用思考。现在是对一个电商网站的商品进行支付的按钮实现，在此之前，还必须避免用户重复点击按钮，而导致再次扣费。
+
+**解决方案一**：
+
+（求佛方式，玩笑说法）此方案就是在支付按钮出，提醒用户不要重复进行支付。这种方案治标不治本。没有实际意义，不可避免用户就重复点击支付了。
+
+**解决方案二**:
+
+设置全局标量（flag）。在当前这次脚本进程。结束之前，使用一个全局变量表示用户当前这次支付状态。阻止用户在当前进程点击按钮，重复触发支付逻辑。可以解决问题
+
+缺陷:
+
+- 不便于测试，测试数据维护在全局
+- 用户再次支付时，还必须重新重置全局量
+- 全局变量冲突，导致值被修改的可能性。
+
+**解决方案三**:
+
+每次触发支付后，移除支付按钮上的事件处理器。可以解决问题，这种方案等效全局开关。
+
+缺陷:
+
+- 不便于测试，内部维护外边 DOM
+- 每次执行还需要重置按钮上的事件处理器
+- 代码和按钮高度耦合，不便于复用。
+
+**解决方案四**:
+
+类似方案三，给按钮元素重新派发一个新的事件处理器，而不是方案三直接移除事件处理器。能够解决问题
+
+缺陷和方案三一样。
+
+**解决方案五**:
+
+直接在按钮事件触发后，禁用按钮。避免再次开启。等同于方案三和四。事件处理器内部代码和按钮高度耦合。
+
+**解决方案六**:
+
+在支付事件发起时，重置按钮的事件处理器。将按钮上的当前事件处理器函数，重置为一个新的函数。能够解决问题，并且解耦和按钮。
+
+缺陷：
+
+- 不便于测试
+- 需要保存函数原有的事件处理器。
+
+**解决方案七**:
+
+使用本地的标志变量`flag`, 而不是像方案二那样使用全局标志变量。使用 IIFE,声明按钮的事件处理器（内部返回事件处理器函数），并且在立即执行函数中传入标志变量。使用闭包维护。
+
+```js
+// 伪代码
+let billTheUser = ((clicked) => {
+  return (some, sales, data) => {
+    if (!clicked) {
+      clicked = true;
+      window.alert("Billing the user...");
+      // actually bill the user
+    }
+  };
+})(false);
+```
+
+解决问题:
+
+- 便于测试
+- 解耦按钮
+
+缺陷：
+
+每次都需要重新设置事件处理器函数
+
+### 函数式解决方案:
+
+#### 基本原则
+
+- 单一责任原则（the S in S.O.L.I.D)
+- 原始基本函数不可变
+- 使用一个新函数调用原始函数
+- 使用一般化解决方案，解决任何数量级原始函数。
+
+#### 高阶函数，实现原始函数的不可变。
+
+```js
+/*
+ * @Author: wangshan
+ * @Date: 2021-12-11 23:20:12
+ * @LastEditors: wangshan
+ * @LastEditTime: 2021-12-11 23:31:33
+ * @Description:  高阶函数-once
+ */
+let once = (fn) => {
+  let done = false; //  本地标量，控制原始函数执行
+  let count = 0; // 原始函数执行次数.
+  let res = "";
+  return function (...args) {
+    if (done) return { count, res };
+    count++;
+    res = fn(...args);
+    done = true;
+    return {
+      res,
+    };
+  };
+};
+
+// 测试，计算两个数字的和
+function sum(a, b) {
+  return a + b;
+}
+
+let initialize = once(sum);
+
+let sumbtn = document.querySelector("button");
+
+sumbtn.addEventListener("click", () => {
+  console.log(initialize(4, 4));
+});
+```
+
+结果:
+<img src="./../../public/img/func.png" align="center">
+
+### 更好解决方案:
+
+> 定义的高阶函数，在发起第二次调用时，将忽略。现在优化，为 once 的每次调用，做点反馈。而不是直接忽略调用。
+
+```js
+// 优化once，提供第二个参数
+function onceAndAfter(fn, g) {
+  //   debugger;
+  let done = false;
+
+  return (...args) => {
+    if (!done) {
+      done = true;
+      return fn(...args);
+    } else {
+      return g(...args);
+    }
+  };
+}
+
+// 测试
+let print = (tips) => tips;
+initialize = onceAndAfter(sum, print);
+
+console.log(initialize(4, 4)); // 8
+console.log(initialize("no output")); // no output
+console.log(initialize("no output")); // no output
+console.log(initialize()); // undeinfed
+```
+
+### 结尾
+
+- 不实用标志变量(done)实现 once
+
+  > 可以不使用标志变量，但是必须利用闭包区维护原始函数执行状态。
+
+- 交替函数(Alternating functions)
+
+```js
+// 类似
+let sayA = () => console.log("A");
+let sayB = () => console.log("B");
+let alt = alternator(sayA, sayB);
+alt(); // A
+alt(); // B
+alt(); // A
+alt(); // B
+alt(); // A
+alt(); // B
+
+// 实现细节
+//实现这个函数，仍然使用标志变量（flag）
+function alternating(foo, fun) {
+  let foocalled = false;
+  return () => {
+    if (!foocalled) {
+      foocalled = true;
+      foo();
+    } else {
+      foocalled = false;
+      fun();
+    }
+  };
+}
+// 测试
+let sayA = () => console.log("A");
+let sayB = () => console.log("B");
+
+initialize = alternating(sayA, sayB);
+
+initialize(); // A
+initialize(); // B
+initialize(); // A
+initialize(); // B
+initialize(); // A
+initialize(); // B
+initialize(); // A
+```
+
+- 实现函数执行次数，类似 once. 只是原始函数执行次数扩大了。
+
+```js
+/**
+* @param {function} fn  原始函数
+* @param {number} n    执行次数
+*
+*/
+let thisManyTimes = (fn, n) = > {
+  let start = 0;
+
+  return function(...args) {
+      if(start <= n) {
+          start++
+          fn(...args)
+      } else {
+          return 'excuted complete'
+      }
+  }
+}
+
+// 测试
+
+function message(msg) {
+return msg;
+}
+
+let manyTime = thisManyTimes(message, 5);
+// 设置函数执行5
+console.log(manyTime("hello")); // hello
+console.log(manyTime("hello")); // hello
+console.log(manyTime("hello")); // hello
+console.log(manyTime("hello")); // hello
+console.log(manyTime("hello")); // hello
+
+console.log(manyTime("hello")); // excuted complete
+```
