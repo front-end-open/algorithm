@@ -94,3 +94,233 @@ let L2 = data2.length; //返回结果5
 ### 类型数组视图内存分配对比
 
 <img src="https://mdn.mozillademos.org/files/8629/typed_arrays.png">
+
+## 顶点
+
+### 顶点法向量
+
+### 漫反射，镜面反射.
+
+> 漫反射，是投射在粗糙表面上的光向各个方向反射的现象。当一束平行的入射光线射到粗糙的表面时，表面会把光线向着四面八方反射，所以入射线虽然互相平行，由于各点的法线方向不一致，造成反射光线向不同的方向无规则地反射，这种反射称之为“漫反射”或“漫射”。这种反射的光称为漫射光。很多物体，如植物、墙壁、衣服等，其表面粗看起来似乎是平滑，但用放大镜仔细观察，就会看到其表面是凹凸不平的，所以本来是平行的太阳光被这些表面反射后，弥漫地射向不同方向
+
+> 镜面反射是指若反射面比较光滑，当平行入射的光线射到这个反射面时，仍会平行地向一个方向反射出来，这种反射就属于镜面反射 [
+
+> 法线（normal line），是指始终垂直于某平面的直线。在几何学中，法线指平面上垂直于曲线在某点的切线的一条线。法线也应用于光学的平面镜反射上。
+
+> WebGl 中，为了计算光线与物体表面的入射角，需要先计算物体表面法向量。在 Threejs 中表示物体的网格模型 Mesh 的曲面是由一个一个三角形构成，所以为了表示物体表面各个位置的法线方向，可以给几何体的每个顶点定义一个方向向量。
+> threejs 三维空间，物体坐标表示(y, z, x)
+
+确认法向量过后，开始为场景加入光源。此时环境光和点光源都会参与光照计算。构建几何体表面的三角形整个表面比较明亮，同时两个三角形表面法线不同，即使光线方向相同，明暗自然不同，在分界位置有棱角感。
+
+### 顶点索引自定义实现立方体
+
+> 通过缓冲几何体，自定义设置顶点数据，来实现几何体.
+
+```js
+let scene = new THREE.Scene();
+
+let camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+
+camera.position.x = 200;
+camera.position.y = 200;
+camera.position.z = 200;
+
+// 加入光源
+let point = new THREE.PointLight(0xffffff);
+point.position.set(300, 600, 400);
+scene.add(point);
+
+let ambient = new THREE.AmbientLight(0xbb7777);
+scene.add(ambient);
+
+let renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+let geometry = new THREE.BufferGeometry(); // 空buffer几何体
+console.log(geometry);
+// 定义顶点数据
+
+let vertices = new Float32Array([
+  0,
+  0,
+  0,
+  80,
+  0,
+  0,
+  80,
+  80,
+  0,
+  0,
+  80,
+  0, // y -> 轴面
+
+  0,
+  0,
+  80,
+  0,
+  80,
+  80, // x-> 轴面
+
+  80,
+  80,
+  80, // x-y -> 轴
+
+  80,
+  0,
+  80, // y->y 轴
+]);
+// 顶点法向量定义
+// 法向量的点，是通过顶点做垂直于网格模型平面的垂直线.
+let normals = new Float32Array([
+  0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+
+  0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+
+  -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+
+  1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+
+  0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+
+  0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
+]);
+
+let colors = new Float32Array([
+  1,
+  0,
+  0, //顶点1颜色
+  0,
+  1,
+  0, //顶点2颜色
+  0,
+  0,
+  1, //顶点3颜色
+
+  1,
+  1,
+  0, //顶点4颜色
+  0,
+  1,
+  1, //顶点5颜色
+  1,
+  0,
+  1, //顶 6
+
+  1,
+  0,
+  0, //顶点1颜色
+  0,
+  1,
+  0, //顶点2颜色
+  0,
+  0,
+  1, //顶点3颜色
+
+  1,
+  1,
+  0, //顶点4颜色
+  0,
+  1,
+  1, //顶点5颜色
+  1,
+  0,
+  1, //顶 6
+
+  1,
+  0,
+  0, //顶点1颜色
+  0,
+  1,
+  0, //顶点2颜色
+  0,
+  0,
+  1, //顶点3颜色
+
+  1,
+  1,
+  0, //顶点4颜色
+  0,
+  1,
+  1, //顶点5颜色
+  1,
+  0,
+  1, //顶 6
+
+  1,
+  0,
+  0, //顶点1颜色
+  0,
+  1,
+  0, //顶点2颜色
+  0,
+  0,
+  1, //顶点3颜色
+
+  1,
+  1,
+  0, //顶点4颜色
+  0,
+  1,
+  1, //顶点5颜色
+  1,
+  0,
+  1, //顶 6s
+]);
+
+// 定义顶点索引
+let indexs = new Uint16Array([
+  0, 1, 2, 0, 2, 3, 0, 4, 5, 0, 3, 5, 3, 2, 6, 3, 6, 5, 4, 5, 6, 4, 7, 6, 0, 3,
+  7, 0, 4, 7, 0, 1, 7, 1, 2, 6, 1, 7, 6,
+]);
+
+geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
+//   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+geometry.index = new THREE.BufferAttribute(indexs, 1);
+// 面渲染模型
+// 定义材质
+let material = new THREE.MeshPhongMaterial({
+  // vertexColors: THREE.VertexColors,
+  color: 0x777777,
+  side: THREE.DoubleSide,
+});
+
+let mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+
+// 空间坐标辅助对象
+let axesHelper = new THREE.AxesHelper(200);
+scene.add(axesHelper);
+
+function render() {
+  requestAnimationFrame(render);
+  renderer.render(scene, camera);
+}
+render();
+
+let controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.addEventListener("change", render);
+```
+
+::: tip 提示
+通过 API` Gemotry`同样，也可以实现缓冲几何体.不过在 threejsr125 版本过后，已经移除对此 api 支持。
+:::
+
+### BufferGemotry 总结
+
+<img src="http://assets.processon.com/chart_image/61b8c6497d9c0868e020ead4.png">
+
+### 几何体对象数据访问
+
+> 包括，顶点，颜色，顶点法向量数据。threejs 内置的几何体模型，已经封装好，可以直接访问对象属性，查看属性。
+
+#### 访问外部模型几何体顶点数据
+
+> 实际开发项目的时候，可能会加载外部模型，有些时候需要获取模型几何体的顶点数据
+> Threejs 加载外部模型的时候，会把几何体解析为缓冲类型几何体 BufferGeometry，所以访问外部模型几何体顶点数据
