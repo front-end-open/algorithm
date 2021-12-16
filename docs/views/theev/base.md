@@ -112,6 +112,8 @@ let L2 = data2.length; //返回结果5
 
 确认法向量过后，开始为场景加入光源。此时环境光和点光源都会参与光照计算。构建几何体表面的三角形整个表面比较明亮，同时两个三角形表面法线不同，即使光线方向相同，明暗自然不同，在分界位置有棱角感。
 
+> 高光效果是镜面反射的形成。平行光线从入射到高光材质表面完全反射出去，材质表面表现高光效果。
+
 ### 顶点索引自定义实现立方体
 
 > 通过缓冲几何体，自定义设置顶点数据，来实现几何体.
@@ -324,3 +326,143 @@ controls.addEventListener("change", render);
 
 > 实际开发项目的时候，可能会加载外部模型，有些时候需要获取模型几何体的顶点数据
 > Threejs 加载外部模型的时候，会把几何体解析为缓冲类型几何体 BufferGeometry，所以访问外部模型几何体顶点数据
+
+## 材质对象
+
+> 材质对象是包含光照算法的 着色器 GLSL,ES 代码。目的在于赋予模型外观上的改变。比如模型的金属，透明度等模型外观。都是着色器的运用。为了方便开发 Threejs 提供了一系列的材质，所有材质就是对 WebGL 着色器代码的封装
+
+**材质相关 API 总结**
+
+<img src="./../../public/img/material.png">
+
+### 材质对象和模型对象对应关系
+
+<img src="./../../public/img/modalandmaterial.png">
+
+## 模型对象
+
+> 模型对象在 threejs 角度来说，就是有几何体与材质对象结合形成的三维对象。其中，材质设置三维模型外观形状，几何体则通过顶点坐标数据来表达三维模型外观形状。
+
+**常用模型对象**
+
+- Mesh,网格模型。
+- Point,点模型
+- Line, 线模型。
+
+<img src="./../../public/img/3dModal.png">
+
+_Line,Mesh, Point 以及对应的材质都是由基类 BufferGeometry, Material 构成_
+
+### 点模型
+
+> 点模型就是几何体顶点数据所渲染的一个像素区域
+
+### 线模型
+
+> 通过顶点数据绘制线条
+
+- Line, 线
+- LineLoop, 首位相连线
+
+### 网格模型
+
+> 结合顶点数据，以三角形为基本平面绘制几何体
+
+### 模型对象变换
+
+> 点模型 Points、线模型 Line、网格网格模型 Mesh 等模型对象的基类都是 Object3D. 若想对模型对象平移变换,通过使用基类的集成属性或者方法操作.
+
+<img src="./../../public/img/modalchange.png">
+
+#### 缩放变换- scale
+
+> 模型对象的缩放属性`scale`,控制模型的缩放比列. 此属性的值是一个三维矢量数据。使用三维矢量构造 THREE.Vector3 来设置。三维矢量构造方法`set`用于更新三维矢量。
+
+**scale**
+
+```js
+THREE.Vector3;
+// 三个参数是向量三维空间坐标表示
+set(x, y, z);
+
+// 使用
+mesh.scale.set(0.5, 1.5, 2);
+
+/**
+ * x轴缩放 0.5,
+ * y轴缩放 1.5
+ * z轴缩放 2
+ *
+ *
+ */
+```
+
+**position**
+
+> 模型位置.position 属性和.scale 属性的属性值一样也是三维向量对象 Vector3，通过模型位置属性.position 可以设置模型在场景 Scene 中的位置。模型位置.position 的默认值是 THREE.Vector3(0.0,0.0,0.0)。
+
+```js
+// 此位置设置模型在场景中的位置
+// 设置模型xyz坐标;
+mesh.position.set(80, 2, 10); // x-80, y-2, z- 10
+```
+
+**tranlate-X/Y/Z**
+
+> 网格模型沿着 x 轴正方向平移 100，可以多次执行该语句，每次执行都是相对上一次的位置进行平移变换。
+
+```js
+// 等价于 mesh.position = mesh.position + 100;
+mesh.translateX(100);//沿着 x 轴正方向平移距离 100
+沿着 Z 轴负方向平移距离 50。
+
+mesh.translateZ(-50);
+
+//沿着自定义的方向移动。
+//向量 Vector3 对象表示方向
+var axis = new THREE.Vector3(1, 1, 1);
+axis.normalize(); //向量归一化
+//沿着 axis 轴表示方向平移 100
+mesh.translateOnAxis(axis, 100);
+```
+
+::: tip 提示
+执行.translateX()、.translateY()、.translateOnAxis()等方法本质上改变的都是模型的位置属性.position。
+:::
+
+**rotateX/Y/Z**
+
+> 立方体网格模型绕立方体的 x/y/z 轴旋转 π/4，可以多次执行该语句，每次执行都是相对上一次的角度进行旋转变化
+
+```js
+// 绕x轴旋转 PI/4
+mesh.rotateX(Math.PI / 4);
+
+// 自定义旋转轴旋转
+// 网格模型绕(0,1,0)向量表示的轴旋转π/8
+var axis = new THREE.Vector3(0, 1, 0); //向量axis
+mesh.rotateOnAxis(axis, Math.PI / 8); //绕axis轴旋转π/8
+
+// 绕着Y轴旋转90度
+mesh.rotateY(Math.PI / 2);
+//控制台查看：旋转方法，改变了rotation属性
+console.log(mesh.rotation);
+```
+
+::: tip 提示
+执行旋转.rotateX()等方法和执行平移.translateY()等方法一样都是对模型状态属性的改变，区别在于执行平移方法改变的是模型的位置属性.position，执行模型的旋转方法改变的是表示模型角度状态的角度属性.rotation 或者四元数属性.quaternion。
+
+模型的角度属性.rotation 和四元数属性.quaternion 都是表示模型的角度状态，只是表示方法不同，.rotation 属性值是欧拉对象 Euler,.quaternion 属性值是是四元数对象 Quaternion
+:::
+
+**旋转属性总结**
+
+- rotation, 模型的角度属性
+- quaternion, 四元数属性
+- rotateX/Y/Z, 控制模型旋转
+
+## 相机
+
+相关概念:
+
+[透视与正交](https://blog.csdn.net/zipack/article/details/114384862)
