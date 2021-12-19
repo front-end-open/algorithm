@@ -398,3 +398,444 @@ console.log(manyTime("hello")); // hello
 
 console.log(manyTime("hello")); // excuted complete
 ```
+
+## 函数式技术
+
+**函数式技术点(部分)**
+
+- 注入(injection)
+- callback 和 promise, 延续调用风格
+- plolyfilling 和 stubbing
+- 立即调用计划(immediate invocation schemes)
+
+### lambda 演算-函数定义
+
+> 函数 lambda 微积分中, 函数可以表示成 `λx.2*x`, λ 后的变量 x 是传递给函数的参数(parameter,形参). 表达式后的 点是替换作为参数传递任何值(argument，实参)的地方.
+> 关于`λx.2*x`lambda 表达式理解, 以表达式中点作为分界点。前半部分`λx`是函数的参数表示方法，也就是函数有哪些参数的表示;后半部分是整个函数的逻辑部分。用于参数传递，计算函数值。
+
+**函数定义的几种方式**
+
+- function 关键字
+- 匿名函数表达式
+
+**匿名函数表达式函数声明相关**:
+
+> 单独领出来谈这个，是因为匿名函数表达式在 js 中，就是作为变量值的方式声明的。在 js 中就存在变量提升（hoisting）。函数和变量都是变量声明，都会有变量提升。而且函数会优先于变量提升。也就是函数在代码中，更靠前（抽象形式）。注意，赋值不会发生变量提升。提升的是变量声明部分。如果声明和赋值在一块，那么变量和函数的访问，就只能在赋值过后访问。
+
+```js
+// foo();   // refrenceError: 不能初始化之前访问 'foo'
+
+let foo = function () {
+  console.log(foo.name);
+};
+
+foo(); // foo.name === 'foo'
+// 这里的错误是一个引用错误，而不是一个变量未定义错误。也就说明变量是提升了。
+```
+
+- 具名函数表达式
+
+```js
+let third = function foo() {
+  console.log(third.name);
+}; // foo
+```
+
+::: tip 提示
+匿名函数更多在回调调用中使用。如果需要递归调用或者，错误追溯。使用具名函数更容易识别。
+:::
+
+- 立即调用函数表达式(IIFE)
+  > 此函数表示方式，更多结合函数闭包来使用。如下
+
+```js
+let myCounter = (function (initialValue = 0) {
+  let count = initialValue;
+  return function () {
+    count++;
+    return count;
+  };
+})(77);
+
+myCounter(); // 78
+myCounter(); // 79
+myCounter(); // 80
+```
+
+- Funcition,构造函数.动态创建函数，不推荐使用。
+
+```js
+let sum3 = new Function("x", "y", "z", "var t = x+y+z; return t;");
+sum3(4, 6, 7); // 17
+```
+
+::: tip 注意
+此方式创建的函数是在全局环境下执行的，也就是，函数作用于上承作用域是全局。即使作为闭包创建。Function 构造实列也只能访问，全局。
+:::
+
+- 箭头函数(arrow-func)
+
+使用箭头函数几个注意点:
+
+1. 箭头函数没有隐式的 this 绑定，以及 argument,和 new.target
+2. 不能作为构造函数 constructor 使用
+3. 不能作为生成器使用，因为再箭头函数内不允许 yeild
+
+箭头函数特性:
+
+1. lambda 中，函数只有一个返回值。相比，通常函数的做法，箭头函数允许省略 return. 注意如果返回值是一个对象，需要加上大括号.
+2. 处理 this 问题，
+
+this 绑定例子
+
+```js
+function ShowItself1(identity) {
+  this.identity = identity;
+  setTimeout(function () {
+    console.log(this.identity);
+  }, 1000);
+}
+let x = new ShowItself1("Functional");
+// undefined
+/**
+ * showItself1函数内定时器，由于定时器调用时，所在的环境为全局。
+ * 而callback参数，是在定时器内部调用，此方式调用时，回调函数不会继承定时器的this，而是将this绑定到全局this。
+ *
+ *
+ */
+```
+
+**解决方案**
+es5 解决:
+
+1. 利用闭包，将 this 绑定到外部函数变量。
+2. 使用 bind
+3. 使用箭头函数
+
+```js
+function ShowItself2(identity) {
+  this.identity = identity;
+  let that = this; // 闭包
+
+  setTimeout(function () {
+    console.log(that.identity);
+  }, 1000);
+
+  setTimeout(
+    function () {
+      console.log(this.identity);
+    }.bind(this), // bind
+    2000
+  );
+  setTimeout(() => {
+    // arrow func
+    console.log(this.identity);
+  }, 3000);
+}
+/**
+ * 三种方式说明:
+ * 1. 第一中利用闭包，将构造的this绑定到变量，内部函数通过作用域的方式访问。定时器的回调函数this，这里不再使用。忽略它。应为它再调用时，被绑定到了全局window.
+ * 2. 第二种方式使用bind，将函数的this绑定到了构造的this
+ * 3. 第三种使用匿名函数，因为匿名函数没有隐式的this参数，而是通过继承上级作用域的this.
+ *
+ */
+```
+
+3. 箭头函数 - arguments
+
+> 箭头函数没有自己的 arguments 对象. 下面的例子我们通过`spread`运算符来搜集箭头实际参数。而替换调了无法使用 argument 的尴尬处境。
+
+```js
+const once = (func) => {
+  let done = false;
+  return (...args) => {
+    if (!done) {
+      done = true;
+      func(...args);
+    }
+  };
+};
+
+// 接收任何数量级参数的处理方法
+// 1. arguments
+// 2. spread
+function somethingElse() {
+  // get arguments and do something
+}
+function listArguments() {
+  console.log(arguments);
+  var myArray = Array.prototype.slice.call(arguments);
+  console.log(myArray);
+  somethingElse.apply(null, myArray);
+}
+```
+
+**arguments 转数据方法**
+
+1. Array.prototype.slice.call(arguments)
+2. Array.from(arguments)
+3. let arr = [...arguments]
+
+### Currying
+
+> 此方式考虑将函数的参数进行拆分.在 lambda caculus 中，函数就无需多个参数.
+
+currying 例子引发函数式思考
+
+```js
+let sum1 = (x, y, z) => x + y + z;
+
+// ||
+
+let sum = (x) => (y) => (y) => x + y + z;
+```
+
+上面的求和函数，由三个参数，一步一步往下拆分为返回接收一个参数的函数. 此方式是 curry 应用的体现。一种单一的数据流向。总的来说是函数式的特点。
+
+### function as first-class object
+
+> 函数作为一级对象使用。
+
+**React + Redux + reducer**
+
+> 在 redux 中，对于全局状态的访问，修改等操作。都是通过 action 去匹配。不过修改全局状态，再此之前，设计了一个调度表。而这个调度表就是利用了函数一级对象特点构建.
+
+形式如下:
+
+```js
+function doAction(state = initialState, action) {
+  const dispatchTable = {
+    CREATE: (state, action) => {
+      // update state, generating newState,
+      // depending on the action data
+      // to create a new item
+      return newState;
+    },
+    DELETE: (state, action) => {
+      // update state, generating newState,
+      // after deleting an item
+      return newState;
+    },
+    UPDATE: (state, action) => {
+      // update an item,
+      // and generate an updated state
+      return newState;
+    },
+  };
+
+  return dispatchTable[action.type]
+    ? dispatchTable[action.type](state, action)
+    : state;
+}
+```
+
+### lambda 演算-Beta 规则(规约)
+
+```js
+// 以一个lambda算子为例子
+lambada x.2*x // 通过规约法则, 此lambda等价于
+
+f(x) // 不在需要return
+```
+
+::: tip 提示
+在 lambda 规约法则中，如果两个 lambda 算子输入输出一样，则他们外延相等。在 js 中，在使用函数时，如果函数的返回参数数据做额外计算操作，此时无需额外在函数内部使用闭包。直接将额外计算的部分函数声明，作为参数传给回调部分。即 lambda 规约, x => fn(x) ==> x 替换 为 fn(x)
+:::
+
+### 函数的隐式风格
+
+> 在使用函数的时候，对于回调的隐式参数调用，不需要为回调函数显示指定参数
+
+```js
+// 比如这样
+function someFunction(someData) {
+  return someOtherFunction(someData);
+}
+// 而是直接把处理函数作为参数使用
+// 改进使用
+[someFunction(someOtherFunction(someData))];
+```
+
+## 以 FP 使用函数
+
+### injection
+
+> 注入方式，为函数提供更多功能.以 js 数据排序 sort 来说。直接调用 sort, 默认以字符串 ASCLL 规则来比较排序。如果需要额外排序规则，则可以为 sort 传入比较函数.
+>
+> > 这种方式在 FP 中，被称之为策略设计模式. 使用函数作为参数,为原功能 api 注入新的功能
+
+数据排序方法`sort`
+
+```js
+// 原地排序算法。原数组已被修改
+let nums = [20, 10, 40, 30, 100, 50, 70, 50];
+
+nums.sort();
+// Array.prototype.sort.call(nums);
+// Array.prototype.sort.bind(nums)();
+console.log(nums); //  [10, 100, 20, 30, 40, 50, 50, 70]
+
+// 提供比较函数
+nums = [20, 10, 40, 30, 100, 50, 70, 50];
+console.log(nums);
+// 通过注入比较函数，来实现自定义比较.
+nums.sort((a, b) => {
+  console.log(a, b);
+  //   if (a - b > 0) {
+  //     // return 1;
+  //   } else if (a - b < 0) {
+  //     return -1;
+  //   } else {
+  //     return 0;
+  //   }
+  return b - a;
+});
+console.log(nums);
+```
+
+#### 更多 callback,函数作为参数
+
+- promise
+- 异步编程(回调方式)
+- Continunation Passing Style(延续传递风格)
+  > 禁用 return 语句进行编程设计. 函数式编程的延续调用风格。（异步 I/O）过程已准备好返回给调用者，它将调用而不是实际返回
+  > 通过回调。在这些术语中，回调为被调用的函数提供了方法继续这个过程，因此命名为 Continuation
+
+**深入延续调用 CPS**
+
+异步任务处理。常见的 ajax 请求，使用回调处理器(CPS)，实现对 I/O 返回和异常返回的接收，而不是直接在调用方返回结果.
+
+```js
+function doSomething(a, b, c, normalContinuation, errorContinuation) {
+  let r = 0;
+  // 计算。。。。
+  // 存储计算结果到r
+  // 产生错误,调用错误处理函数
+  // errorContinuation("description of the error")
+  // 将 r 结果传递给正产callback
+  // normalContinuation(r)
+}
+```
+
+### Polyfill,动态分配函数
+
+> 将函数分配到不同的变量.有效定义 polyfill
+
+#### 检测 Ajax 的支持情况
+
+> 不同浏览器对 ajax 的构建对象 api 支持情况不一样，下面对不同浏览器进行检测.
+
+```js
+// 初始版本
+// 缺点是，每次调用都需要从新从头进入流程控制if-else
+function getAjax() {
+  let ajax = null;
+  if (window.XMLHttpRequest) {
+    // modern browser? use XMLHttpRequest
+    ajax = new XMLHttpRequest();
+  } else if (window.ActiveXObject) {
+    // otherwise, use ActiveX for IE5 and IE6
+    ajax = new ActiveXObject("Microsoft.XMLHTTP");
+  } else {
+    throw new Error("No Ajax support!");
+  }
+  return ajax;
+}
+// 改进版本,因为检测结果是明确的，无需多次检测
+// 使用函数的firt-calss object特性，定义两个不同函数，来接收不同检测结果。
+// 动态函数分配的应用
+(function initializeGetAjax() {
+  let myAjax = null;
+  if (window.XMLHttpRequest) {
+    // modern browsers? use XMLHttpRequest
+    myAjax = function () {
+      return new XMLHttpRequest();
+    };
+  } else if (window.ActiveXObject) {
+    // it's ActiveX for IE5 and IE6
+    myAjax = function () {
+      new ActiveXObject("Microsoft.XMLHTTP");
+    };
+  } else {
+    myAjax = function () {
+      throw new Error("No Ajax support!");
+    };
+  }
+  window.getAjax = myAjax;
+})();
+/**
+ * 
+ * 这段代码展示了两个重要的概念。首先，我们可以动态地分配
+
+函数:当此代码运行时，窗口。getAjax(即全局getAjax变量)将
+
+根据当前浏览器获取三个可能值中的一个。当稍后调用时
+
+代码中的getAjax()将执行正确的函数，而不需要做任何进一步的操作
+
+浏览器检测测试。
+ * 
+ * 
+*/
+```
+
+为当前浏览器环境添加字符串 includs 方法
+
+```js
+(() => {
+  if (!String.prototype.includes) {
+    String.prototype.includes = function (search, start) {
+      "use strict";
+      if (typeof start !== "number") {
+        start = 0;
+      }
+      if (start + search.length > this.length) {
+        return false;
+      } else {
+        return this.indexOf(search, start) !== -1;
+      }
+    };
+  }
+})();
+```
+
+### Stubbing
+
+> 让一个函数做不同的工作
+
+取决于环境。这个想法是做存根，一个来自测试的想法
+
+意思是用另一个函数替换一个更简单的函数，而不是实际的函数
+
+工作。
+
+### Immediate invocation
+
+> 通常在流行的库和
+
+框架，它可以让你在 JS(甚至是更老的版本!)中引入一些模块化
+
+其他语言的优势
+
+类似于
+
+```js
+(function () {
+  // do something...
+})();
+```
+
+### 总结
+
+1. 简化的 action 调度表
+
+```js
+const doAction3 = (state = initialState, action) =>
+  (dispatchTable[action.type] && dispatchTable[action.type](state, action)) ||
+  state;
+/**
+ * 程序经典的地方在于，使用逻辑运算符来实现三元运算符一样的结果。
+ *
+ *
+ */
+```
