@@ -531,3 +531,163 @@ B2 = B1 * B0 * cosθ;
 相关概念:
 
 [透视与正交](https://blog.csdn.net/zipack/article/details/114384862)
+
+## 阴影计算
+
+> 通过设置不同的光源对象，来开启模型在场景的阴影渲染
+
+### 开启平行光阴影渲染
+
+```js
+let renderer = new THREE.WebGLRenderer();
+// 如果不开启阴影，则不会渲染阴影
+renderer.shadowMap.enabled = true; // 关键点4，
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x888888);
+document.body.appendChild(renderer.domElement);
+
+let geometry = new THREE.BoxGeometry(50, 100, 50);
+let material = new THREE.MeshLambertMaterial({
+  color: 0x0000ff,
+});
+let mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+
+// 设置产生投影的网格模型
+mesh.castShadow = true; // 关键点1
+mesh.receiveShadow = false;
+
+//创建一个平面几何体作为投影面
+let planeGeometry = new THREE.PlaneGeometry(
+  window.innerWidth,
+  window.innerHeight
+);
+let planeMaterial = new THREE.MeshLambertMaterial({
+  color: 0xffffff,
+  side: THREE.DoubleSide,
+});
+
+let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+scene.add(planeMesh); //网格模型添加到场景中
+planeMesh.rotateX(-Math.PI / 2); //旋转网格模型
+planeMesh.position.y = -100; //设置网格模型y坐标
+// 设置接收阴影的投影面, 关键点2
+planeMesh.receiveShadow = true;
+
+// 方向光
+let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+// 设置光源位置
+directionalLight.position.set(60, 100, 40);
+scene.add(directionalLight);
+// 设置用于计算阴影的光源对象, 关键点 3
+directionalLight.castShadow = true;
+// 设置计算阴影的区域，最好刚好紧密包围在对象周围
+// 计算阴影的区域过大：模糊  过小：看不到或显示不完整
+// shadow属性camera定义场景中模型的深度图，即模型阴影
+directionalLight.shadow.camera.near = 1;
+directionalLight.shadow.camera.far = 500;
+directionalLight.shadow.camera.left = -50;
+directionalLight.shadow.camera.right = 50;
+directionalLight.shadow.camera.top = 200;
+directionalLight.shadow.camera.bottom = -100;
+``;
+```
+
+设置阴影的关键点:
+
+1. 启用渲染器的阴影渲染
+2. 设置渲染器的相机类型.
+3. 设置阴影用的模型
+4. 设置接收阴影的模型
+5. 设置光源休息,用来投射阴影
+
+### 聚光灯阴影计算
+
+```js
+let geometry = new THREE.BoxGeometry(50, 100, 50);
+let material = new THREE.MeshLambertMaterial({
+  color: 0xff0000,
+});
+let mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+
+// 设置产生投影的网格模型
+mesh.castShadow = true; // 关键点1
+mesh.receiveShadow = false;
+
+//创建一个平面几何体作为投影面
+let planeGeometry = new THREE.PlaneGeometry(
+  window.innerWidth,
+  window.innerHeight,
+  20,
+  20
+);
+//   let planeMaterial = new THREE.MeshPhongMaterial({
+//     color: 0x00ff00,
+//   });
+let planeMaterial = new THREE.MeshLambertMaterial({
+  color: 0x00ff00,
+});
+
+let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+scene.add(planeMesh); //网格模型添加到场景中
+planeMesh.rotateX(-Math.PI / 2); //旋转网格模型
+planeMesh.position.y = -100; //设置网格模型y坐标
+// 设置接收阴影的投影面, 关键点2
+planeMesh.castShadow = false;
+planeMesh.receiveShadow = true;
+
+// 方向光
+var spotLight = new THREE.SpotLight(0xffffff);
+// 设置聚光光源位置
+spotLight.position.set(50, 100, 50);
+// 设置聚光光源发散角度
+spotLight.angle = Math.PI / 4;
+scene.add(spotLight); //光对象添加到scene场景中
+// 设置用于计算阴影的光源对象
+spotLight.castShadow = true;
+// 设置计算阴影的区域，注意包裹对象的周围
+spotLight.shadow.mapSize.width = 512;
+spotLight.shadow.mapSize.height = 512;
+spotLight.shadow.camera.near = 0.1;
+spotLight.shadow.camera.far = 2000;
+//   spotLight.shadow.camera.fov = 20;
+
+// 定义阴影的尺寸
+spotLight.shadow.mapSize.width = 1000;
+spotLight.shadow.mapSize.height = 1000;
+
+console.log(spotLight.shadow, spotLight);
+
+const helper = new THREE.CameraHelper(spotLight.shadow.camera);
+scene.add(helper);
+
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
+```
+
+要点:
+
+> 同平行光一样，聚光灯的阴影计算需要开启材质表面的精度。如上面的几何平面模型，需要开启水平 x,y 的分段系数。由于采用的材质模拟的物理表面不具有高光效果。并且是非光泽平面。
+
+计算阴影相关
+|属性|作用|
+|---|---|
+|castShadow|castShadow 属性值是布尔值，默认 false，用来设置一个模型对象是否在光照下产生投影效果|
+|receiveShadow|receiveShadow 属性值是布尔值，默认 false，用来设置一个模型对象是否在光照下接受其它模型的投影效果|
+|光源.castShadow |如果属性设置为 true， 光源将投射动态阴影. 警告: 这需要很多计算资源，需要调整以使阴影看起来正确.|
+|光源.shadow 属性|平行光 DirectionalLight 的.shadow 属性值是平行光阴影对象 DirectionalLightShadow，聚光源 SpotLight 的.shadow 属性值是聚光源阴影对象 SpotLightShadow|
+|阴影对象基类 LightShadow|平行光阴影对象 DirectionalLightShadow 和聚光源阴影对象 SpotLightShadow 两个类的基类是 LightShadow|
+
+阴影对象属性:
+
+1. .camera: 观察光源的相机对象. 从光的角度来看，以相机对象的观察位置和方向来判断，其他物体背后的物体将处于阴影中。
+
+```js
+spotLight.shadow.camera.near = 1; // 视椎体近端面
+spotLight.shadow.camera.far = 300; // 视椎体远端面
+spotLight.shadow.camera.fov = 20; // 垂直视椎体距离
+```
+
+2. .mapSize 定义阴影纹理贴图宽高尺寸的一个二维向量 Vector2.较高的值会以计算时间为代价提供更好的阴影质量. 宽高分量值必须是 2 的幂, 直到给定设备的 WebGLRenderer.capabilities.maxTextureSize. 默认, (512, 512)
+3. map: 该属性的值是 WebGL 渲染目标对象 WebGLRenderTarget，使用内置摄像头生成的深度图; 超出像素深度的位置在阴影中。 在渲染期间内部计算。
