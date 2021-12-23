@@ -691,3 +691,198 @@ spotLight.shadow.camera.fov = 20; // 垂直视椎体距离
 
 2. .mapSize 定义阴影纹理贴图宽高尺寸的一个二维向量 Vector2.较高的值会以计算时间为代价提供更好的阴影质量. 宽高分量值必须是 2 的幂, 直到给定设备的 WebGLRenderer.capabilities.maxTextureSize. 默认, (512, 512)
 3. map: 该属性的值是 WebGL 渲染目标对象 WebGLRenderTarget，使用内置摄像头生成的深度图; 超出像素深度的位置在阴影中。 在渲染期间内部计算。
+
+### 光源对象之间的关系
+
+**光源颜色.color 与光强度.indentisty**
+
+> 光照在计算时，会计算两个值的乘积。因此调整光照强度，也可以从颜色或者光照强度单方面调整。
+
+<img src="./../../public/img/light.png">
+
+## 层级模型
+
+## 纹理贴图
+
+> 纹理贴图是 Threejs 一个很重要的内容，游戏、产品 720 展示、物联网 3D 可视化等项目程序员加载模型的同时需要处理纹理贴图。
+
+纹理贴图类型:
+
+<img src="./../../public/img/textTure.png">
+
+### 纹理贴图创建
+
+> 纹理贴图创建通过纹理贴图加载器加载一张图片，可以返回一个纹理对象 Texture.纹理对象 Texture 可以作为模型材质颜色贴图.map 属性的值。设置材质颜色的 map 属性后，不需要再设置材质颜色。网格模型会获取纹理贴图的 RGB 值。设置到模型上。
+
+不同模型具有不同的 uv 坐标来设置贴图和模型的映射规律
+
+**面模型渲染贴图**
+
+```js
+// ...
+let geometry = new THREE.PlaneGeometry(500, 500);
+
+let textureLoader = new THREE.TextureLoader();
+
+textureLoader.load(
+  "./static/earth.jpeg",
+  (texture) => {
+    let material = new THREE.MeshLambertMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+    let planmesh = new THREE.Mesh(geometry, material);
+    planmesh.rotateX(-Math.PI / 2);
+    //   planmesh.position.y = -200;
+    scene.add(planmesh);
+
+    // 加载成功过后，从新调用render渲染
+    render();
+  },
+  null,
+  (e) => {
+    console.log(e);
+  }
+);
+// ...
+```
+
+#### 球体模型贴图渲染
+
+```js
+let geometry = new THREE.SphereGeometry(100, 100, 100);
+
+let textureLoader = new THREE.TextureLoader();
+
+textureLoader.load(
+  "./static/earth.jpeg",
+  (texture) => {
+    let material = new THREE.MeshLambertMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+    let planmesh = new THREE.Mesh(geometry, material);
+    planmesh.rotateX(-Math.PI / 2);
+    //   planmesh.position.y = -200;
+    scene.add(planmesh);
+
+    // 加载成功过后，从新调用render渲染
+    render();
+  },
+  null,
+  (e) => {
+    console.log(e);
+  }
+);
+```
+
+#### 立方体-贴图渲染
+
+```js
+let geometry = new THREE.BoxGeometry(100, 100, 100);
+
+let textureLoader = new THREE.TextureLoader();
+
+textureLoader.load(
+  "./static/earth.jpeg",
+  (texture) => {
+    let material = new THREE.MeshLambertMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+    let planmesh = new THREE.Mesh(geometry, material);
+    planmesh.rotateX(-Math.PI / 2);
+    //   planmesh.position.y = -200;
+    scene.add(planmesh);
+
+    // 加载成功过后，从新调用render渲染
+    render();
+  },
+  null,
+  (e) => {
+    console.log(e);
+  }
+);
+```
+
+#### 纹理对象-Texture
+
+::: tip 提示
+通过图片加载器 ImageLoader 可以加载一张图片，所谓纹理对象 Texture 简单地说就是，纹理对象 Texture 的.image 属性值是一张图片。
+:::
+
+使用图片加载器加载图片，并创建图片贴图.
+
+#### 图片加载器使用
+
+```js
+let geometry = new THREE.BoxGeometry(100, 100, 100);
+
+let imgLoader = new THREE.ImageLoader();
+
+// 使用加载器加载图片
+imgLoader.load(
+  "./static/earth.jpeg",
+  (img) => {
+    console.log(img);
+    let texture = new THREE.Texture(img); // 使用贴图对象基类创建贴图
+
+    // 设置贴图更新
+    texture.needsUpdate = true;
+
+    let material = new THREE.MeshLambertMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+
+    let planmesh = new THREE.Mesh(geometry, material);
+    planmesh.rotateX(-Math.PI / 2);
+    //   planmesh.position.y = -200;
+    scene.add(planmesh);
+
+    // 加载成功过后，从新调用render渲染
+    render();
+  },
+  null,
+  (e) => {
+    console.log(e);
+  }
+);
+```
+
+归纳： 上面例子使用图片加载器加载图片，然后使用纹理对象,使用图片手动构架纹理贴图。涉及 api 知识点
+
+1. ImageLoader, 加载图片，用来生成纹理
+2. Texture, 创建图片贴图
+3. 异步图片加载
+
+#### 知识点脑图
+
+<img src="./../../public/img/texture.png">
+
+## 顶点纹理坐标
+
+> uv 贴图坐标用来与纹理贴图做映射用，设置模型纹理。此知识点探究 uv 坐标和纹理贴图的映射关系。
+
+知识点脑图:
+
+<img src="./../../public/img/uv-position.png">
+
+### uv 坐标
+
+> 几何体的构成，由顶点数据所形成的三角形面，无数的面来构成几何体。而 uv 坐标就是这个面上的点，二维平面坐标。
+
+### 映射
+
+> 纹理 UV 坐标和顶点位置坐标是一一对应关系，这也就是为什么一张图片可以映射到一个模型的表面，只要把图片的每个纹理坐标和模型的顶点位置建立一对一的关系，就可以实现图像到模型的映射。
+
+纹理映射:
+
+<img src="./../../public/img/nvtopostion.png">
+
+### nv 坐标的分组
+
+1. 几何体有两组 UV 坐标，第一组组用于.map、.normalMap、.specularMap 等贴图的映射
+2. 第二组用于阴影贴图.lightMap 的映射
+
+### 纹理坐标修改
