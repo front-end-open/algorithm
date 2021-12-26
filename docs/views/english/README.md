@@ -69,6 +69,24 @@ optimization: 最优化，最佳化
 
 appropriate: 合适的，相称的
 
+impure: 肮脏的，道德败坏的
+
+benefit：好处，益处
+
+mathematical: 数学
+
+diverse: 不同的，各式各样的
+
+exactly：精确地，确切地，完全地
+
+idempotency： 幂等（n）
+
+constant: 常量。
+
+involve: 涉及，包含
+
+interaction: 互动，交流；相互作用，相互影响。
+
 ### 短语
 
 go over: 复习
@@ -103,3 +121,9 @@ more specifically: 更具体的说
 along the line: 沿该线
 
 a way of putting it: 这么说吧
+
+be considered to 认为
+
+observable: 显著的，觉察得到的，看得见的。
+
+for the same reason: 同样的道理
