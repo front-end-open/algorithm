@@ -886,3 +886,30 @@ imgLoader.load(
 2. 第二组用于阴影贴图.lightMap 的映射
 
 ### 纹理坐标修改
+
+> uv 坐标是二位矢量. threejs 中，通过 Vector2 设置. 设置几何体贴图时，根据 uv 坐标和几何体顶点的坐标映射。来完成面贴图设置。
+
+**获取 uv 坐标**
+
+```js
+// 这里假设获取立方体的uv坐标
+let gemotry = new THREE.BoxGeometry();
+let uv = new THREE.Vector2();
+let uvAttribute = gemotry.getAttribute("uv");
+
+//遍历获取每个面的uv坐标点
+
+for (let i = 0; i < uvAttribute.count; i++) {
+  uv.fromBufferAttribute(uvAttribute, i); // 返回平面的每个顶点uv坐标
+}
+```
+
+**更新 uv 坐标**
+
+```js
+let faceUV = null;
+for (let i = 0; i < uvAttribute.count; i++) {
+  faceUV = uv.fromBufferAttribute(uvAttribute, i).set(0.4, 0.4); // 返回平面的每个顶点uv坐标
+}
+uvAttribute.setXY(i, faceUV.x, faceUV.y);
+```
