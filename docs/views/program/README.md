@@ -922,7 +922,7 @@ const = 7
 
 > 可以认为外部状态的变化.在编程中，一些计算和操作的执行过程与外部元素发生相互作用。这写外部元素包括用户，web 服务等
 
-**常见副作用:**
+:**常见副作用:**
 
 1. 修改全局变量
 2. 改变作为参数接收的对象。
@@ -971,17 +971,98 @@ const circleArea = (r) => PI * Math(r, 2);
 ```
 
 - 内部变量(inner state):
-  > 内部状态的副作用的，通常是使用闭包的方式维护一个局部的固定的状态。内部的函数根据局部的状态，每次输入相同的参数，会返回不同的结果。
+  > 全局状态使用也被扩展到内部变量。这也是导致副作用.内部状态的副作用的，通常是使用闭包的方式维护一个局部的固定的状态。内部的函数根据局部的状态，每次输入相同的参数，会返回不同的结果。的缘由
 
 ```js
 const roundFix = (() => {
-    let accum = 0;
+    let accum = 0;  // 用于四舍五入方向(向上或向下)
 
     return (n) => {
-        let noRounded = accum => 0 ? Math.ceil(n) : Math.floor(n)
+        let noRounded = accum => 0 ? Math.ceil(n) : Math.floor(n)   // 等价写法
+        // let noRounded = Math[accum > 0 ? "ceil" : "floor"](n)
         console.log('accum', accum.toFixed(5), 'result', noRounded)
         accum += n - noRounded
         return noRounded
     }
 }())
+/**
+ * 此方法考虑每次累计舍值的累计值是否过大。为了与零持平。每次会调整取整方向
+ *
+ *
+*/
+// 测试
+roundFix(3.14159); // accum 0.00000 result 3
+roundFix(2.71828); // accum 0.14159 result 3
+roundFix(2.71828); // accum -0.14013 result 2
+roundFix(3.14159); // accum 0.57815 result 4
+roundFix(2.71828); // accum -0.28026 result 2
+
+/**
+ * 对于测试结果的第2，3此，输入相同参数2.71828，函数返回不同结果。违背了纯函数的性质。这时候函数的返回值，取决于内部状态。
+ *
+ *
+ *
+*/
 ```
+
+::: warning 提示
+这种内部状态的使用，是许多 FP 编程需要思考的。在面向对象编程中，我们开发人员习惯于存储信息(属性),并将其用于未来的计算。但是，这种用法是,由于被认为是不纯的，因此重复的方法调用可能会返回不同的结果值，尽管传递了相同的参数。OOP 编程，所有状态集中维护在实例本身，就会导致不同方法，偶然性的对实例状态修改。一些工具方法，特别是依赖实例本身状态的，最终功能破坏。
+:::
+
+**参数突变**
+
+> 函数的参数可以传递值，也可以传递引用类型。任何内部的操作，也可以导致参数的改变，特别是引用类型。这是针对非纯函数来说。
+
+例子: 寻找一个字符串数组最大元素
+
+```js
+const maxStr = (a) => a.sort().pop();
+
+let countries = ["Argentina", "Uruguay", "Brasil", "Paraguay"];
+
+console.log("result:", maxStr(countries), "input", countries); // result: Uruguay input (3) ['Argentina', 'Brasil', 'Paraguay']
+// 方法说明，字符串中包括外国字符时，可以使用localCompare方法来解决。
+// 从结果来看，改方法达到了寻最大值的目的。但是产生副作用，修改了外部变量
+// 如果，不使用引用直接使用字面量方法传递，是不会导致副作用。但是在传递引用赋值到函数，函数的参数也是作为内部变量存在。因此也会有副// 作用。副作用表现为如果再次执行函数，此时函数传入函数的参数数组不再是原来的值，而是被上次排序后pop的剩余值。所以这就是内部程序修/// 改了参数变量的，所产生的副作用。
+```
+
+再次执行 maxStr
+
+```js
+maxStr(countries);
+```
+
+再次尝试随机函数的功能:
+
+```js
+function getRandomLetters() {
+  let min = "A".fromCharCode();
+  let max = "Z".fromCharCode();
+
+  return String.fromCharCode(Math.floor(Math.random() * max - min + 1 + min));
+}
+/**
+    函数不接受任何参数，但是会预期会产生不同的输出结果
+*/
+```
+
+::: tip 提示
+js 数学对象随机数方法和一个整数相乘表示随机生成的数字变化范围在指定的整数范围内。
+比如，`Math.random() * n`, 此时随机数范围在, (0 - n)的范围.
+:::
+
+**杂质继承**
+
+```js
+杂质可以通过调用函数来继承。 如果一个函数使用了一个不纯函数，它
+立即变得不纯
+
+```
+
+
+
+
+
+
+
+
