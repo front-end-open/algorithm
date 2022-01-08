@@ -89,8 +89,26 @@ notion: 概念，想法； 突然奇想。
 
 nagetive: 负的，小于零的
 
-### 短语
+inconvenience: 不便，麻烦
 
+convenience: 方便
+
+robust: 强壮的，强健的；健全的；稳固的
+            
+assume: 假设；假定；承担;
+
+parallel: 平行的；并行的
+
+occasion: 时刻，时候
+
+appropriate: 欣赏，奖赏；理解，明白
+
+reduce: 减少，降低；归纳，简化
+
+legibility: 易读性，易辨认
+
+### 短语
+declarative fashion: 声明式风格
 go over: 复习
 finer points：细节;关键点
 some of: 一些
@@ -132,5 +150,8 @@ for the same reason: 同样的道理
 
 futhermore: 而且
 
+keep sth in mind: 记住某事
 
+parallel programming: 并行编程
 
+Most specifically: 更具体的说

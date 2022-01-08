@@ -913,3 +913,9 @@ for (let i = 0; i < uvAttribute.count; i++) {
 }
 uvAttribute.setXY(i, faceUV.x, faceUV.y);
 ```
+
+
+
+
+
+
