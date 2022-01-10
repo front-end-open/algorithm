@@ -94,6 +94,10 @@ inconvenience: 不便，麻烦
 convenience: 方便
 
 robust: 强壮的，强健的；健全的；稳固的
+
+desired: 期望得到的，渴望实现的；
+
+desire: 期望；渴望。
             
 assume: 假设；假定；承担;
 
@@ -155,3 +159,5 @@ keep sth in mind: 记住某事
 parallel programming: 并行编程
 
 Most specifically: 更具体的说
+
+to be frank: 坦白的说

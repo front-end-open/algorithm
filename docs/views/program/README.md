@@ -1543,9 +1543,80 @@ Array.prototype.average = function(){
 }
 ```
  
+::: tip 提示
+第二版的reduce引入了数组和索引`index`,这种做法其实后续会直接更改外部状态数组`arr`。是极力不推荐的用法。所以更好的方式莫过于第一版用法，直接传入回调，传入回调的时候，不再传入索引和数组。并且第一版更具有声明示编程，和数学定义含义。
+:::
 
 
 
+** 计算多个值**
+```javascript
+// 计算几个值的平均值, 为reduce累加器，提供特定的结构体数据
+    const average3 = (arr) => {
+        const sc = arr.reduce((ac, val) => ([ac[0] + val, ac[1]+ 1]),
+            [0, 0])
+   
+        return sc[0] / sc[1]
+    }
+   
+    log(average3(arr), '传入数组结构体')
+   
+    // 传入数组结构体
+    const average4 = (arr) => {
+        const sc =arr.reduce((ac, val) => ({sum: ac.sum + val, count: ac.count + 1}), {sum: 0, count: 0})
+        return sc.sum / sc.count;
+    }
+   
+    log(average4(arr), '传入对象结构体')
+```
+::: tip 说明
+reduce除了提供单个返回值（值类型），还支持提供特定结构体，作为返回。这里的计算多个值，从上面的例子来看，就是一边计算了数组元素总和，并且结算了数组长度。
+:::
+
+**向右规约**
+> 向右规约即使用`reduceRight`方法，从数组末尾到头部进行规约运算。其工作方式同reduce一样。一些特别情况
+
+关联信息管道(pipe)和组合(composition):
+
+原理:
+
+<img src="../../public/img/pipe-composition.png">
+
+例子: 反转字符串
+
+1. 方法一: 借用数据的`split`，`reverse`，`join`方法来实现
+
+```js
+const reverseString = (str) => {
+    return str.split('').reverse().join('');
+}
+
+```
+
+2. 方法二: 使用reduceRight实现
+
+```js
+const reverseString = (str) => {
+    return str.split('').reduceRight((x, y) => x + y, '')
+}    
+
+
+```
+
+3. 方法三: 使用`reduce`, `reverse`
+
+```js
+const reverseString = (str) => {
+    return str.split('').reverse().reduce((x, y) => x + y);
+}
+```
+
+**小结**
+> 后续模拟实现 reduce, reduceRight
+
+
+
+#### Array操作-map
 
 
 
