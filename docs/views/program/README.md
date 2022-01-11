@@ -1617,10 +1617,49 @@ const reverseString = (str) => {
 
 
 #### Array操作-map
+> 映射操作
 
 
 
+##### 从对象中提取数据
+> 利用map从数组对象元素中，映射一部分数据应用其操作
 
+例子: 现在需要计算一个包含一个国家，经纬度信息的对象数组的经纬度平均值。
+
+```js
+let averageLat = average(maker.map(x => x.lat));
+let averageLon = average(maker.map(x => x.lon));
+
+
+// 扩展原型的average();
+
+Array.prototype.average = function() {
+    return this.reduce((x, y) => x + y, 0) / this.length
+}
+
+
+let averageLat2 = maker.map(x => x.lat).average();
+
+
+```
+##### 数值解析
+> map的隐式编程问题
+
+```js
+let strnum = ["123.45", "67.8", "90"]
+let strnum2 = [123.45, "67.8", "-90"]
+log(strnum.map(parseFloat))// success
+log(strnum2.map(parseInt))  // error
+ 
+```
+
+说明: 第二中的转化结果，包含一些NaN值，原因是隐式编程问题，如果不给函数传入参数，parsetInt的第二个参数就会使用，map默认传入的数组，索引等参数，而这写参数在parseInt的第二个基数参数，其对应的数组元素又不是有效的字符元素。所以最好明确传入参数
+
+纠正:
+
+```js
+strnum2.map(x => parseInt(x))   // 默认以十进制转换字符数字。
+```
 
 
 

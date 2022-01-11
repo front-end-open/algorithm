@@ -98,7 +98,10 @@ robust: 强壮的，强健的；健全的；稳固的
 desired: 期望得到的，渴望实现的；
 
 desire: 期望；渴望。
+
+Extract: 提炼，提取
             
+
 assume: 假设；假定；承担;
 
 parallel: 平行的；并行的
