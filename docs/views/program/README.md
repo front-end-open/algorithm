@@ -1661,8 +1661,31 @@ log(strnum2.map(parseInt))  // error
 strnum2.map(x => parseInt(x))   // 默认以十进制转换字符数字。
 ```
 
+##### 使用范围
+> 使用数组方法，生成一个范围数组. 元素可以时数字，字符。
+
+```js
+const range = (start, stop) => {
+    return new Array(stop - start).fill(0).map(v => start + 1)
+}
 
 
+// 测试
+
+log(range(0, 5))
+
+```
+说明：使用`fill(0)`填充的原因是，原因是`map`方法，对于所有undefined值都将直接跳过。
+
+::: tip 提示
+    关于值域的生成，loadash 提供专门的方法。
+:::
+
+**数字值域的应用，实现阶乘**
+```js
+const factorialRange = (n) => range(1, n + 1).reduce((x, y) => x + y, 1);
+
+```
 
 
 
