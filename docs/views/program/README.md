@@ -1687,7 +1687,73 @@ const factorialRange = (n) => range(1, n + 1).reduce((x, y) => x + y, 1);
 
 ```
 
+**使用数值访问方法range, 生成A-Z的字母表**
 
+```js
+const letters = range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map(x => String.fromCharCode(x));
+
+```
+::: tip 提示
+charCodeAt 用于获取字符的ASCII的code
+
+fromCharCode 用于从ASCLII code获取对应的字符
+:::
+
+
+##### reduce 模拟map
+
+```js
+const myMap = (arr, fn) => arr.reduce((x, y) => x.concat(fn(x)), []);
+
+```
+*这里的pollyfill实际就是将输入数组的每一个元素，应用我们自定义的逻辑方法，来对每一个元素做计算处理，然后将结果加入到一个新的数组中*
+
+##### 普通循环方法使用(forEach)
+> 使用该方法，主要来结果map，reduce做循环的更一般化.
+
+
+**一层对象的拷贝**
+
+```js
+
+const cloneObj = (obj) => {
+    const copy = Object.create(proto);
+
+    Object.getOwnPropertyNames(obj).forEach((prop) => {
+        Object.defineProperty(copy, prop, Object.getOwnPropertyDescriptor(obj, prop))
+    })
+
+    return copy;
+
+}
+```
+::: tip 提示
+ 上面的代码也可以使用 展开运算符实现.但这仅仅适用于浅拷贝。
+
+目前的方法隐藏的问题就在于，如果存在原对象存在引用值，那拷贝就是无效的。
+
+:::
+
+
+**阶乘**
+> 利用之前的range和forEach实现
+
+```js
+const factorial = (n) => {
+    let res = 1;
+
+    range(1, n + 1).forEach(x => res *= x);
+
+
+    return res;
+
+}
+```
+
+::: tip 提示
+使用range来生成序列，然后再使用循环forEach求1到n的阶乘，符合平常描述
+range方法改进之处，将头尾的步进数改进。避免不必要的计算。现在通常的所有普通循环完全可以使用forEach代替.
+:::
 
 
 

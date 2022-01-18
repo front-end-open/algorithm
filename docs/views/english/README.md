@@ -100,7 +100,6 @@ desired: 期望得到的，渴望实现的；
 desire: 期望；渴望。
 
 Extract: 提炼，提取
-            
 
 assume: 假设；假定；承担;
 
@@ -113,6 +112,11 @@ appropriate: 欣赏，奖赏；理解，明白
 reduce: 减少，降低；归纳，简化
 
 legibility: 易读性，易辨认
+
+achieve: 达到，实现
+
+
+
 
 ### 短语
 declarative fashion: 声明式风格
