@@ -115,6 +115,12 @@ legibility: 易读性，易辨认
 
 achieve: 达到，实现
 
+logical: 合乎逻辑的
+
+suppose: 假设，认为.
+
+emulate: 仿真，模拟
+
 
 
 
