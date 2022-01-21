@@ -1810,14 +1810,102 @@ let res = accountsData.filter((x) => x.balance < 0).map((x) => x.id);
 
 
 ```
-
-
 #### 搜索数组
+> find, findIndex
+> > find: 查找满足验证函数条件的第一个数组元素。如果没有找到则返回`undeinfed`
+> > findIndex: 工作原理同`find`类似。如果满足条件则返回第一个满足条件的元素的索引，否则返回-1.
+
+对比`findd`, `findIndex`. 类似的查询方法还有，includes, indexOf, 这两个方法，也用来查找指定元素。不过它们的工作原理。是直接指向需要查找的元素，而不是像find,findeIndex那样，设置查找条件。
+
+
+
+使用这四种方法:
+
+```js
+const arr = [1, 2, 3, 4, 5]
+
+// inclues
+
+arr.inclues(2)
+
+// indexOf
+arr.indexOf(3)
+
+// find
+arr.find(v =>  v % 2 === 0)
+
+// findIndex
+arr.findIndex(v => v % 2 === 0)
+
+```
+
+##### 特殊搜索例子
+> 检查一个数字数组是否健全。即是否包含`NaN`.
+
+
+
+```js
+const arr = [1, NaN ,3]
+
+// 注意 ，这里不能直接做类型比较，即，typeof.
+// 因为NaN 本身也是数值类型，并且还不等于自身。
+arr.find(v => isNaN(x))
+
+```
+
+##### 使用reduce模拟find, findIndex
+
+```js
+// find
+/**
+从undefined值开始搜索，如果满足条件，则改变数组累加器的值。
 
 
 
 
+*/
+const myFind = (arr ,fn) => arr.reduce((x, y) => x === undefined && fn(y) ? y : x, undefined) 
 
+
+// findIndex
+// 该方法同find，只是返回的结果值处，返回的是索引
+const myFindIndex = (arr, fn) => arr.reduce((x, y, idx) => x === -1 && fn(y) ? idx  : x, -1)
+
+```
+
+##### 检查反面
+> every函数用于检查数组的元素是否不满足某一条件的情况，类似检查一个数组是否不存在负数的情况
+> > 考虑实现every的反面，none
+
+```js
+// 补充every
+// 在数组原型上补充
+Array.prototype.none = (fn) => {
+    return this.every(v => !fn(v))
+}
+
+```
+说明: 直接修改原型是一个不好的做法，后面使用连接和组合，来改进。
+
+
+### 小结
+
+- 设计范围函数range, 改进要求: 初始化设置列表步长；倒序。
+- CSV(逗号分隔值)实现
+```js
+
+let myData = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
+ let myCSV = dataToCsv(myData); // "1,2,3,4\n5,6,7,8\n9,10,11,12\n"
+```
+
+
+**总结:**
+> 我们开始使用高阶函数，以便展示更多
+声明式的工作方式，使用更短、更具表现力的代码。 我们已经经历了几个
+操作：我们已经看到 .reduce() 和 .reduceRight()，从
+大批; .map()，将函数应用于数组的每个元素； .forEach()，为了简化
+循环； .filter()，从数组中挑选元素； .find() 和 .findIndex()，到
+在数组中搜索，以及 .every() 和 .some()，以验证一般逻辑条件。
 
 
 
