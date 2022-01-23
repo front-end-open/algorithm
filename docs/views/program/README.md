@@ -1909,18 +1909,146 @@ let myData = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
 
 
 
+## 06生产函数-高阶函数
+> 第五章介绍声明式编程，函数式编程同时也属于声明式编程的范畴。声明式编程的分析问题的方式，就是直达问题结果。相较而言，命令式编程就是明确解决问题每一个步骤。声明式编程，重在以函数作为每一个功能个体，来组合解决实际问题。
+
+**高阶函数类型**
+
+- 包装函数： 常见的应用有，日志记录（用于生成日志记录的函数)，计时（用于某函数的时间和性能分析）,记忆化(缓存结果数据，关于这一点在斐波拉契数列中，结果缓存一块已有应用)
+
+- 修改原始函数： 修改原始函数返回新的功能。比如第二章的once函数，在修改原始版本函数过后，新函数版本达到了，仅执行一次函数功能的目的。
+
+- 辅助函数: 常见的比如增强函数功能，将一个函数转换为Promise, 或增强函数功能，或从一个对象解耦出方法，以便我们可以在其他上下文使用该函数。
 
 
 
+#### 包装函数
+> 在不修改原始目标的情况下，增强函数功能为目的。在此还涉及到装饰器，这种模式在不影响原始对象的情况下像对象添加一些行为概念。
+
+> > 包装器在js中，广泛使用。比如常见的值类型，可以通过点方法访问属性和方法。这是js引擎内部为这些不适当的类型创建的类型包装器，但是这些类型包装器只是瞬时的，也就是在无法此程序之后再次使用。在12章中，可以构建更好的类型包装器，使得这些已经被引擎抛弃的包装器得以再次使用。
+
+##### 日志记录
+> 记录函数的执行过程，包括输入参数，函数是否调用。以及最后的返回值。这都需要修改函数本身的代码。
+
+比如：
+```js
+// 正常函数的处理逻辑
+function someFunc(parm1, parm2, parm3) {
+    // do somthing
+}
+
+// 启用日志记录
+function someFunc2(parm1, parm2, parm3) {
+    //进入函数时
+    console.log('entry func', parm1, parm2, parm3)
+    // 函数体代码
+    //
+    let value = parm1 * parm2 // 伪代码
+
+    console.log('exit func', value)
+
+    return value;
+}
+```
+**补充**
+如果函数有多个返回，则需要分别进行日志记录，log等方法。如果仅仅是动态计算表达式，则仅仅需要一个辅助变量去接收结果。
 
 
+##### 以函数式方法进行日志记录
+> 上面记录日志的方式，是直接在原函数进行修改的。这样非常危险，也是容易产生意外的地方，比如副作用。
+>现在以函数式的方式去解决这些问题。记录函数的调用，参数使用，返回值的情况。
 
 
+实现分析: 
+- 记录接收参数
+- 调用原始函数，并捕获它的参数
+- 记录最后的结果值
+- 返回给调度着
 
 
+// 代码实现
+```js
+const addLogging = (fn) => (...args) => {
+   console.log(`entering ${fn.name}: ${args}`);
+   
+   const valuteToReturn = fn(...args);
+
+   console.log(`exit ${fn.name}: ${valuteToReturn}`)
+
+   return valuteToReturn;
+}
+
+```
+
+该日志函数特点:
+
+- 第一条日志记录函数调用情况，函数名和传入参数
+- 调用原函数并将返回值存储起来
+- 第二个日志，记录函数和他的返回值。
+- 返回fn计算的值
+
+::: tip 提示
+对于nodejs应用，也有一些常见的日志功能库，但通过wrapper封装日志函数，以更小的包体积代价，也能达到目的。
+:::
+
+函数组合, 并日志记录:
+
+```js
+function subtract(a, b) {
+    b = changeSign(b);
+
+    return a + b;
+
+}
+
+function changeSign(a) {
+    return -a;
+
+}
+
+subtract = addLogging(subtract);
+
+changeSign = addLogging(changeSign)
+
+let x = subtract(7, 5);
+
+```
+::: tip 提示
+代码中，从新分配了subtract和changeSign。用日志函数包装器包装了他们的原始版本。新的版本将有日志输出功能，并且在不更改原始版本的基础上，实现了包装。现在的日志记录包装函数，还存在缺陷，如果被调用函数存在错误，将不会被捕捉到，而是直接在运行时抛出异常。
+:::
+
+##### 为日志函数添加错误捕获
 
 
+```js
+const addLogging = fn => (...args) => {
+    try{
+       console.log(`entering ${fn.name}: ${...args}`)
+       
+       const valuteToReturn = fn(...args);
 
+       console.log(`exit ${fn.name}: ${valuteToReturn}`)
+    
+       return valuteToReturn;
+    }catch(throwError){
+       console.log(`exiting ${fn.name}: throw ${throwError}`)
+       throw throwError
+    }
+}
+
+```
+
+**TIP**
+> vim 行或者段落移动方法
+
+```bash
+(normal style): startline, endline move targetline
+```
+
+example: 2, 5 move 10; 3 move 7
+
+##### 以更存粹的方式工作
+> 上面的日志函数包含了不存点，`console.log`. 现在为mocha 编写测试
 
 
 
