@@ -121,6 +121,12 @@ suppose: 假设，认为.
 
 emulate: 仿真，模拟
 
+preceding: 先前的，前面的
+
+flexibility: 灵活性；弹性；柔性.
+
+compicate： 使复杂化，使难以理解；使卷入;
+
 
 
 
@@ -174,3 +180,11 @@ parallel programming: 并行编程
 Most specifically: 更具体的说
 
 to be frank: 坦白的说
+
+with this: 这样一来。
+
+behave as expect: 符合预期.
+
+
+
+

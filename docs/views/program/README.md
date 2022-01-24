@@ -2048,7 +2048,8 @@ const addLogging = fn => (...args) => {
 example: 2, 5 move 10; 3 move 7
 
 ##### 以更存粹的方式工作
-> 上面的日志函数包含了不存点，`console.log`. 现在为mocha 编写测试
+> 上面的日志函数包含了不存点，`console.log`, 这样一来，后续的测试，都得建立在明确的功能测试上。而不是完全的黑盒测试。 现在为mocha 编写测试
+
 
 
 
