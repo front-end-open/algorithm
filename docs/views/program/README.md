@@ -2050,6 +2050,120 @@ example: 2, 5 move 10; 3 move 7
 ##### 以更存粹的方式工作
 > 上面的日志函数包含了不存点，`console.log`, 这样一来，后续的测试，都得建立在明确的功能测试上。而不是完全的黑盒测试。 现在为mocha 编写测试
 
+```js
+// mocha + chai + sinonJs
+// 对addLoggingPlus的测试
+
+describe("a logging function", function() {
+ it("should log twice with well behaved functions", () => {
+ let something = (a, b) => `result=${a}:${b}`;
+ something = addLogging(something);
+ spyOn(window.console, "log");
+ something(22, 9);
+ expect(window.console.log).toHaveBeenCalledTimes(2);
+ expect(window.console.log).toHaveBeenCalledWith(
+ "entering something: 22,9"
+ );
+ expect(window.console.log).toHaveBeenCalledWith(
+ "exiting something: result=22:9"
+ );
+ });
+ it("should report a thrown exception", () => {
+ let thrower = (a, b, c) => {
+ throw "CRASH!";
+ };
+ spyOn(window.console, "log");
+ expect(thrower).toThrow();
+ thrower = addLogging(thrower);
+ try {
+ thrower(1, 2, 3);
+ } catch (e) {
+ expect(window.console.log).toHaveBeenCalledTimes(2);
+ expect(window.console.log).toHaveBeenCalledWith(
+ "entering thrower: 1,2,3"
+ );
+ expect(window.console.log).toHaveBeenCalledWith(
+ "exiting thrower: threw CRASH!"
+ );
+ }
+ });
+});
+
+
+```
+::: tip 提示
+说明： 由于日志函数中包含了，不纯函数点`console.log`,导致测试的时候，就必须监听console.log方法。进而无法完全进行单元测试（BDD）
+:::
+
+对于这种不存函数，完全可以在不纯函数一章节展开解决，即将不纯因素，作为外部参数，传入包装函数内部.
+
+```js
+
+// 脏函数注入,改进 addLogging
+const addLogginInjection = (fn, logger = console.log) => (...args) => {
+    logger(`entering ${fn.name}: ${args}`)
+    
+    try{
+        const valuteToReturn = fn(...args);
+        logger(`${exiting ${fn.name}: ${valuteToReturn}`);
+        return valuteToReturn;
+    }catch(e) {
+        logger(`exiting ${fn.name}: ${e}`);
+        throw e;
+
+    }
+}
+
+
+
+
+
+```
+
+::: tip 提示
+现在经过改进，日志`console.log`不纯点, 已经从日志函数`addLogging`内部剥离。有一个问题点是，外部传入的打日志的方法，仍就是js内置的`console.log`方法。如果还是传入这个方法，那么桶上面的`addLogging`版本还是一样的结果。
+:::
+
+
+::: tip 总结
+正如上面的例子，日志函数`addLogging`, 因为引入的console.log， 导致测试变得困难。基于这一点思考，当应用FP技术时，如果开发某一函数功能，使得测试变得困难时，应该采取积极方法，修改源功能函数版本。修复不纯函数点。
+:::
+
+
+##### 计时
+> 另一个包装函数应用点时，记录函数的调用和调用时间
+
+::: tip 提示 
+代码优化时机, 在程序开发初期，尽量不要再没有经过测试的情况下，对代码随意进行优化。
+:::
+
+开始,编写一个时间记录包装器辅助函数。
+
+```js
+
+// logger
+const myLogger = (msg, fnName, tStart, tEnd) => console.log(`${name} - ${text} ${tStart - tEnd}ms`);
+
+// const myGet = performance.now();
+
+const addTiming = (fn, getTime = myGet, output = myPut) => (...args) => {
+    let tStart = getTime();
+    try{
+        const valuteToReturn = fn(...args);
+        output(`normal exit`, fn.name, tStart, getTime);
+
+        return valuteToReturn;
+    }catch(e) {
+        output(`expection thrown`, fn.name, tStart, tEnd);
+
+        throw e;
+    }
+
+}
+
+```
+
+
 
 
 
