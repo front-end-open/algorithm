@@ -2163,9 +2163,43 @@ const addTiming = (fn, getTime = myGet, output = myPut) => (...args) => {
 
 ```
 
+::: tip 说明
+时间记录函数同样应用了上一节中的包装器，以注入了不纯的`console.log`, 便于测试。
+:::
 
 
+**task**
+生成高阶函数，用于包装addLogging, addTiming 等函数
 
+#### 记忆
+> 之前第四章节，讨论了纯函数，涉及关于斐波拉契数列返回值缓存版本函数。现在讨论只有单个参数的情况，后续的结构体参数，比如，数组，对象的函数，后续在讨论。
+
+::: tip 提示
+js原始值有六个, number, boolean, string, null, symbol, undefined. 他们作为完全的值类型，不带对象的方法属性。其中前四个，作为实际参数使用。
+:::
+
+##### 简单的记忆
+
+接收单个参数的斐波拉契数列函数
+
+```js
+function fib(n) {
+    if(n === 0) return 0
+    if(n === 1) return 1
+
+    if(n > 1) return fib(n - 2) + fib(n - 1)
+}
+
+```
+为斐波拉契函数应用记忆化: 之前应用记忆化，在概念上与现在实现记忆化是相同的，只是前者在于必须修改远函数版本。现在，我们通过以包装函数的身份来封装实现记忆化辅助函数。
+
+```js
+const memoize = (fn) => {
+    let cache = {}
+
+    return x => (x in cache ? cache[x] : (cache[x] = fn(x)));
+}
+```
 
 
 

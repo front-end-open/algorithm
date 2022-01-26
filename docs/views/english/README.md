@@ -127,8 +127,9 @@ flexibility: 灵活性；弹性；柔性.
 
 compicate： 使复杂化，使难以理解；使卷入;
 
+reasonable: 有道理的，合理的
 
-
+primitive： 原始的，远古的
 
 ### 短语
 declarative fashion: 声明式风格
@@ -185,6 +186,9 @@ with this: 这样一来。
 
 behave as expect: 符合预期.
 
+attempt to do: 尝试做
 
+note that: 请注意
 
+primitive value: 原始值
 
