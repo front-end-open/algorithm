@@ -131,6 +131,9 @@ reasonable: 有道理的，合理的
 
 primitive： 原始的，远古的
 
+
+
+
 ### 短语
 declarative fashion: 声明式风格
 go over: 复习
@@ -191,4 +194,6 @@ attempt to do: 尝试做
 note that: 请注意
 
 primitive value: 原始值
+
+exponential growth: 指数增长
 
