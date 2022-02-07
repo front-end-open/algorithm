@@ -131,6 +131,7 @@ reasonable: 有道理的，合理的
 
 primitive： 原始的，远古的
 
+unary: 一元
 
 
 
