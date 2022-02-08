@@ -916,6 +916,185 @@ uvAttribute.setXY(i, faceUV.x, faceUV.y);
 
 
 
+## 层级模型
+> 场景的模型对象，就是由一个个单一模型组合而成。参照html的元素构建的dom数。threejs中的模型也是由一个个模型对象构成的，这些单一的模型可以通过id或name去选择。threejs中，通过group去组织各个模型。
+
+知识点脑图:
+
+<img src="../public/img/group.png">
+
+
+### Group对象
+> 通过Group类实例化组对象。整个场景中，scene负责场景的根节点。然后是Group组织旗下的叶子网格模型等。最后再是与网格模型的同级节点的光源，材质等对象的组织。一个模型要想在场景中渲染出来，需要添加到场景中，通过基类Object3D的add方法来添加。
+
+#### 模型对象的删除与添加方法
+
+- add
+- remove
+
+::: tip 提示
+移除添加子对象的本质就是操作子对象的相对父对象的children数列。
+:::
+
+### 层级模型节点的遍历，查找，命名
+
+#### 通过name属性为模型对象添加标记，用来表示子模型对象在整体模型中，所占据的位置。
+
+```js
+// 伪代码
+group.name = '头'
+
+// 网格模型
+mesh.name = '眼睛'
+
+```
+
+#### 树结构层级模型
+> 实际开发中，会加载外部模型，然后通过树结构中的节点的name属性去获取子模型对象.
+
+**加载机器人模型**
+
+```js
+
+// 球体网格模型函数
+      function sphereMesh(R, x, y, z) {
+        let geometry = new THREE.SphereGeometry(R, 25, 25);
+        let metarial = new THREE.MeshPhongMaterial({
+          color: 0x0000ff,
+        });
+
+        let mesh = new THREE.Mesh(geometry, metarial);
+
+        mesh.position.set(x, y, z);
+
+        return mesh;
+      }
+
+      // 圆柱体网格模型构建函数
+      function cylinderMesh(R, h, x, y, z) {
+        let geometry = new THREE.CylinderGeometry(R, R, h, 25, 25); //球体几何体
+        let material = new THREE.MeshPhongMaterial({
+          color: 0x0000ff,
+        }); //材质对象Material
+
+        let mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+
+        mesh.position.set(x, y, z);
+
+        return mesh;
+      }
+
+      let panel = document.getElementById("panel");
+
+      let renderer = new THREE.WebGLRenderer({
+        canvas: panel,
+      });
+
+      renderer.setClearColor(0x888888);
+      renderer.setSize(window.innerWidth, window.innerHeight, false);
+
+      let camera = new THREE.PerspectiveCamera(
+        100,
+        window.innerWidth / window.innerHeight,
+        1,
+        1000
+      );
+
+      let scene = new THREE.Scene();
+
+      camera.position.set(100, 500, 100); // 设置相机所在位置
+      camera.lookAt(new THREE.Vector3(0, 0, 0)); // 设置相机观察方向
+
+      scene.add(camera);
+
+      //  创建模型
+      // 头部子模型
+      let headMesh = sphereMesh(10, 0, 0, 0);
+      headMesh.name = "脑壳";
+      let leftEyeMesh = sphereMesh(1, 8, 5, 4);
+      leftEyeMesh.name = "左眼";
+      let rightEyeMesh = sphereMesh(1, 8, 5, -4);
+      rightEyeMesh.name = "右眼";
+      // 头部组
+      let headGroup = new THREE.Group();
+      headGroup.name = "头部";
+      headGroup.add(headMesh, leftEyeMesh, rightEyeMesh);
+
+      // 身体网格模型和组
+      let neckMesh = cylinderMesh(3, 10, 0, -15, 0);
+      neckMesh.name = "脖子";
+      let bodyMesh = cylinderMesh(14, 30, 0, -35, 0);
+      bodyMesh.name = "腹部";
+      let leftLegMesh = cylinderMesh(4, 60, 0, -80, -7);
+      leftLegMesh.name = "左腿";
+      let rightLegMesh = cylinderMesh(4, 60, 0, -80, 7);
+      rightLegMesh.name = "右腿";
+      let legGroup = new THREE.Group();
+      legGroup.name = "腿";
+      legGroup.add(leftLegMesh, rightLegMesh);
+
+      let bodyGroup = new THREE.Group();
+      bodyGroup.name = "身体";
+      bodyGroup.add(neckMesh, bodyMesh, legGroup);
+
+      // 人Group
+      let personGroup = new THREE.Group();
+      personGroup.name = "人";
+      personGroup.add(headGroup, bodyGroup);
+      personGroup.translateY(50);
+
+      scene.add(personGroup);
+
+      let ambientLight = new THREE.AmbientLight(0xffffff);
+      scene.add(ambientLight);
+
+      const axesHelper = new THREE.AxesHelper(600);
+      scene.add(axesHelper);
+
+      function render() {
+        renderer.render(scene, camera);
+      }
+
+      render();
+
+      let controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.addEventListener("change", render);
+```
+::: tip 提示
+ 通过组对象，组织模型对象自己就可以构建上面的机器人模型
+:::
+
+#### 递归遍历算法traverse
+> 通过此方法，可以编译创建的模型对象
+
+```js
+// 上面的机器人模型
+scene.traverse(function(obj) {
+    if(obj.type === 'Group'){
+        console.log(obj.name)
+    }
+
+    if(obj.type === 'Mesh') {
+        console.log(' ' + obj.name);
+        obj.material.color.set(0xffff00);
+    }
+
+    if(obj.name === '左眼' || obj.name === '右眼') {
+        obj.material.color.set(0x000000);
+    }
+
+    console.log(obj.id)
+
+    console.log(obj.parent)
+
+    console.log(obj.children);
+})
+```
+
+#### 模型树节点查找
+> 通过Object3D基类上的查询方法，用来查找特定的节点. 比如， getObjectById, getObjectByName
+
+
 
 
 

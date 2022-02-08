@@ -1066,16 +1066,16 @@ js 数学对象随机数方法和一个整数相乘表示随机生成的数字�
 ```js
 // 老版本函数
 //  未被纯函数要求，接年年依赖一个外部变量
-let limitYear = 2000
+let limitYear = 2000;
 const isOldEnough = (ownerYear) => {
-    return ownerYear - 18 < limitYear
-}
+  return ownerYear - 18 < limitYear;
+};
 
 // 新版本
 
 const isOleEnough = (ownerYear) => {
-    return ownerYear < new Date() - 18;
-}
+  return ownerYear < new Date() - 18;
+};
 
 /**
  现在的函数踢出了直接对外部全局变量的使用。
@@ -1084,22 +1084,23 @@ const isOleEnough = (ownerYear) => {
 */
 ```
 
-
 **其他导致函数不纯的实际:**
-> 包括IO操作，比如文件读取，web服务的访问，用户输入等。这些I/O操作都不可避免导致不纯结果。但并不是这些读取I/O的函数不可用，仍然可以有解决办法.
 
+> 包括 IO 操作，比如文件读取，web 服务的访问，用户输入等。这些 I/O 操作都不可避免导致不纯结果。但并不是这些读取 I/O 的函数不可用，仍然可以有解决办法.
 
 **纯函数优点**
+
 > 纯函数最大特点就是，对于给定的任何外部参数，函数都会无副作用处理，并返回预定的结果。而且不用担心函数在执行过程中，产生任何外部影响。
 
 - 执行顺序(order of execution)
-> 调度纯函数时，可以无关乎函数的执行顺序。不管是并行还是单线程方式使用。只要保证最终结果不会不同于单线程执行结果。
+  > 调度纯函数时，可以无关乎函数的执行顺序。不管是并行还是单线程方式使用。只要保证最终结果不会不同于单线程执行结果。
 
 ::: tip 提示
-由于js引擎本身是单线程方式运作的，所以如果需要并行编程，即使用多线程，限制非常多。解决办法是，可以采用web worker;也可以使用nodejs的集群(cluster)模块，来开辟多个进程。单这并不是最好的方案。在js中，并行化并不是FP编程的主要优势.
+由于 js 引擎本身是单线程方式运作的，所以如果需要并行编程，即使用多线程，限制非常多。解决办法是，可以采用 web worker;也可以使用 nodejs 的集群(cluster)模块，来开辟多个进程。单这并不是最好的方案。在 js 中，并行化并不是 FP 编程的主要优势.
 :::
 
 **调用顺序**
+
 > 另外关于纯函数使用需要注意的一点是，真正的纯函数在使用时，是与调用顺序无关的。即使使用表达式`f(2) + f(5)`,交换顺序,`f(5) + f(2)`.表达式最终结果是一致的。而使用纯函数就不一定了。
 
 例如:
@@ -1108,70 +1109,67 @@ const isOleEnough = (ownerYear) => {
 let mult = 1;
 
 const f = (x) => {
-    mult = -mult;
+  mult = -mult;
 
-    return x * mult;
-
-}
+  return x * mult;
+};
 
 // execution: test
 
-f(2) + f(5) // 3
+f(2) + f(5); // 3
 // 交换顺序
 
-f(5) + f(2) // -3
+f(5) + f(2); // -3
 
 /**
  从上面测试结果来看，两次表达式，其中函数调用交换顺序后的执行结果，是明显不一致的。
 */
-
 ```
+
 总结：这一点与熟记的数学性质是相违背的，比如两个相同的表达式，使用交换性质时，两个表达式的最终的结果是一致的。使用纯函数这是刚好合适的。但是使用非纯函数时，就不一定了。
 
-
 - 记忆化（Memoization）
-> 纯函数对于每次相同的输入产生相同的结果。以此可以缓存第一次表达式计算的结果，避免昂贵的从新计算。为以后的调用缓存结果，后续使用可以直接从缓存读取结果。
-
+  > 纯函数对于每次相同的输入产生相同的结果。以此可以缓存第一次表达式计算的结果，避免昂贵的从新计算。为以后的调用缓存结果，后续使用可以直接从缓存读取结果。
 
 缓存使用: 计算斐波拉契数列，并缓存每一次计算结果.
 
 缓存序列模型:
+
 ```js
 for, n = 0, fib(n) = 0;
 for, n = 1, fib(n) = 1;
 for, n > 1, fib(n) = fib(n - 2) + fib(n - 1)
 
 ```
+
 实现
 
 ```js
 // 计算前n项，斐波拉契数列
 const fib = (n) => {
-  if(n < 0 || typeof n != 'number') return  console.warn('n is number, and n less than 0');
-    
-  if(n === 0) return 0;
+  if (n < 0 || typeof n != "number")
+    return console.warn("n is number, and n less than 0");
 
-  if(n === 1)  return 1;
+  if (n === 0) return 0;
 
-  if(n > 1) {
-    return fib(n - 2) + fib(n - 1)
+  if (n === 1) return 1;
+
+  if (n > 1) {
+    return fib(n - 2) + fib(n - 1);
   }
-}
+};
 
 // 简便方法
-const fib2 = (n) => n > 1 ? fib2(n - 1) + fib2(n - 2) : n; 
+const fib2 = (n) => (n > 1 ? fib2(n - 1) + fib2(n - 2) : n);
 ```
 
-性能统计:关于fib随n的递归执行时间
+性能统计:关于 fib 随 n 的递归执行时间
 
- 分析fib(6)递归执行过程:
-
- 
+分析 fib(6)递归执行过程:
 
  <img src="../../public/img/fib-excution.png" />
 
-按如图执行过程来看，函数每次递归都得重复执行fib(2), f(3). 这是造成延时调用的结果。而fib作为纯函数，对于每次输入结果，会返回相同结果。尝试保存需要重复计算的部分。
-
+按如图执行过程来看，函数每次递归都得重复执行 fib(2), f(3). 这是造成延时调用的结果。而 fib 作为纯函数，对于每次输入结果，会返回相同结果。尝试保存需要重复计算的部分。
 
 **斐波拉契数列记忆化**
 
@@ -1184,24 +1182,22 @@ const fib2 = (n) => n > 1 ? fib2(n - 1) + fib2(n - 2) : n;
 2. 缓存结果后，再返回结果
 3. 向下递归，如果需要再次使用相同的输入的结果，则从缓存使用。
 */
-let cache = []
+let cache = [];
 
 const fib2 = (n) => {
-    
-    if(cache[n] === undeinfed) {
-        if(n === 0) cache[n] = 0;
-        if(n === 1) cache[n] = 1;
-        if(n > 1) cache[n] = fib2(n - 2) + fib2(n - 1)
-   
-   }
-    
-    return cache[n];
-}
+  if (cache[n] === undeinfed) {
+    if (n === 0) cache[n] = 0;
+    if (n === 1) cache[n] = 1;
+    if (n > 1) cache[n] = fib2(n - 2) + fib2(n - 1);
+  }
+
+  return cache[n];
+};
 
 // 对比第一版的fib，两者执行时间:
 
-executeTime(fib(10)) // 0.145ms
-executeTime(fib2(10)) // 0.034ms
+executeTime(fib(10)); // 0.145ms
+executeTime(fib2(10)); // 0.034ms
 
 // 可以看到，经过缓存优化后的函数明显提升了性能
 ```
@@ -1217,32 +1213,31 @@ executeTime(fib2(10)) // 0.034ms
 2. 缓存结果后，再返回结果
 3. 向下递归，如果需要再次使用相同的输入的结果，则从缓存使用。
 */
-let cache = []
+let cache = [];
 
 const fib2 = (n) => {
-    
-    if(cache[n] === undeinfed) {
-        if(n === 0) cache[n] = 0;
-        if(n === 1) cache[n] = 1;
-        if(n > 1) cache[n] = fib2(n - 2) + fib2(n - 1)
-   
-   }
-    
-    return cache[n];
-}
+  if (cache[n] === undeinfed) {
+    if (n === 0) cache[n] = 0;
+    if (n === 1) cache[n] = 1;
+    if (n > 1) cache[n] = fib2(n - 2) + fib2(n - 1);
+  }
+
+  return cache[n];
+};
 // 优化，隐藏全局变量-缓存
 const fib3 = (() => {
-    //    隐藏全局缓存变量
-    let cache = []
-    
-    //  复用上面的fib2递归逻辑
-    return function(n) {
-        fib2(n)
-    }
-})()
+  //    隐藏全局缓存变量
+  let cache = [];
 
+  //  复用上面的fib2递归逻辑
+  return function (n) {
+    fib2(n);
+  };
+})();
 ```
+
 **总结**
+
 1. 上面的递归缓存优化，是通过手动的方式实现。还可以通过高阶函数来实现，高阶函数方式来实现缓存，完全不需要特意注重缓存的使用，是一种比较灵活的方式。
 
 2. 使用全局变量来缓存上面的递归输出结果，是一种不好的实践。上面通过高阶函数闭包的方式，来隐藏全局变量`cache`, 避免副作用。
@@ -1250,36 +1245,37 @@ const fib3 = (() => {
 3. 采用缓存管理非必须。不用在每一个纯函数处进行缓存。只在需要高频使用的地方，并且对性能要求高的，可以采用缓存管理。否则只会增加缓存管理时间。
 
 - 函数文档化(self-documention):
-> FP编程中，遵从其规范，一个函数只做一件事儿。这一点体现于，一个纯函数可以通过其名称（语义化），或者其参数，一目了然知道这个函数有什么作用，能够完成什么功能。
->> 更好了解一个函数的功能，还可以通过完善的单元测试示列.
+  > FP 编程中，遵从其规范，一个函数只做一件事儿。这一点体现于，一个纯函数可以通过其名称（语义化），或者其参数，一目了然知道这个函数有什么作用，能够完成什么功能。
+  >
+  > > 更好了解一个函数的功能，还可以通过完善的单元测试示列.
 
 ### 测试(Testing)
-> FP函数的单环测试，是很重要得。除非你不需要类似注释方式，来了解函数的使用规则。严格按照无副作用的规则，来实现函数，即纯函数。纯函数的所有工作，依赖其输入参数，在编写单元测试时，可以无需考虑外部依赖，可以有效提高测试难度。
+
+> FP 函数的单环测试，是很重要得。除非你不需要类似注释方式，来了解函数的使用规则。严格按照无副作用的规则，来实现函数，即纯函数。纯函数的所有工作，依赖其输入参数，在编写单元测试时，可以无需考虑外部依赖，可以有效提高测试难度。
 
 关于脏函数和纯函数的单元测试，待补充......
 
-
-
 ### 关于非纯函数
-> 在真正的应用程序中，不可能完全避免副作用的产生。如果是那样，应用最终只能是以硬编码的方式工作的，不能有任何可变化的结果。同时也不能使用服务端的I/O,或者服务端的javascript, 再或者DOM更新等。
->> 所以说完全的无作用只能是理想的情况，也可以说是FP编程的理想目标，但在现实中，不肯能完全体现。
 
+> 在真正的应用程序中，不可能完全避免副作用的产生。如果是那样，应用最终只能是以硬编码的方式工作的，不能有任何可变化的结果。同时也不能使用服务端的 I/O,或者服务端的 javascript, 再或者 DOM 更新等。
+>
+> > 所以说完全的无作用只能是理想的情况，也可以说是 FP 编程的理想目标，但在现实中，不肯能完全体现。
 
 ###### 避免脏函数(impure function)
+
 > 脏函数不可以完全避免，只能尽量较少使用数量。
 
-
 - 避免使用全局状态
-解决方法 ：
+  解决方法 ：
 
 1. 全局状态作为参数传递给函数, 而不是直接在函数内部使用
 2. 如果函数需要更新状态，应该为变量提供副本，不能直接修改变量。
 3. 函数调用者可以获取调用结果，或者更新全局状态(?)
 
-
 **全局状态作为参数传入函数**
-1. 更新isOldEnough函数
-2. 更新roundFix
+
+1. 更新 isOldEnough 函数
+2. 更新 roundFix
 
 isOldEnough
 
@@ -1288,45 +1284,43 @@ isOldEnough
 const isOldEnough = (currentYear, birthYear) => birthYear <= currentYear - 18;
 // 这种方式避免了对全局依赖的使用，转而带来的问题是，每次都需要为调用者初始化limitYear(currentYear). 这种可以通过柯里化*（curring),或者使用函数式的部分应用方法(Partial)
 ```
+
 **状态管理**
 
 ```js
-
 // 重构isOldEnough, roundFix
 
-
 // isOldEnough
-const R = require('ramda');
+const R = require("ramda");
 
 const isOldEnough = (currentYear, birthYear) => {
-    return birthYear <= currentYear - 18
-}
+  return birthYear <= currentYear - 18;
+};
 // 如果需要使用isOldEnough函数，每次都需要初始化currentYear
 // 柯里化,重构
 // 使用isOldEnough
 let log = console.log;
-const currentOldFunc = R.curry(isOldEnough)
+const currentOldFunc = R.curry(isOldEnough);
 const oldYear = currentOldFunc(new Date().getFullYear());
 
-log(oldYear(1988)) // true
+log(oldYear(1988)); // true
 
 /**
  * 借助Ramda实现函数柯里化，不用每次调用重复初始化limitYear
- * 
  *
  *
-    * */
+ *
+ * */
 
 // 现在使用Partial,重构isOldEnough
 
-const initLimitYear = R.partial(isOldEnough, [new Date().getFullYear()])
+const initLimitYear = R.partial(isOldEnough, [new Date().getFullYear()]);
 
-log(initLimitYear(1998)) // true
+log(initLimitYear(1998)); // true
 
-log(initLimitYear(2005)) // false
+log(initLimitYear(2005)); // false
 
-log(initLimitYear(2004)) // true
-
+log(initLimitYear(2004)); // true
 
 // 重构roundFix
 // 重构思路：分离舍入与accu条件部分的逻辑. 将局部状态accu作为参数传入函数
@@ -1334,44 +1328,39 @@ log(initLimitYear(2004)) // true
 
 let accumulator = 0;
 
-
 const roundFix = (a, n) => {
-    let r = a > 0 ? Math.ceil(n) : Math.floor(n)
-    a += n - r;
+  let r = a > 0 ? Math.ceil(n) : Math.floor(n);
+  a += n - r;
 
-    return {a, r}
-}
+  return { a, r };
+};
 
 // test
-var {a, r} = roundFix(accumulator, 3.142);
+var { a, r } = roundFix(accumulator, 3.142);
 accumulator = a;
 
-console.log(accumulator, r)
+console.log(accumulator, r);
 
-var {a, r} = roundFix(accumulator, 2.12);
-
-accumulator = a;
-
-log(accumulator, r)
-
-
-var {a, r} = roundFix(accumulator, 2.12);
+var { a, r } = roundFix(accumulator, 2.12);
 
 accumulator = a;
 
-log(accumulator, r)
+log(accumulator, r);
 
+var { a, r } = roundFix(accumulator, 2.12);
 
+accumulator = a;
+
+log(accumulator, r);
 ```
 
-::: tip 总结 
+::: tip 总结
 将全局状态或者局部状态作为传入到函数内部，避免函数内部直接对状态的依赖。全局或者局部状态，依赖函数调用者。
 :::
 
 ##### 注入脏函数
-> impure继承性，导致一些纯函数在调用其他函数时，也会变得不纯。解决办法是，将这些内部调用的脏函数，通过参数传入函数内部。这种技术是灵活的，对于以后的修改也变得灵活，同时方便单元测试
 
-
+> impure 继承性，导致一些纯函数在调用其他函数时，也会变得不纯。解决办法是，将这些内部调用的脏函数，通过参数传入函数内部。这种技术是灵活的，对于以后的修改也变得灵活，同时方便单元测试
 
 复现该问题，采用之前的随机生成文件名的函数
 
@@ -1391,7 +1380,7 @@ let getRandomFileName = (fileExtensions = '.js') {
     for(let i = 0; i < _NAME_LENGTH; i++) {
         res.push(getRandomLetters())
     }
-    
+
     return res.join('') + fileExtensions;
 }
 
@@ -1399,9 +1388,8 @@ let getRandomFileName = (fileExtensions = '.js') {
 
 分析：
 
-可以直观的看到，```getRandomFileName```函数内部依赖了脏函数```getRandomLetters```用来生成文件名.导致现在的```getRandomFileName```
+可以直观的看到，`getRandomFileName`函数内部依赖了脏函数`getRandomLetters`用来生成文件名.导致现在的`getRandomFileName`
 成为脏函数.
-
 
 解决：使用参数的方式，替换内部的函数
 
@@ -1410,17 +1398,18 @@ let getRandomFileName = (fileExtensions = '.js') {
     @param fileExtensions string 文件后缀
     @param randomLetterFunc Function 随机函数
 */
-const getRandomFileName = (fileExtensions = '.js', randomLetterFunc) => {
-    let _NAME_LENGTH = 12;
+const getRandomFileName = (fileExtensions = ".js", randomLetterFunc) => {
+  let _NAME_LENGTH = 12;
 
-    const res = [];
+  const res = [];
 
-    for(let i = 0; i < _NAME_LENGTH; i++) {
-        res.push(randomLetterFunc())
-    }
-    return res.join('') + fileExtensions;
-}
-````
+  for (let i = 0; i < _NAME_LENGTH; i++) {
+    res.push(randomLetterFunc());
+  }
+  return res.join("") + fileExtensions;
+};
+```
+
 ::: tip 总结
 通过注入的方式，解除外部函数内部对脏函数的直接使用，便于测试，通过参数的方式传入到函数内部。并且可以广泛应用于其他问题。
 例如，我们可以不让函数直接访问 DOM，而是为它提供
@@ -1429,41 +1418,43 @@ const getRandomFileName = (fileExtensions = '.js', randomLetterFunc) => {
 DOM
 :::
 
-
 #### 是否纯函数
-> 一个函数是否是纯函数，从输入参数与其对应的输出结果入手。但同时需要考虑边缘情况。即js非强类型语言。
+
+> 一个函数是否是纯函数，从输入参数与其对应的输出结果入手。但同时需要考虑边缘情况。即 js 非强类型语言。
 
 ```js
 // 该方法，咋一看获取是纯函数。因为它的输出取决于输入。
 // 但这只取决于参数是简单的值类型。如果变为引用类型情况就复杂了。
-const sum = (x, y, z) => x + y + z
-
+const sum = (x, y, z) => x + y + z;
 ```
-
 
 ### 章节总结:
 
 遗留问题:
 
-1. 简约方式:j计算斐波拉契数列
+1. 简约方式:j 计算斐波拉契数列
+
 ```js
-const fib = (n) => n < 2 ? n : fib(n - 1) + fib(n - 2)
+const fib = (n) => (n < 2 ? n : fib(n - 1) + fib(n - 2));
 ```
 
 2. 简便优化斐波拉契数列函数写法:
+
 ```js
 const fib = (n, a, b) => (n === 0 ? a : fib(n - 1, b, a + b));
-
 ```
- I: 特点是缓存结果,避免重复计算 
+
+I: 特点是缓存结果,避免重复计算
 
 ## 05.声明式编程(Programming Declaratively)
-> FP范式，本质也是声明式编程。在js中，主要使用高阶函数来工作，即HOF（将函数作为参数传递）。
+
+> FP 范式，本质也是声明式编程。在 js 中，主要使用高阶函数来工作，即 HOF（将函数作为参数传递）。
 
 常见的高阶函数:
+
 1. `reduce`, `reduceRight`将整个操作应用到一个结果。
-2. map数组转换为其他结果。其参数传入一个函数应用到数组的每一个元素.
-3. forEach抽象循环代码
+2. map 数组转换为其他结果。其参数传入一个函数应用到数组的每一个元素.
+3. forEach 抽象循环代码
 4. filter 选择一些元素从数组中
 5. `find`,`findIndex`根据条件从数组中搜索一些元素
 6. `some`, `ever`数组的布尔检测
@@ -1475,24 +1466,21 @@ const fib = (n, a, b) => (n === 0 ? a : fib(n - 1, b, a + b));
 循环，我们宁愿专注于使用函数作为构建块来指定我们想要的结果。
 :::
 
-
-*除此之外，还有链式调用风格(fluent fashion): 本质时将函数执行结果作为下一个方法的参数传递*
-
+_除此之外，还有链式调用风格(fluent fashion): 本质时将函数执行结果作为下一个方法的参数传递_
 
 ### 变换使用
+
 > 从一个数组开始，开始使用上面的高阶函数列表
 
-
 #### Reduce 一个数组
+
 > reduce, reduceRight
 
-
 ::: tip 提示
-在FP说法中, 两个函数是折叠操作的意思。reduce是普通的折叠（fold）,向左折叠。而reduceRight是向右折叠的意思,对称折叠，相对于foler. 在范畴轮术语中，两种操作本质是变形，用于将一个容器中的所有值折叠为单个值。
+在 FP 说法中, 两个函数是折叠操作的意思。reduce 是普通的折叠（fold）,向左折叠。而 reduceRight 是向右折叠的意思,对称折叠，相对于 foler. 在范畴轮术语中，两种操作本质是变形，用于将一个容器中的所有值折叠为单个值。
 :::
 
-
-- reduce工作原理示意图
+- reduce 工作原理示意图
 
 <img src="../../public/img/reduce.png">
 
@@ -1509,72 +1497,74 @@ const arr = [2, 5, 12, 40, 50, 12];
 // 二元函数sum,用于reduce求和的第一个参数
 const sum = (x, y) => x + y;
 
-arr.reduce(sum, 0)
+arr.reduce(sum, 0);
 ```
-说明: 上面的方法实际并不需要单独声明求和函数，仅仅在reduce的参数处，直接做函数声明即可。其实这样做的目的，使得代码可读性提高。这里的外部的函数声明，也在传达一个观点，即声明的式的函数编程。在编程中，更加关注于做什么(what)而不是怎么做(how)。
 
+说明: 上面的方法实际并不需要单独声明求和函数，仅仅在 reduce 的参数处，直接做函数声明即可。其实这样做的目的，使得代码可读性提高。这里的外部的函数声明，也在传达一个观点，即声明的式的函数编程。在编程中，更加关注于做什么(what)而不是怎么做(how)。
 
 - 求数字序列平均值
-> 思考：如果向某人解释：先对数组元素求和，然后除以数组元素长度。这在编程中，不是一个程序描述，而是一个声明式的。因为描述了做什么，而不是怎么做。
+  > 思考：如果向某人解释：先对数组元素求和，然后除以数组元素长度。这在编程中，不是一个程序描述，而是一个声明式的。因为描述了做什么，而不是怎么做。
 
- 
 更接近描述的版本:
 
 ```js
-const average = (arr) => arr.reduce((x, y) => x + y, 0) / arr.length
-
+const average = (arr) => arr.reduce((x, y) => x + y, 0) / arr.length;
 ```
 
 第二版本
 
 ```js
-
-const average2 = (arr) => arr.reduce((sum, val, index, arr) => {
+const average2 = (arr) =>
+  arr.reduce((sum, val, index, arr) => {
     sum += val;
 
-    return index == arr.length - 1 ? sum / arr.length  : sum
- }, 0)
+    return index == arr.length - 1 ? sum / arr.length : sum;
+  }, 0);
 ```
+
 扩展原型:
 
 ```js
-Array.prototype.average = function(){
-    return this.reduce((x, y) => x + y, 0) / this.length
-}
+Array.prototype.average = function () {
+  return this.reduce((x, y) => x + y, 0) / this.length;
+};
 ```
- 
+
 ::: tip 提示
-第二版的reduce引入了数组和索引`index`,这种做法其实后续会直接更改外部状态数组`arr`。是极力不推荐的用法。所以更好的方式莫过于第一版用法，直接传入回调，传入回调的时候，不再传入索引和数组。并且第一版更具有声明示编程，和数学定义含义。
+第二版的 reduce 引入了数组和索引`index`,这种做法其实后续会直接更改外部状态数组`arr`。是极力不推荐的用法。所以更好的方式莫过于第一版用法，直接传入回调，传入回调的时候，不再传入索引和数组。并且第一版更具有声明示编程，和数学定义含义。
 :::
 
-
-
 ** 计算多个值**
+
 ```javascript
 // 计算几个值的平均值, 为reduce累加器，提供特定的结构体数据
-    const average3 = (arr) => {
-        const sc = arr.reduce((ac, val) => ([ac[0] + val, ac[1]+ 1]),
-            [0, 0])
-   
-        return sc[0] / sc[1]
-    }
-   
-    log(average3(arr), '传入数组结构体')
-   
-    // 传入数组结构体
-    const average4 = (arr) => {
-        const sc =arr.reduce((ac, val) => ({sum: ac.sum + val, count: ac.count + 1}), {sum: 0, count: 0})
-        return sc.sum / sc.count;
-    }
-   
-    log(average4(arr), '传入对象结构体')
+const average3 = (arr) => {
+  const sc = arr.reduce((ac, val) => [ac[0] + val, ac[1] + 1], [0, 0]);
+
+  return sc[0] / sc[1];
+};
+
+log(average3(arr), "传入数组结构体");
+
+// 传入数组结构体
+const average4 = (arr) => {
+  const sc = arr.reduce(
+    (ac, val) => ({ sum: ac.sum + val, count: ac.count + 1 }),
+    { sum: 0, count: 0 }
+  );
+  return sc.sum / sc.count;
+};
+
+log(average4(arr), "传入对象结构体");
 ```
+
 ::: tip 说明
-reduce除了提供单个返回值（值类型），还支持提供特定结构体，作为返回。这里的计算多个值，从上面的例子来看，就是一边计算了数组元素总和，并且结算了数组长度。
+reduce 除了提供单个返回值（值类型），还支持提供特定结构体，作为返回。这里的计算多个值，从上面的例子来看，就是一边计算了数组元素总和，并且结算了数组长度。
 :::
 
 **向右规约**
-> 向右规约即使用`reduceRight`方法，从数组末尾到头部进行规约运算。其工作方式同reduce一样。一些特别情况
+
+> 向右规约即使用`reduceRight`方法，从数组末尾到头部进行规约运算。其工作方式同 reduce 一样。一些特别情况
 
 关联信息管道(pipe)和组合(composition):
 
@@ -1588,192 +1578,189 @@ reduce除了提供单个返回值（值类型），还支持提供特定结构�
 
 ```js
 const reverseString = (str) => {
-    return str.split('').reverse().join('');
-}
-
+  return str.split("").reverse().join("");
+};
 ```
 
-2. 方法二: 使用reduceRight实现
+2. 方法二: 使用 reduceRight 实现
 
 ```js
 const reverseString = (str) => {
-    return str.split('').reduceRight((x, y) => x + y, '')
-}    
-
-
+  return str.split("").reduceRight((x, y) => x + y, "");
+};
 ```
 
 3. 方法三: 使用`reduce`, `reverse`
 
 ```js
 const reverseString = (str) => {
-    return str.split('').reverse().reduce((x, y) => x + y);
-}
+  return str
+    .split("")
+    .reverse()
+    .reduce((x, y) => x + y);
+};
 ```
 
 **小结**
+
 > 后续模拟实现 reduce, reduceRight
 
+#### Array 操作-map
 
-
-#### Array操作-map
 > 映射操作
 
-
-
 ##### 从对象中提取数据
-> 利用map从数组对象元素中，映射一部分数据应用其操作
+
+> 利用 map 从数组对象元素中，映射一部分数据应用其操作
 
 例子: 现在需要计算一个包含一个国家，经纬度信息的对象数组的经纬度平均值。
 
 ```js
-let averageLat = average(maker.map(x => x.lat));
-let averageLon = average(maker.map(x => x.lon));
-
+let averageLat = average(maker.map((x) => x.lat));
+let averageLon = average(maker.map((x) => x.lon));
 
 // 扩展原型的average();
 
-Array.prototype.average = function() {
-    return this.reduce((x, y) => x + y, 0) / this.length
-}
+Array.prototype.average = function () {
+  return this.reduce((x, y) => x + y, 0) / this.length;
+};
 
-
-let averageLat2 = maker.map(x => x.lat).average();
-
-
+let averageLat2 = maker.map((x) => x.lat).average();
 ```
+
 ##### 数值解析
-> map的隐式编程问题
+
+> map 的隐式编程问题
 
 ```js
-let strnum = ["123.45", "67.8", "90"]
-let strnum2 = [123.45, "67.8", "-90"]
-log(strnum.map(parseFloat))// success
-log(strnum2.map(parseInt))  // error
- 
+let strnum = ["123.45", "67.8", "90"];
+let strnum2 = [123.45, "67.8", "-90"];
+log(strnum.map(parseFloat)); // success
+log(strnum2.map(parseInt)); // error
 ```
 
-说明: 第二中的转化结果，包含一些NaN值，原因是隐式编程问题，如果不给函数传入参数，parsetInt的第二个参数就会使用，map默认传入的数组，索引等参数，而这写参数在parseInt的第二个基数参数，其对应的数组元素又不是有效的字符元素。所以最好明确传入参数
+说明: 第二中的转化结果，包含一些 NaN 值，原因是隐式编程问题，如果不给函数传入参数，parsetInt 的第二个参数就会使用，map 默认传入的数组，索引等参数，而这写参数在 parseInt 的第二个基数参数，其对应的数组元素又不是有效的字符元素。所以最好明确传入参数
 
 纠正:
 
 ```js
-strnum2.map(x => parseInt(x))   // 默认以十进制转换字符数字。
+strnum2.map((x) => parseInt(x)); // 默认以十进制转换字符数字。
 ```
 
 ##### 使用范围
+
 > 使用数组方法，生成一个范围数组. 元素可以时数字，字符。
 
 ```js
 const range = (start, stop) => {
-    return new Array(stop - start).fill(0).map(v => start + 1)
-}
-
+  return new Array(stop - start).fill(0).map((v) => start + 1);
+};
 
 // 测试
 
-log(range(0, 5))
-
+log(range(0, 5));
 ```
-说明：使用`fill(0)`填充的原因是，原因是`map`方法，对于所有undefined值都将直接跳过。
+
+说明：使用`fill(0)`填充的原因是，原因是`map`方法，对于所有 undefined 值都将直接跳过。
 
 ::: tip 提示
-    关于值域的生成，loadash 提供专门的方法。
+关于值域的生成，loadash 提供专门的方法。
 :::
 
 **数字值域的应用，实现阶乘**
+
 ```js
 const factorialRange = (n) => range(1, n + 1).reduce((x, y) => x + y, 1);
-
 ```
 
-**使用数值访问方法range, 生成A-Z的字母表**
+**使用数值访问方法 range, 生成 A-Z 的字母表**
 
 ```js
-const letters = range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map(x => String.fromCharCode(x));
-
+const letters = range("A".charCodeAt(), "Z".charCodeAt() + 1).map((x) =>
+  String.fromCharCode(x)
+);
 ```
-::: tip 提示
-charCodeAt 用于获取字符的ASCII的code
 
-fromCharCode 用于从ASCLII code获取对应的字符
+::: tip 提示
+charCodeAt 用于获取字符的 ASCII 的 code
+
+fromCharCode 用于从 ASCLII code 获取对应的字符
 :::
 
-
-##### reduce 模拟map
+##### reduce 模拟 map
 
 ```js
 const myMap = (arr, fn) => arr.reduce((x, y) => x.concat(fn(x)), []);
-
 ```
-*这里的pollyfill实际就是将输入数组的每一个元素，应用我们自定义的逻辑方法，来对每一个元素做计算处理，然后将结果加入到一个新的数组中*
+
+_这里的 pollyfill 实际就是将输入数组的每一个元素，应用我们自定义的逻辑方法，来对每一个元素做计算处理，然后将结果加入到一个新的数组中_
 
 ##### 普通循环方法使用(forEach)
-> 使用该方法，主要来结果map，reduce做循环的更一般化.
 
+> 使用该方法，主要来结果 map，reduce 做循环的更一般化.
 
 **一层对象的拷贝**
 
 ```js
-
 const cloneObj = (obj) => {
-    const copy = Object.create(proto);
+  const copy = Object.create(proto);
 
-    Object.getOwnPropertyNames(obj).forEach((prop) => {
-        Object.defineProperty(copy, prop, Object.getOwnPropertyDescriptor(obj, prop))
-    })
+  Object.getOwnPropertyNames(obj).forEach((prop) => {
+    Object.defineProperty(
+      copy,
+      prop,
+      Object.getOwnPropertyDescriptor(obj, prop)
+    );
+  });
 
-    return copy;
-
-}
+  return copy;
+};
 ```
+
 ::: tip 提示
- 上面的代码也可以使用 展开运算符实现.但这仅仅适用于浅拷贝。
+上面的代码也可以使用 展开运算符实现.但这仅仅适用于浅拷贝。
 
 目前的方法隐藏的问题就在于，如果存在原对象存在引用值，那拷贝就是无效的。
 
 :::
 
-
 **阶乘**
-> 利用之前的range和forEach实现
+
+> 利用之前的 range 和 forEach 实现
 
 ```js
 const factorial = (n) => {
-    let res = 1;
+  let res = 1;
 
-    range(1, n + 1).forEach(x => res *= x);
+  range(1, n + 1).forEach((x) => (res *= x));
 
-
-    return res;
-
-}
+  return res;
+};
 ```
 
 ::: tip 提示
-使用range来生成序列，然后再使用循环forEach求1到n的阶乘，符合平常描述
-range方法改进之处，将头尾的步进数改进。避免不必要的计算。现在通常的所有普通循环完全可以使用forEach代替.
+使用 range 来生成序列，然后再使用循环 forEach 求 1 到 n 的阶乘，符合平常描述
+range 方法改进之处，将头尾的步进数改进。避免不必要的计算。现在通常的所有普通循环完全可以使用 forEach 代替.
 :::
 
-
 ### 高阶函数(hight-order-func)
-> 前面使用高阶函数，来处理逻辑。现在使用一个新概念，谓语的东西。谓语通常有多重含义，有谓语逻辑（predicate logical)。在编程这里，表述为一个返回true或false的函数。使用这个谓语函数，可以使代码更简洁，通过一行代码就可以得到整个值集的结果。
 
+> 前面使用高阶函数，来处理逻辑。现在使用一个新概念，谓语的东西。谓语通常有多重含义，有谓语逻辑（predicate logical)。在编程这里，表述为一个返回 true 或 false 的函数。使用这个谓语函数，可以使代码更简洁，通过一行代码就可以得到整个值集的结果。
 
 #### 过滤数组
->即使用.filter方法，对数组集合中的每一个元素进行处理。不同于map, .filter虽然会对每一个数组元素处理，但是不会生成新元素到结果中。只有通过filter函数校验的函数（返回true）,返回false则跳过。其中内传到filter的函数参数就是一个谓词。
 
-**filter原理**
+> 即使用.filter 方法，对数组集合中的每一个元素进行处理。不同于 map, .filter 虽然会对每一个数组元素处理，但是不会生成新元素到结果中。只有通过 filter 函数校验的函数（返回 true）,返回 false 则跳过。其中内传到 filter 的函数参数就是一个谓词。
+
+**filter 原理**
 
 <img src="../../public/img/filter.png">
 
+使用 filter 注意点:
 
-使用filter注意点:
-
-1. filter的参数函数一定需要一个返回值，如果忽略返回，直接是`undeinfed`。那么filter最后的结果将是一个空数组.
+1. filter 的参数函数一定需要一个返回值，如果忽略返回，直接是`undeinfed`。那么 filter 最后的结果将是一个空数组.
 2. 如果输入数组的元素中，包含数组或者对象的非值类型元素，那么结果中的元素，将是对这些元素的拷贝。结果数组仍然可以访问。
 
-##### reduce例子
+##### reduce 例子
 
 ```js
 /**
@@ -1782,78 +1769,74 @@ range方法改进之处，将头尾的步进数改进。避免不必要的计算
 */
 
 let accountsData = [
- {
- id: "F220960K",
- balance: 1024
- },
- {
- id: "S120456T",
- balance: 2260
- },
- {
- id: "J140793A",
- balance: -38
- },
- {
- id: "M120396V",
- balance: -114
- },
- {
- id: "A120289L",
- balance: 55000
- }
- ]
+  {
+    id: "F220960K",
+    balance: 1024,
+  },
+  {
+    id: "S120456T",
+    balance: 2260,
+  },
+  {
+    id: "J140793A",
+    balance: -38,
+  },
+  {
+    id: "M120396V",
+    balance: -114,
+  },
+  {
+    id: "A120289L",
+    balance: 55000,
+  },
+];
 
 // 获取余额为数组的账号, 元素需要时只包含id
 
 let res = accountsData.filter((x) => x.balance < 0).map((x) => x.id);
-
-
 ```
+
 #### 搜索数组
+
 > find, findIndex
+>
 > > find: 查找满足验证函数条件的第一个数组元素。如果没有找到则返回`undeinfed`
 > > findIndex: 工作原理同`find`类似。如果满足条件则返回第一个满足条件的元素的索引，否则返回-1.
 
-对比`findd`, `findIndex`. 类似的查询方法还有，includes, indexOf, 这两个方法，也用来查找指定元素。不过它们的工作原理。是直接指向需要查找的元素，而不是像find,findeIndex那样，设置查找条件。
-
-
+对比`findd`, `findIndex`. 类似的查询方法还有，includes, indexOf, 这两个方法，也用来查找指定元素。不过它们的工作原理。是直接指向需要查找的元素，而不是像 find,findeIndex 那样，设置查找条件。
 
 使用这四种方法:
 
 ```js
-const arr = [1, 2, 3, 4, 5]
+const arr = [1, 2, 3, 4, 5];
 
 // inclues
 
-arr.inclues(2)
+arr.inclues(2);
 
 // indexOf
-arr.indexOf(3)
+arr.indexOf(3);
 
 // find
-arr.find(v =>  v % 2 === 0)
+arr.find((v) => v % 2 === 0);
 
 // findIndex
-arr.findIndex(v => v % 2 === 0)
-
+arr.findIndex((v) => v % 2 === 0);
 ```
 
 ##### 特殊搜索例子
+
 > 检查一个数字数组是否健全。即是否包含`NaN`.
 
-
-
 ```js
-const arr = [1, NaN ,3]
+const arr = [1, NaN, 3];
 
 // 注意 ，这里不能直接做类型比较，即，typeof.
 // 因为NaN 本身也是数值类型，并且还不等于自身。
-arr.find(v => isNaN(x))
-
+arr.find((v) => isNaN(x));
 ```
 
-##### 使用reduce模拟find, findIndex
+##### 使用 reduce 模拟 find, findIndex
 
 ```js
 // find
@@ -1864,120 +1847,127 @@ arr.find(v => isNaN(x))
 
 
 */
-const myFind = (arr ,fn) => arr.reduce((x, y) => x === undefined && fn(y) ? y : x, undefined) 
-
+const myFind = (arr, fn) =>
+  arr.reduce((x, y) => (x === undefined && fn(y) ? y : x), undefined);
 
 // findIndex
 // 该方法同find，只是返回的结果值处，返回的是索引
-const myFindIndex = (arr, fn) => arr.reduce((x, y, idx) => x === -1 && fn(y) ? idx  : x, -1)
-
+const myFindIndex = (arr, fn) =>
+  arr.reduce((x, y, idx) => (x === -1 && fn(y) ? idx : x), -1);
 ```
 
 ##### 检查反面
-> every函数用于检查数组的元素是否不满足某一条件的情况，类似检查一个数组是否不存在负数的情况
-> > 考虑实现every的反面，none
+
+> every 函数用于检查数组的元素是否不满足某一条件的情况，类似检查一个数组是否不存在负数的情况
+>
+> > 考虑实现 every 的反面，none
 
 ```js
 // 补充every
 // 在数组原型上补充
 Array.prototype.none = (fn) => {
-    return this.every(v => !fn(v))
-}
-
+  return this.every((v) => !fn(v));
+};
 ```
-说明: 直接修改原型是一个不好的做法，后面使用连接和组合，来改进。
 
+说明: 直接修改原型是一个不好的做法，后面使用连接和组合，来改进。
 
 ### 小结
 
-- 设计范围函数range, 改进要求: 初始化设置列表步长；倒序。
+- 设计范围函数 range, 改进要求: 初始化设置列表步长；倒序。
 - CSV(逗号分隔值)实现
-```js
 
-let myData = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]];
- let myCSV = dataToCsv(myData); // "1,2,3,4\n5,6,7,8\n9,10,11,12\n"
+```js
+let myData = [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9, 10, 11, 12],
+];
+let myCSV = dataToCsv(myData); // "1,2,3,4\n5,6,7,8\n9,10,11,12\n"
 ```
 
-
 **总结:**
+
 > 我们开始使用高阶函数，以便展示更多
-声明式的工作方式，使用更短、更具表现力的代码。 我们已经经历了几个
-操作：我们已经看到 .reduce() 和 .reduceRight()，从
-大批; .map()，将函数应用于数组的每个元素； .forEach()，为了简化
-循环； .filter()，从数组中挑选元素； .find() 和 .findIndex()，到
-在数组中搜索，以及 .every() 和 .some()，以验证一般逻辑条件。
+> 声明式的工作方式，使用更短、更具表现力的代码。 我们已经经历了几个
+> 操作：我们已经看到 .reduce() 和 .reduceRight()，从
+> 大批; .map()，将函数应用于数组的每个元素； .forEach()，为了简化
+> 循环； .filter()，从数组中挑选元素； .find() 和 .findIndex()，到
+> 在数组中搜索，以及 .every() 和 .some()，以验证一般逻辑条件。
 
+## 06 生产函数-高阶函数
 
-
-## 06生产函数-高阶函数
 > 第五章介绍声明式编程，函数式编程同时也属于声明式编程的范畴。声明式编程的分析问题的方式，就是直达问题结果。相较而言，命令式编程就是明确解决问题每一个步骤。声明式编程，重在以函数作为每一个功能个体，来组合解决实际问题。
 
 **高阶函数类型**
 
 - 包装函数： 常见的应用有，日志记录（用于生成日志记录的函数)，计时（用于某函数的时间和性能分析）,记忆化(缓存结果数据，关于这一点在斐波拉契数列中，结果缓存一块已有应用)
 
-- 修改原始函数： 修改原始函数返回新的功能。比如第二章的once函数，在修改原始版本函数过后，新函数版本达到了，仅执行一次函数功能的目的。
+- 修改原始函数： 修改原始函数返回新的功能。比如第二章的 once 函数，在修改原始版本函数过后，新函数版本达到了，仅执行一次函数功能的目的。
 
-- 辅助函数: 常见的比如增强函数功能，将一个函数转换为Promise, 或增强函数功能，或从一个对象解耦出方法，以便我们可以在其他上下文使用该函数。
-
-
+- 辅助函数: 常见的比如增强函数功能，将一个函数转换为 Promise, 或增强函数功能，或从一个对象解耦出方法，以便我们可以在其他上下文使用该函数。
 
 #### 包装函数
+
 > 在不修改原始目标的情况下，增强函数功能为目的。在此还涉及到装饰器，这种模式在不影响原始对象的情况下像对象添加一些行为概念。
 
-> > 包装器在js中，广泛使用。比如常见的值类型，可以通过点方法访问属性和方法。这是js引擎内部为这些不适当的类型创建的类型包装器，但是这些类型包装器只是瞬时的，也就是在无法此程序之后再次使用。在12章中，可以构建更好的类型包装器，使得这些已经被引擎抛弃的包装器得以再次使用。
+> > 包装器在 js 中，广泛使用。比如常见的值类型，可以通过点方法访问属性和方法。这是 js 引擎内部为这些不适当的类型创建的类型包装器，但是这些类型包装器只是瞬时的，也就是在无法此程序之后再次使用。在 12 章中，可以构建更好的类型包装器，使得这些已经被引擎抛弃的包装器得以再次使用。
 
 ##### 日志记录
+
 > 记录函数的执行过程，包括输入参数，函数是否调用。以及最后的返回值。这都需要修改函数本身的代码。
 
 比如：
+
 ```js
 // 正常函数的处理逻辑
 function someFunc(parm1, parm2, parm3) {
-    // do somthing
+  // do somthing
 }
 
 // 启用日志记录
 function someFunc2(parm1, parm2, parm3) {
-    //进入函数时
-    console.log('entry func', parm1, parm2, parm3)
-    // 函数体代码
-    //
-    let value = parm1 * parm2 // 伪代码
+  //进入函数时
+  console.log("entry func", parm1, parm2, parm3);
+  // 函数体代码
+  //
+  let value = parm1 * parm2; // 伪代码
 
-    console.log('exit func', value)
+  console.log("exit func", value);
 
-    return value;
+  return value;
 }
 ```
-**补充**
-如果函数有多个返回，则需要分别进行日志记录，log等方法。如果仅仅是动态计算表达式，则仅仅需要一个辅助变量去接收结果。
 
+**补充**
+如果函数有多个返回，则需要分别进行日志记录，log 等方法。如果仅仅是动态计算表达式，则仅仅需要一个辅助变量去接收结果。
 
 ##### 以函数式方法进行日志记录
+
 > 上面记录日志的方式，是直接在原函数进行修改的。这样非常危险，也是容易产生意外的地方，比如副作用。
->现在以函数式的方式去解决这些问题。记录函数的调用，参数使用，返回值的情况。
+> 现在以函数式的方式去解决这些问题。记录函数的调用，参数使用，返回值的情况。
 
+实现分析:
 
-实现分析: 
 - 记录接收参数
 - 调用原始函数，并捕获它的参数
 - 记录最后的结果值
 - 返回给调度着
 
-
 // 代码实现
+
 ```js
-const addLogging = (fn) => (...args) => {
-   console.log(`entering ${fn.name}: ${args}`);
-   
-   const valuteToReturn = fn(...args);
+const addLogging =
+  (fn) =>
+  (...args) => {
+    console.log(`entering ${fn.name}: ${args}`);
 
-   console.log(`exit ${fn.name}: ${valuteToReturn}`)
+    const valuteToReturn = fn(...args);
 
-   return valuteToReturn;
-}
+    console.log(`exit ${fn.name}: ${valuteToReturn}`);
 
+    return valuteToReturn;
+  };
 ```
 
 该日志函数特点:
@@ -1985,50 +1975,47 @@ const addLogging = (fn) => (...args) => {
 - 第一条日志记录函数调用情况，函数名和传入参数
 - 调用原函数并将返回值存储起来
 - 第二个日志，记录函数和他的返回值。
-- 返回fn计算的值
+- 返回 fn 计算的值
 
 ::: tip 提示
-对于nodejs应用，也有一些常见的日志功能库，但通过wrapper封装日志函数，以更小的包体积代价，也能达到目的。
+对于 nodejs 应用，也有一些常见的日志功能库，但通过 wrapper 封装日志函数，以更小的包体积代价，也能达到目的。
 :::
 
 函数组合, 并日志记录:
 
 ```js
 function subtract(a, b) {
-    b = changeSign(b);
+  b = changeSign(b);
 
-    return a + b;
-
+  return a + b;
 }
 
 function changeSign(a) {
-    return -a;
-
+  return -a;
 }
 
 subtract = addLogging(subtract);
 
-changeSign = addLogging(changeSign)
+changeSign = addLogging(changeSign);
 
 let x = subtract(7, 5);
-
 ```
+
 ::: tip 提示
-代码中，从新分配了subtract和changeSign。用日志函数包装器包装了他们的原始版本。新的版本将有日志输出功能，并且在不更改原始版本的基础上，实现了包装。现在的日志记录包装函数，还存在缺陷，如果被调用函数存在错误，将不会被捕捉到，而是直接在运行时抛出异常。
+代码中，从新分配了 subtract 和 changeSign。用日志函数包装器包装了他们的原始版本。新的版本将有日志输出功能，并且在不更改原始版本的基础上，实现了包装。现在的日志记录包装函数，还存在缺陷，如果被调用函数存在错误，将不会被捕捉到，而是直接在运行时抛出异常。
 :::
 
 ##### 为日志函数添加错误捕获
-
 
 ```js
 const addLogging = fn => (...args) => {
     try{
        console.log(`entering ${fn.name}: ${...args}`)
-       
+
        const valuteToReturn = fn(...args);
 
        console.log(`exit ${fn.name}: ${valuteToReturn}`)
-    
+
        return valuteToReturn;
     }catch(throwError){
        console.log(`exiting ${fn.name}: throw ${throwError}`)
@@ -2039,6 +2026,7 @@ const addLogging = fn => (...args) => {
 ```
 
 **TIP**
+
 > vim 行或者段落移动方法
 
 ```bash
@@ -2048,51 +2036,49 @@ const addLogging = fn => (...args) => {
 example: 2, 5 move 10; 3 move 7
 
 ##### 以更存粹的方式工作
-> 上面的日志函数包含了不存点，`console.log`, 这样一来，后续的测试，都得建立在明确的功能测试上。而不是完全的黑盒测试。 现在为mocha 编写测试
+
+> 上面的日志函数包含了不存点，`console.log`, 这样一来，后续的测试，都得建立在明确的功能测试上。而不是完全的黑盒测试。 现在为 mocha 编写测试
 
 ```js
 // mocha + chai + sinonJs
 // 对addLoggingPlus的测试
 
-describe("a logging function", function() {
- it("should log twice with well behaved functions", () => {
- let something = (a, b) => `result=${a}:${b}`;
- something = addLogging(something);
- spyOn(window.console, "log");
- something(22, 9);
- expect(window.console.log).toHaveBeenCalledTimes(2);
- expect(window.console.log).toHaveBeenCalledWith(
- "entering something: 22,9"
- );
- expect(window.console.log).toHaveBeenCalledWith(
- "exiting something: result=22:9"
- );
- });
- it("should report a thrown exception", () => {
- let thrower = (a, b, c) => {
- throw "CRASH!";
- };
- spyOn(window.console, "log");
- expect(thrower).toThrow();
- thrower = addLogging(thrower);
- try {
- thrower(1, 2, 3);
- } catch (e) {
- expect(window.console.log).toHaveBeenCalledTimes(2);
- expect(window.console.log).toHaveBeenCalledWith(
- "entering thrower: 1,2,3"
- );
- expect(window.console.log).toHaveBeenCalledWith(
- "exiting thrower: threw CRASH!"
- );
- }
- });
+describe("a logging function", function () {
+  it("should log twice with well behaved functions", () => {
+    let something = (a, b) => `result=${a}:${b}`;
+    something = addLogging(something);
+    spyOn(window.console, "log");
+    something(22, 9);
+    expect(window.console.log).toHaveBeenCalledTimes(2);
+    expect(window.console.log).toHaveBeenCalledWith("entering something: 22,9");
+    expect(window.console.log).toHaveBeenCalledWith(
+      "exiting something: result=22:9"
+    );
+  });
+  it("should report a thrown exception", () => {
+    let thrower = (a, b, c) => {
+      throw "CRASH!";
+    };
+    spyOn(window.console, "log");
+    expect(thrower).toThrow();
+    thrower = addLogging(thrower);
+    try {
+      thrower(1, 2, 3);
+    } catch (e) {
+      expect(window.console.log).toHaveBeenCalledTimes(2);
+      expect(window.console.log).toHaveBeenCalledWith(
+        "entering thrower: 1,2,3"
+      );
+      expect(window.console.log).toHaveBeenCalledWith(
+        "exiting thrower: threw CRASH!"
+      );
+    }
+  });
 });
-
-
 ```
+
 ::: tip 提示
-说明： 由于日志函数中包含了，不纯函数点`console.log`,导致测试的时候，就必须监听console.log方法。进而无法完全进行单元测试（BDD）
+说明： 由于日志函数中包含了，不纯函数点`console.log`,导致测试的时候，就必须监听 console.log 方法。进而无法完全进行单元测试（BDD）
 :::
 
 对于这种不存函数，完全可以在不纯函数一章节展开解决，即将不纯因素，作为外部参数，传入包装函数内部.
@@ -2102,7 +2088,7 @@ describe("a logging function", function() {
 // 脏函数注入,改进 addLogging
 const addLogginInjection = (fn, logger = console.log) => (...args) => {
     logger(`entering ${fn.name}: ${args}`)
-    
+
     try{
         const valuteToReturn = fn(...args);
         logger(`${exiting ${fn.name}: ${valuteToReturn}`);
@@ -2121,61 +2107,60 @@ const addLogginInjection = (fn, logger = console.log) => (...args) => {
 ```
 
 ::: tip 提示
-现在经过改进，日志`console.log`不纯点, 已经从日志函数`addLogging`内部剥离。有一个问题点是，外部传入的打日志的方法，仍就是js内置的`console.log`方法。如果还是传入这个方法，那么桶上面的`addLogging`版本还是一样的结果。
+现在经过改进，日志`console.log`不纯点, 已经从日志函数`addLogging`内部剥离。有一个问题点是，外部传入的打日志的方法，仍就是 js 内置的`console.log`方法。如果还是传入这个方法，那么桶上面的`addLogging`版本还是一样的结果。
 :::
-
 
 ::: tip 总结
-正如上面的例子，日志函数`addLogging`, 因为引入的console.log， 导致测试变得困难。基于这一点思考，当应用FP技术时，如果开发某一函数功能，使得测试变得困难时，应该采取积极方法，修改源功能函数版本。修复不纯函数点。
+正如上面的例子，日志函数`addLogging`, 因为引入的 console.log， 导致测试变得困难。基于这一点思考，当应用 FP 技术时，如果开发某一函数功能，使得测试变得困难时，应该采取积极方法，修改源功能函数版本。修复不纯函数点。
 :::
 
-
 ##### 计时
+
 > 另一个包装函数应用点时，记录函数的调用和调用时间
 
-::: tip 提示 
+::: tip 提示
 代码优化时机, 在程序开发初期，尽量不要再没有经过测试的情况下，对代码随意进行优化。
 :::
 
 开始,编写一个时间记录包装器辅助函数。
 
 ```js
-
 // logger
-const myLogger = (msg, fnName, tStart, tEnd) => console.log(`${name} - ${text} ${tStart - tEnd}ms`);
+const myLogger = (msg, fnName, tStart, tEnd) =>
+  console.log(`${name} - ${text} ${tStart - tEnd}ms`);
 
 // const myGet = performance.now();
 
-const addTiming = (fn, getTime = myGet, output = myPut) => (...args) => {
+const addTiming =
+  (fn, getTime = myGet, output = myPut) =>
+  (...args) => {
     let tStart = getTime();
-    try{
-        const valuteToReturn = fn(...args);
-        output(`normal exit`, fn.name, tStart, getTime);
+    try {
+      const valuteToReturn = fn(...args);
+      output(`normal exit`, fn.name, tStart, getTime);
 
-        return valuteToReturn;
-    }catch(e) {
-        output(`expection thrown`, fn.name, tStart, tEnd);
+      return valuteToReturn;
+    } catch (e) {
+      output(`expection thrown`, fn.name, tStart, tEnd);
 
-        throw e;
+      throw e;
     }
-
-}
-
+  };
 ```
 
 ::: tip 说明
 时间记录函数同样应用了上一节中的包装器，以注入了不纯的`console.log`, 便于测试。
 :::
 
-
 **task**
-生成高阶函数，用于包装addLogging, addTiming 等函数
+生成高阶函数，用于包装 addLogging, addTiming 等函数
 
 #### 记忆
+
 > 之前第四章节，讨论了纯函数，涉及关于斐波拉契数列返回值缓存版本函数。现在讨论只有单个参数的情况，后续的结构体参数，比如，数组，对象的函数，后续在讨论。
 
 ::: tip 提示
-js原始值有六个, number, boolean, string, null, symbol, undefined. 他们作为完全的值类型，不带对象的方法属性。其中前四个，作为实际参数使用。
+js 原始值有六个, number, boolean, string, null, symbol, undefined. 他们作为完全的值类型，不带对象的方法属性。其中前四个，作为实际参数使用。
 :::
 
 ##### 简单的记忆
@@ -2184,49 +2169,51 @@ js原始值有六个, number, boolean, string, null, symbol, undefined. 他们�
 
 ```js
 function fib(n) {
-    if(n === 0) return 0
-    if(n === 1) return 1
+  if (n === 0) return 0;
+  if (n === 1) return 1;
 
-    if(n > 1) return fib(n - 2) + fib(n - 1)
+  if (n > 1) return fib(n - 2) + fib(n - 1);
 }
-
 ```
+
 为斐波拉契函数应用记忆化: 之前应用记忆化，在概念上与现在实现记忆化是相同的，只是前者在于必须修改远函数版本。现在，我们通过以包装函数的身份来封装实现记忆化辅助函数。
 
 ```js
 const memoize = (fn) => {
-    let cache = {}
+  let cache = {};
 
-    return x => (x in cache ? cache[x] : (cache[x] = fn(x)));
-}
+  return (x) => (x in cache ? cache[x] : (cache[x] = fn(x)));
+};
 ```
 
-
 ##### 复杂记忆化
+
 > 复杂的情况点，函数是多元的，并且接收复杂参数，数组、对象等.
+>
 > > 这里重点考虑单个参数的情况，目的在于实现函数只完成单一功能。多余的参数直接忽略.
 
-
 ::: tip 提示
- 函数的参数数量称之为函数的元数。
+函数的参数数量称之为函数的元数。
 :::
 
 实现第一版缓存函数
 
 ```js
-const memoize2 = fn => {
-    if (fn.length === 1) { // 处理一个参数情况
-        let cache = {}
-        return x => (x in cache[x] ? cache[x] : fn(x));
-    } else {  // 忽略多余参数
-        return fn;
-    }
-}
+const memoize2 = (fn) => {
+  if (fn.length === 1) {
+    // 处理一个参数情况
+    let cache = {};
+    return (x) => (x in cache[x] ? cache[x] : fn(x));
+  } else {
+    // 忽略多余参数
+    return fn;
+  }
+};
 ```
 
 **通用记忆化函数分析**
-> 任何函数的记忆化，对于接收的任何参数能有作为缓存的键。可以使用字符串构造`String`，将接收的参数转换为字符串，作为缓存的键。而对于数组参数，则存在例外情况。
 
+> 任何函数的记忆化，对于接收的任何参数能有作为缓存的键。可以使用字符串构造`String`，将接收的参数转换为字符串，作为缓存的键。而对于数组参数，则存在例外情况。
 
 ```js
 // 使用数组情况
@@ -2234,7 +2221,7 @@ const a = [1, 5, 3, 8, 7, 4, 6];
 String(a); // 1, 5, 3, 8, 7, 4, 6
 
 const b = [[1, 5], [3, 8, 7, 4, 6]]
-String(b); // 1, 5, 3, 8, 7, 4, 6 
+String(b); // 1, 5, 3, 8, 7, 4, 6
 
 const c = [[1, 5, 3], [8, 7, 4, 6]]
 String(c); // 1, 5, 3, 8, 7, 4, 6
@@ -2247,22 +2234,6 @@ let e = {{p: 1, q: 3}, {p: 2, q: 6}};
 String(e)
 ```
 
-
-
 **总结:**
+
 > 使用数组，和使用对象作为缓存键都是不好的选择，都会存在重复键的情况。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
