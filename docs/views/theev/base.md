@@ -921,7 +921,7 @@ uvAttribute.setXY(i, faceUV.x, faceUV.y);
 
 知识点脑图:
 
-<img src="../public/img/group.png">
+<img src="../../public/img/group.png">
 
 
 ### Group对象
@@ -1110,4 +1110,34 @@ scene.traverse(function(obj) {
 #### 本地矩阵和世界矩阵
 > 本地矩阵.materix是以本地坐标系为参考的模型矩阵，世界矩阵.matrixWorld自然就是以是世界坐标系为参照的模型矩阵。Three.js本地矩阵是
 Three.js模型的位置属性.position、缩放系数属性.scale和角度属性.rotation记录了模型的所有平移、缩放和旋转变换，本地矩阵.materix是以线性代数矩阵的形式表示.position、.scale和.rotation。世界矩阵.matrixWorld自然是用矩阵的形式表示模型以及模型父对象的所有旋转缩放平移变换。更多内容可以参考文章《本地矩阵和世界矩阵》
+
+
+
+## 几何体顶点纹理坐标数据(续)
+> 几何体顶点纹理坐标数据和纹理贴图关系。顶点纹理坐标由几何体产生，纹理贴图使用uv坐标建立对应关系. 纹理图像就是加载纹理时，所使用的图片资源，还可以是其他文件类型，比如视频。纹理坐标，就是纹理图像上的单位像素点。
+
+**脑图:**
+
+<img src="../../public/img/uvp.jpg">
+
+
+任务点：BufferGemotry获取面的uv映射与更新
+
+
+## 数组材质和材质索引
+> 三角面材质和数组材质属性materialIndex
+
+#### 数组材质
+> 数组材质作为几何体纹理贴图, 所谓数组材质就是多个材质对象构成一个数组作为模型对象的材质。
+
+::: tip 提示
+数组材质组合多个材质对象，来实现对模型进行贴图
+:::
+
+#### 材质索引
+> 
+
+
+
+
 

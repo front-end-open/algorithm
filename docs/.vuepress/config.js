@@ -2,7 +2,7 @@
  * @Author: wangshan
  * @Date: 2021-10-18 01:13:37
  * @LastEditors: wangshan
- * @LastEditTime: 2021-12-11 23:41:15
+ * @LastEditTime: 2022-02-25 23:35:51
  * @Description: 应用配置
  */
 module.exports = {
@@ -98,6 +98,11 @@ module.exports = {
             text: "实践",
             link: "/views/theev/practice.md",
             activeMatch: "/views/theev/practice.md",
+          },
+          {
+            text: "webgl",
+            link: "/views/theev/webgl.md",
+            activeMatch: "/views/theev/webgl.md",
           },
         ],
       },
