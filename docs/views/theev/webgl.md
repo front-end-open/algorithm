@@ -428,4 +428,311 @@ vertexAttrib[n]fv传入分量参数时，也可以使用矢量。他们以vector
 </html>
 ```
 
+### 通过鼠标绘制
+> 前面的两个例子中，顶点着色器的位置数据都是硬编码在js中和着色器中的。现在通过鼠标点击事件的方式动态创建点。
+
+示列代码
+
+```js
+// 核心业务代码
+canvas.onmousedown = (ev) => {
+          console.log(ev);
+          // 获取鼠标点击位置
+          let x = ev.clientX,
+            y = ev.clientY;
+
+          let rect = ev.target.getBoundingClientRect(); // 获取canvas尺寸和相对viewport位置
+          console.log(rect);
+
+          // 核心
+          x = (x - rect.left - canvas.height / 2) / (canvas.height / 2);
+          y = (canvas.width / 2 - (y - rect.top)) / (canvas.width / 2);
+
+          // 存储坐标到g_points中
+          g_points.push(x);
+          g_points.push(y);
+
+          gl.clear(gl.COLOR_BUFFER_BIT);
+
+          let len = g_points.length;
+          for (let i = 0; i < len; i += 2) {
+            gl.vertexAttrib3f(a_Position, g_points[i], g_points[i + 1], 0.0);
+            gl.drawArrays(gl.POINTS, 0, 1);
+}
+gl.clear(gl.COLOR_BUFFER_BIT);
+
+```
+#### 坐标转换
+> 通过点击事件`mousedown`来获取鼠标坐标，此后根据此坐标来动态创建点。因为某些原因不能直接使用此坐标.
+
+
+不能直接使用鼠标坐标的理由:
+
+- 鼠标位置坐标是鼠标在浏览器客户区的坐标，而不是在canvas中的坐标
+- canvas的坐标系统与webgl的坐标系统，其原点位置和y轴的正方向都不一样.
+
+*为了能够使用鼠标坐标,需要将鼠标位置从，浏览器客户端坐标转换为canvas下的坐标，然后再转webgl坐标。*
+
+
+**转换原理**
+> 以代码分析
+
+```js
+x = ((x - rect.left) - canvas.width / 2) / (canvas.width / 2);
+y = (canvas.height / 2 - (y - rect.top)) / (canvas.height/2)
+```
+
+说明：
+1. 首先是客户端坐标转canvas坐标，由于客户端坐标和canvas坐标轴的方向是一致的，只是两者的原点坐标不一致，代码中`x - rect.left, y - rect.top`.完成了浏览器客户端到canvas坐标转换
+
+2. 紧接着是canvas坐标到webgl坐标的转换. 由于canvas坐标系统的y轴正方向以及坐标原点和webgl坐标系不是一致的。首先需要改变y轴正方向，即y坐标的转换时，用负号表示即可。然后，平移坐标原点，平移的原理是，利用canvas坐标的各分量减去canvas宽高的二分之一即可，这样做的目的是，webgl坐标系的原点是在画布中心。（0.0， 0.0， 0.0）处, 且webgl坐标系的各分量区间是(-1.0, 1.0)
+
+
+#### 绘制原理
+> 在确定好webgl坐标系后，然后需要存储鼠标点击的每次坐标值。
+
+::: tip 提示
+通过鼠标点击绘制过程中，需要缓存每次鼠标点击的位置目的在于，webgl使用的是颜色缓冲区绘图的，绘制结束后然后将颜色缓冲区呈现到屏幕上，最后会重置颜色缓冲区，之前的绘制内容也会丢失。为了能够显示每次鼠标点击的绘制点，需要缓存每次鼠标点击的位置。
+:::
+
+
+#### 动态绘制点的颜色
+> 在上面的示列，改进绘制点的颜色。前面的例子片元颜色是硬编码写死在着色器中的，现在改进颜色写入方法。通过外部传入到着色器中。这里使用uniform变量。在js中传入数据到着色器
+
+
+代码实现:
+
+
+```js
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>改变绘制点的颜色</title>
+  </head>
+  <body onload="main()">
+    <canvas id="glwebgl" width="1000" height="1000">浏览器不支持canvas</canvas>
+    <script src="../../js/helper/helper.js"></script>
+    <script>
+      let VSHADER_SOURCE =
+        "attribute vec4 a_Position;\n" +
+        "void main() {\n" +
+        "gl_Position = a_Position;\n" + // 复制attribute变量给gl_Position
+        "gl_PointSize = 10.0;\n" + // 设置尺寸
+        "}\n";
+
+      let FSHADER_SOURCE =
+        "precision mediump float;\n" +
+        "uniform vec4 u_FragColor;\n" + // 赋值uniform变脸到gl_FragColor
+        "void main() {\n" +
+        "gl_FragColor = u_FragColor;\n" + // 设置颜色
+        "}\n";
+
+      function main() {
+        let canvas = document.getElementById("glwebgl");
+        let gl = canvas.getContext("webgl");
+
+        if (!gl) {
+          console.warn("浏览器不支持webgl绘图");
+          return;
+        }
+
+        if (!initShader(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+          console.log("着色器初始化失败");
+          return;
+        }
+
+        // 获取点的本地坐标变量
+        let a_Position = gl.getAttribLocation(gl.program, "a_Position");
+        console.log(a_Position);
+        if (a_Position < 0) {
+          console.warn("获取a_Position本地变量失败");
+          return;
+        }
+
+        // 获取点片元变量
+        let u_FragColor = gl.getUniformLocation(gl.program, "u_FragColor");
+        console.log(u_FragColor);
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+        // 注册鼠标按下事件
+        let g_points = []; // 鼠标点击位置数组
+        let g_colors = []; // 存储点颜色数组
+        canvas.onmousedown = (ev) => {
+          console.log(ev);
+          // 获取鼠标点击位置
+          let x = ev.clientX,
+            y = ev.clientY;
+
+          let rect = ev.target.getBoundingClientRect(); // 获取canvas尺寸和相对viewport位置
+          console.log(rect);
+
+          // 核心
+          x = (x - rect.left - canvas.height / 2) / (canvas.height / 2);
+          y = (canvas.width / 2 - (y - rect.top)) / (canvas.width / 2);
+
+          // 存储坐标到g_points中
+          g_points.push([x, y]);
+
+          // 存储点颜色到数组
+          if (x >= 0.0 && y >= 0.0) {
+            // 第一象限
+            g_colors.push([1.0, 0.0, 0.0, 1.0]); // 红色
+          } else if (x < 0.0 && y < 0.0) {
+            // 第三象限
+            g_colors.push([0.0, 1.0, 0.0, 1.0]); // 绿色
+          } else {
+            // 其他
+            g_colors.push([1.0, 1.0, 1.0, 1.0]); // 白色
+          }
+
+          gl.clear(gl.COLOR_BUFFER_BIT); // 从新清空canvas背景在于，每次绘制结束后，webgl会重置颜色缓冲区默认背景(0.0, 0.0, 0.0, 0.0), 黑色纯透明。看到的结果就是白色。
+
+          let len = g_points.length;
+          for (let i = 0; i < len; i++) {
+            let xy = g_points[i],
+              rgba = g_colors[i];
+
+            gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
+            gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+
+            gl.drawArrays(gl.POINTS, 0, 1);
+          }
+        };
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      }
+    </script>
+  </body>
+</html>
+```
+
+分析: 这里动态绘制点的颜色方法，同动态传入顶点位置的方法一样。不同的是这里使用了uniform作为数据传入方法。
+
+##### uniform变量
+> uniform变量用来向顶点和片元着色器传输一致的不变的数据.
+
+**声明格式：存储限定符uniform 类型 变量名**
+
+::: tip 提示
+GLSL ES 中，只能为attribute变量指定float类型，但可以指定任意类型的uniform变量。
+:::
+
+
+**uniform变量声明规则点**
+1. 统一变量标识符的名称以`u_`作为变量前缀。
+2. uniform变量需要统一为，需要被赋值gl_FragColor的类型
+
+
+
+**精度限定词:**
+> 下面代码段用来指定代码的范围（最大值和最小值）和精度，本例为中等精度。
+
+```js predision mediump float```
+
+
+**uniform传递数据步骤**
+
+1. 首先在webgl中获取uniform变量地址
+
+2. 向地址中传入数据.
+
+
+
+
+**获取uniform变量地址**
+> gl.getUniformLocation 获取uniform变量地址
+
+方法说明:
+
+|参数|描述|返回值|错误|
+|----|----|------|----|
+|program|指定程序对象|----|-----|
+|name|指定uniform变量名字|----|----|
+|----|----|no-null: uniform变量位置|-----|
+|----|----|null: 指定uniform变量不存在，或者变量名具有gl_或webgl_前缀|-----|
+|----|----|-----|INVALID_OPERATION:程序对象未连接|
+|----|----|-----|INVALID_VALUE：name参数长度大于uniform变量名的最大长度（max:256字节)|
+
+::: tip 提示
+说明：获取uniform变量的函数和获取attribute变量的函数大致一样。不同的是，uniform参数的返回值，在变量不存在或命名使用保留字时，返回的是null; 而attribute在这种情况下返回的是-1.
+:::
+
+##### 赋值uniform
+> 在通过getUniformLocation获取变量地址后，再使用gl.uniform4f向变量赋值.该方法与gl.getAttribute[1234]f很类似
+
+**gl.uniform4f**
+|参数|描述|返回值|错误|
+|----|----|------|----|
+|location|指定要修改的uniform变量地址|----|----|
+|v0|指定需要填充的第一分量|----|----|
+|v1|指定需要填充的第二分量|----|----|
+|v2|指定需要填充的第三分量|----|----|
+|v3|指定需要填充的第四分量|----|----|
+|----|----|无|----|
+|-----|----|----|INVALID_OPERATION: 没有当前得program对象，或者location是非法的变量存储位置|
+
+
+**gl.uniform4f同族函数**
+
+```js
+gl.uniform1f(location, v0)
+gl.uniform2f(location, v0, v1)
+gl.uniform3f(location, v0, v1, v2)
+gl.uniform4f(location, v0, v1, v2, v3)
+```
+
+说明: 函数上的数字代表传入分量的个数。
+
+
+### 总结：
+顶点着色器进行的是逐顶点的操作，片元着色器进行的是逐片元的操作。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
