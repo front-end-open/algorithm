@@ -1135,9 +1135,23 @@ Three.js模型的位置属性.position、缩放系数属性.scale和角度属性
 :::
 
 #### 材质索引
-> 
+> 材质对象数组有专门的索引`materialIndex`，可以通过设置此值来改变每一个面的材质对象.
 
+```js
+// 新版本threejs，可以再groups中访问数组材质对象
+ boxgeometry.groups.forEach((v) => (v.materialIndex = 5));
 
+```
 
+**脑图:**
+<img src="../../public/img/metarialIndex.png">
+
+## 材质对象Texture 的阵列，偏移，选装
+> 纹理对象本质就是一个包含图片的对象，纹理对象所包含的图片就是image属性.
+
+### 阵列
+> 纹理贴图阵列映射
+
+    
 
 
