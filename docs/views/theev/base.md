@@ -1152,6 +1152,150 @@ Three.js模型的位置属性.position、缩放系数属性.scale和角度属性
 ### 阵列
 > 纹理贴图阵列映射
 
-    
+#### 设置纹理的包裹模式
+> 如下常量用于设置纹理贴图的wrapS和wrapT属性，用来控制纹理贴图在水平和垂直方向的排列方式.
+常用常量:
+
+- THREE.RepeatWrapping
+- THREE.ClampToEdgeWrapping
+- THREE.MirroredRepeatWrapping
+
+使用:
+
+```js
+texture.wrapS = ...
+texture.wrapT = ...
+```
+实践:
+> 设置纹理的水平垂直队列的无线延伸，THREE.RepeatWrapping. 需要搭配(texture.repeat.set(x, y)).来设置纹理水平和垂直的重复纹理数量
+
+```js
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  // uv两个方向纹理重复数量
+  texture.repeat.set(1, 1);
+```
+
+::: tip 提示
+默认几何体是取THREE.clampToEdgeWrapping， 即纹理将延伸到网格边缘.
+MirroredRepeatWrapping 纹理将重复到无穷大，并且每次重复时将进行镜像.
+:::
+
+### 偏移
+> 不设置阵列纹理贴图，设置偏移量
+
+代码:
+
+```js
+texture.offset = new THREE.Vector2(x, y)
+```
+
+> 通过设置纹理对象的offset属性，来控制纹理图像在网格上的渲染位置，体现就是贴图面积.
+
+demo:
+
+```js
+// texture.offset = new THREE.Vector2(x, y)
+texture.offset = new THREE.Vector2(0.5, 0.5)// 纹理贴图面积占网格面一半
+```
+
+设置阵列，同时设置偏移
+
+```js
+// 设置纹理阵列, 同时设置偏移
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(2, 2);
+// 纹理图像将按照单位纹理坐标(1, 1)进行偏移
+texture.offset = new THREE.Vector2(0.5, 0.5); // 此时图像将在网格上贴图一半, 在网格面边界处的贴图将偏移到整个纹理贴图的一半
+```
+
+### 纹理旋转
+> 设置纹理贴图的旋转角度，和旋转中心
+
+控制属性:
+1. rotation
+2. center
+
+代码:
+
+```js
+// 设置旋转角度
+texture.rotation = Math.PI / 2;
+// 设置旋转中心, 默认(0, 0)
+texture.center.set(0.5, 0.5);
+```
+
+::: tip 提示
+matrix: 物体局部矩阵变换
+matrixAutoUpdate: 当这个属性设置了之后，它将计算每一帧的位移、旋转（四元变换）和缩放矩阵，并重新计算matrixWorld属性。默认值是Object3D.DefaultMatrixAutoUpdate (true)。
+
+:::
+
+
+实践: 创建一个草坪
+
+```js
+/**
+ * 创建一个地面
+ */
+var geometry = new THREE.PlaneGeometry(1000, 1000); //矩形平面
+// 加载树纹理贴图
+var texture = new THREE.TextureLoader().load("grass.jpg");
+// 设置阵列
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+// uv两个方向纹理重复数量
+texture.repeat.set(10, 10);
+var material = new THREE.MeshLambertMaterial({
+  map: texture,
+});
+var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+scene.add(mesh); //网格模型添加到场景中
+mesh.rotateX(-Math.PI / 2);
+```
+
+
+### 纹理动画
+> 纹理动画比较简单，必须要在渲染函数中render()一直执行texture.offset.x -= 0.06动态改变纹理对象Texture的偏移属性.offset就可以。控制纹理偏移
+
+```js
+// 渲染函数
+function render() {
+  renderer.render(scene, camera); //执行渲染操作
+  requestAnimationFrame(render);
+  // 使用加减法可以设置不同的运动方向
+  // 设置纹理偏移
+  texture.offset.x -= 0.06
+}
+render();
+```
+
+### 创建设置重复纹理的管道
+> 主要使用 CatmullRomCurve3构造从一系列点创建一条平滑的三维样条曲线
+
+```js
+var curve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(-80, -40, 0),
+  new THREE.Vector3(-70, 40, 0),
+  new THREE.Vector3(70, 40, 0),
+  new THREE.Vector3(80, -40, 0)
+]);
+var tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.6, 50, false);
+var textureLoader = new THREE.TextureLoader();
+var texture = textureLoader.load('run.jpg');
+// 设置阵列模式为 RepeatWrapping
+texture.wrapS = THREE.RepeatWrapping
+texture.wrapT=THREE.RepeatWrapping
+// 设置x方向的偏移(沿着管道路径方向)，y方向默认1
+//等价texture.repeat= new THREE.Vector2(20,1)
+texture.repeat.x = 20;
+var tubeMaterial = new THREE.MeshPhongMaterial({
+  map: texture,
+  transparent: true,
+});
+```
+
+
 
 
