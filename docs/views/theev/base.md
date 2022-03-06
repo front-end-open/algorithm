@@ -1296,6 +1296,303 @@ var tubeMaterial = new THREE.MeshPhongMaterial({
 });
 ```
 
+## 画布视频作为纹理贴图
+> CanvasTexture和VideoTexture可以分别实现把Canvas画布、视频作为纹理贴图使用。
+
+### canvas画布作为纹理贴图, 实质是利用2D api绘制各种形状然后应用到3D网格模型。
+
+- 使用canvas api绘制2d图形，作为构建纹理对象
+
+```js
+// 创建平面，加入canvas对象，使用CanvasTexture作为创建纹理对象的构造
+      let geometry = new THREE.PlaneGeometry(500, 500);
+
+      let texture = new THREE.CanvasTexture(window.house);
+
+      let metarial = new THREE.MeshPhongMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+      });
+      let mesh = new THREE.Mesh(geometry, metarial);
+
+```
+
+- canvas加载图形作为纹理对象
+
+```js
+// imgPatter 事先加载了图片
+imgPatter((canvas) => {
+        let texture = new THREE.CanvasTexture(canvas); // 默认开启needsUpdate
+        // texture.needsUpdate = true;
+        let metarial = new THREE.MeshPhongMaterial({
+          map: texture,
+          side: THREE.DoubleSide,
+        });
+        let mesh = new THREE.Mesh(geometry, metarial);
+        mesh.rotateX(Math.PI / 2);
+        editor.globals.scene.add(mesh);
+        editor.render();
+      });
+
+```
+
+
+- 加载视频作为纹理贴图
+> 视频本质上就是一帧帧图片流构成，把视频作为Threejs模型的纹理贴图使用，就是从视频中提取一帧一帧的图片作为模型的纹理贴图，然后不停的更新的纹理贴图就可以产生视频播放的效果。
+
+```js
+let geometry = new THREE.BoxGeometry(800, 200, 400);
+
+      let vtexture = new THREE.VideoTexture(window.video);
+      vtexture.needsUpdate = true;
+      let material = new THREE.MeshPhongMaterial({
+        map: vtexture,
+        side: THREE.DoubleSide,
+      });
+
+      let mesh = new THREE.Mesh(geometry, material);
+      mesh.translateY(300);
+      editor.globals.scene.add(mesh);
+
+
+```
+
+::: tip 提示
+官方的内置构造 VideoTexture用来加载视频创建纹理.VideoTexture.js封装了一个update函数，Threejs每次执行渲染方法进行渲染场景中的时候，都会执行VideoTexture封装的update函数，执行update函数中代码this.needsUpdate = true;读取视频流最新一帧图片来更新Threejs模型纹理贴图。
+:::
+
+
+### 凹凸，法线贴图
+> 凹凸贴图（bumpMap）和法线贴图(normalMap). 对于复杂的曲面模型，模型包含的顶点数据比较多。模型文件体积也比较大。这种场景下使用normalMap贴图算法，就能够有效压缩模型大小。三维模型的3d美术设计，可以通过减面操作将精模简化为简模，开发就可以将美术导出的复杂集合信息纹理映射到normalMap上。
+
+脑图：
+
+<img src="../../public/img/textureNormal.png">
+
+#### 法线贴图
+> 法线贴图就是将精模的复杂几何信息单独作为图片导出，然后将此贴图用于低模的贴图，达到高模的逼真效果。
+
+```js
+ //   let geometry = new THREE.BoxGeometry(400, 400, 400);
+
+      // 创建法线贴图
+      //   let loader = new THREE.TextureLoader().load(
+      //     "./static/normal2.jpeg",
+      //     (texture) => {
+      //       console.log(texture);
+      //       let material = new THREE.MeshPhongMaterial({
+      //         // map: texture,
+      //         color: 0xff0000,
+      //         normalMap: texture, // 使用法线贴图
+      //         normalScale: new THREE.Vector2(10, 10),
+      //       });
+      //       let mesh = new THREE.Mesh(geometry, material);
+      //       mesh.translateY(300);
+      //       editor.globals.scene.add(mesh);
+      //       editor.render();
+      //     },
+      //     undefined,
+      //     (e) => {}
+      //   );
+      //   var textureLoader = new THREE.TextureLoader();
+      //   // 加载法线贴图
+      //   var textureNormal = textureLoader.load("./static/normal2.jpeg");
+      //   var material = new THREE.MeshPhongMaterial({
+      //     color: 0xff0000,
+      //     // map: textureNormal,
+      //     normalMap: textureNormal, //法线贴图
+      //     //设置深浅程度，默认值(1,1)。
+      //     normalScale: new THREE.Vector2(10, 10),
+      //   }); //材质对象Material
+      //   var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      //   editor.globals.scene.add(mesh);
+
+      var geometry = new THREE.SphereGeometry(100, 25, 25); //球体
+      // TextureLoader创建一个纹理加载器对象，可以加载图片作为几何体纹理
+      var textureLoader = new THREE.TextureLoader();
+      //   // 加载纹理贴图
+      //   var texture = textureLoader.load("./static/earthnormal.png");
+      // 加载法线贴图
+      var textureNormal = textureLoader.load("./static/earthnormal.png");
+      var material = new THREE.MeshPhongMaterial({
+        color: 0x0000ff,
+        map: textureNormal, // 普通颜色纹理贴图
+        normalMap: textureNormal, //法线贴图
+        //设置深浅程度，默认值(1,1)。
+        normalScale: new THREE.Vector2(1.2, 1.2),
+      }); //材质对象Material
+      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      editor.globals.scene.add(mesh);
+
+```
+
+#### 凹凸贴图
+> 凹凸贴图和法线贴图功能相似，只是没有法线贴图表达的几何体表面信息更丰富。凹凸贴图是用图片像素的灰度值表示几何表面的高低深度，如果模型定义了法线贴图，就没有必要在使用凹凸贴图。
+
+
+```js
+ injectText("红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.");
+      let editor = new Editor(THREE);
+      let controls = {
+        bumpScale: 10,
+      };
+
+      let gui = new dat.GUI();
+      gui.addFolder("添加凹凸控制器");
+
+      var geometry = new THREE.BoxGeometry(400, 400, 400); //球体
+      var geometry2 = new THREE.BoxGeometry(400, 400, 400); //球体
+      var textureLoader = new THREE.TextureLoader();
+      // 加载颜色纹理贴图
+      var texture = textureLoader.load("./static/diffuse.jpeg");
+      // 加载凹凸贴图
+      var textureBump = textureLoader.load("./static/bumpMap.jpeg");
+      var material = new THREE.MeshPhongMaterial({
+        map: texture, // 普通纹理贴图
+        bumpMap: textureBump, //凹凸贴图
+        bumpScale: 10, //设置凹凸高度，默认值1。
+      }); //材质对象Material
+      var material2 = new THREE.MeshPhongMaterial({
+        map: texture, // 普通纹理贴图
+      }); //材质对象Material
+      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      var mesh2 = new THREE.Mesh(geometry2, material2); //网格模型对象Mesh
+      mesh.material.needsUpdate = true;
+      mesh.translateX(450);
+
+      gui.add(controls, "bumpScale", 3, 30, 1).onChange((e) => {
+        mesh.material.bumpScale = e;
+      });
+      gui.open();
+
+      editor.globals.scene.add(mesh);
+      editor.globals.scene.add(mesh2);
+
+      // 添加光源
+      const light = new THREE.AmbientLight(0xcccccc); // soft white light
+      editor.globals.scene.add(light);
+
+      // 添加辅助对象
+      const length = 200;
+      let arrowHelper = new THREE.Group();
+      arrowHelper.name = "arrowHelper";
+      const origin = new THREE.Vector3(0, 0, 0);
+      const dirX = new THREE.Vector3(10, 0, 0);
+      const dirY = new THREE.Vector3(0, 10, 0);
+      const dirZ = new THREE.Vector3(0, 0, 10);
+      arrowHelper.add(new THREE.ArrowHelper(dirX, origin, length, 0xff0000));
+      arrowHelper.add(new THREE.ArrowHelper(dirY, origin, length, 0x00ff00));
+      arrowHelper.add(new THREE.ArrowHelper(dirZ, origin, length, 0x0000ff));
+      editor.injectHelper({
+        girdhelper: new THREE.GridHelper(5000, 100),
+        // axeshlper: new THREE.AxesHelper(1000),
+        arrowHelper,
+      });
+      console.log(geometry);
+      function animate() {
+        requestAnimationFrame(animate);
+
+        editor.render();
+      }
+
+      animate();
+
+```
+
+
+### 光照贴图添加阴影
+> 三维场景中，有时需要设置模型的阴影。有两种方式实现，其一就是通过计算光线和物体之间的光线投射，来形成阴影。不过这种是通过计算得到，比较消耗资源；其二就是由3d美术设计的阴影贴图。直接就可以作为物体阴影，不需要额外计算。
+
+
+**废弃属性:**
+> Geometry属性.faceVertexUvs
+一般几何体有两套UV坐标，对于Geometry类型几何体而言
+
+Geometry.faceVertexUvs[0]包含的纹理坐标用于颜色贴图map、法线贴图normalMap等,Geometry.faceVertexUvs[1]包含的第二套纹理贴图用于光照阴影贴图
+
+一般通过Threejs几何体API创建的几何体默认只有一组纹理坐标Geometry.faceVertexUvs[0]，所以为了设置光照阴影贴图，需要给另一组纹理坐标赋值Geometry.faceVertexUvs[1] = Geometry.faceVertexUvs[0];
+
+
+
+**新版本threejs**
+> 一般通过Threejs加载外部模型，解析三维模型数据得到的几何体类型是缓冲类型几何体BufferGeometry，对于BufferGeometry而言两套纹理坐标分别通过.uv和.uv2属性表示。
+
+
+示列demo:
+
+```js
+ let geometry = new THREE.PlaneGeometry(400, 400);
+
+      geometry.setAttribute("uv2", geometry.getAttribute("uv")); // 设置用于光照阴影贴图用的uv坐标
+
+      // 创建阴影贴图
+      var textureLoader = new THREE.TextureLoader();
+      // 加载光照贴图
+      var textureLight = textureLoader.load("./static/shadow3.jpeg");
+
+      let material = new THREE.MeshPhongMaterial({
+        color: 0x999999,
+        lightMap: textureLight, // 设置光照贴图
+        lightMapIntensity: 1, //烘培光照的强度. 默认 1.
+      });
+
+      let plane = new THREE.Mesh(geometry, material);
+      plane.rotateX(-Math.PI / 2);
+      editor.globals.scene.add(plane);
+
+```
+
+::: tip 提示 
+贴图使用的纹理坐标由两种，一种是几何体面用的uv坐标；另一种是阴影贴图用的uv坐标。默认创建的几何体只有第一个uv坐标，光照uv坐标需要额外设置。`gemotry.setAttribute('uv2', gemotry.getAttribute('uv'))`
+:::
+
+
+> 两组纹理坐标通常表示为`uv`,`uv2`
+
+
+
+### 高光贴图
+> 高光网格材质MeshPhongMaterial具有高光属性.specular,如果一个网格模型Mesh都是相同的材质并且表面粗糙度相同,或者说网格模型外表面所有不同区域的镜面反射能力相同，可以直接设置材质的高光属性.specular。如果一个网格模型表示一个人，那么人的不同部位高光程度是不同的，不可能直接通过.specular属性来描述，在这种情况通过高光贴图.specularMap的RGB值来描述不同区域镜面反射的能力，.specularMap和颜色贴图.Map一样和通过UV坐标映射到模型表面。高光贴图.specularMap不同区域像素值不同，表示网格模型不同区域的高光值不同。
+> 高光贴图属性.specularMap和高光属性.specular是对应的，也就是说只有高光网格材质对象MeshPhongMaterial才具备高光贴图属性.specularMap。
+
+
+```js
+// 加载纹理贴图
+var texture = textureLoader.load('earth_diffuse.png');
+// 加载高光贴图
+var textureSpecular = textureLoader.load('earth_specular.png');
+var material = new THREE.MeshPhongMaterial({
+  // specular: 0xff0000,//高光部分的颜色
+  shininess: 30,//高光部分的亮度，默认30
+  map: texture,// 普通纹理贴图
+  specularMap: textureSpecular, //高光贴图
+}); //材质对象Material
+
+```
+### 环境贴图
+> Three.js环境贴图.envMap字面意思就是三维模型周边环境，比如你渲染一个立方体，立方体放在一个屋子里面，屋子里面的周边环境肯定影响立方体的渲染效果，目的是为了渲染该立方体而不是立方体周围环境，为了更方便所以没必要创建立方体周边环境所有物体的网格模型，可以通过图片来表达立方体周边的环境。
+> 高光网格材质MeshPhongMaterial和物理PBR材质MeshStandardMaterial通常会使用环境贴图.envMap来实现更好的渲染效果。一个材质对应的是普通次时代模型，一个材质对应的是PBR模型。
+
+- envMap
+- CubeTextureLoader
+- 
+
+### 数据纹理贴图
+> Three.js数据纹理对象DataTexture简单地说就是通过程序创建纹理贴图的每一个像素值。
+
+- DataTexture
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
