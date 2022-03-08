@@ -2237,3 +2237,46 @@ String(e)
 **总结:**
 
 > 使用数组，和使用对象作为缓存键都是不好的选择，都会存在重复键的情况。
+
+
+**复杂参数的函数记忆化**
+> 参数可以时原始值，也可以是复杂结构体。复杂的多个参数情况，转化为字符作为缓存键盘
+
+缓存复杂结构体参数情况，参数可能的情况有，数组，或者对象。如果要进行缓存，可以考虑将参数转换为字符串，作为缓存键。
+
+```js
+// 通用缓存函数
+
+const memoizePlus = (fn) => {
+    let cache = {}
+    let PRIMITIVES = ['number', 'string', 'boolean']
+    return (...args) => {
+        let strX = args.length === 1 && args.includs(typeof args[0]) ? args[0] : JSON.stringify(args)
+
+        return cache[strX] ? cache[strX] : (cache[strX] = fib(...args))
+    }
+
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
