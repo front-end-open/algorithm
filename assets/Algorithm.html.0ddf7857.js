@@ -1,0 +1,1 @@
+const e={key:"v-ab1747d2",path:"/views/guide/Algorithm.html",title:"Algorithm",lang:"zh-CN",frontmatter:{},excerpt:"",headers:[{level:2,title:"\u76EE\u7684\uFF1A",slug:"\u76EE\u7684",children:[]}],git:{updatedTime:163466207e4,contributors:[{name:"wangshan",email:"22212@qq.com",commits:2}]},filePathRelative:"views/guide/Algorithm.md"};export{e as data};

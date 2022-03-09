@@ -1,0 +1,1 @@
+const e={key:"v-3a7f657d",path:"/views/leecode/primary/",title:"",lang:"zh-CN",frontmatter:{},excerpt:"",headers:[],git:{updatedTime:1634830987e3,contributors:[{name:"wangshan",email:"22212@qq.com",commits:1}]},filePathRelative:"views/leecode/primary/README.md"};export{e as data};

@@ -1,0 +1,1 @@
+const e={key:"v-3016a7d2",path:"/views/theev/practice.html",title:"",lang:"zh-CN",frontmatter:{},excerpt:"",headers:[],git:{updatedTime:163750641e4,contributors:[{name:"wangshan",email:"22212@qq.com",commits:1}]},filePathRelative:"views/theev/practice.md"};export{e as data};

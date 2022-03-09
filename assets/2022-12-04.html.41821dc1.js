@@ -1,0 +1,1 @@
+const e={key:"v-7985ee87",path:"/views/Note/source/2022-12-04.html",title:"",lang:"zh-CN",frontmatter:{sidebar:"auto"},excerpt:"",headers:[{level:2,title:"\u5E78\u798F(Happy)",slug:"\u5E78\u798F-happy",children:[]}],git:{updatedTime:1641307788e3,contributors:[{name:"wangshan",email:"22212@qq.com",commits:1}]},filePathRelative:"views/Note/source/2022-12-04.md"};export{e as data};
