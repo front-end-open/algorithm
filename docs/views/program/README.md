@@ -2260,6 +2260,112 @@ const memoizePlus = (fn) => {
 
 ```
 
+// 简单版本，牺牲性能达到简化代码的目的
+```js
+const memoizePlus2 = (fn) => {
+    let cache = {}
+    return (...args) => {
+        let strX = JSON.stringify(args) // 这里不做数据类型判断,一律做json转换
+
+        return cache[strX] ? cache[strX] : (cache[strX] = fn(...args))
+
+    }
+
+}
+```
+
+##### 记忆化函数单元测试
+...待更新
+
+
+### 修改函数
+> 包装函数，保证了原始函数的功能的同时，而做出了一些额外的扩展。现在修改原始函数，使其产出新的结果.
+
+
+**从高阶功能函数-只做一次开始**
+
+```js
+// 此函数的工作方式，修改的地方在于。对于第一次调用，正常工作。但从第二次开始调用后，原始函数的功/// 能就被修改了。
+let once = function(fn) {
+    let done = false;
+
+    return (...) => {
+        if(!done) {
+            done = true;
+            fn(...args)
+        }
+    }
+}
+
+// 添加返回值
+
+let once2 = funciton(fn){
+    let done = false;
+    let result;
+
+    return (...args) => {
+        if(!done) {
+            done = true;
+            result = fn(...args)
+        } else {
+            result  // 缓存结果，以供下次调用。
+        }
+
+    }
+
+}
+
+// 多个参数的情况
+// 多个参数的情况，采用记忆化解决
+
+
+
+
+
+// 两种回调的高阶
+const onceAndAfter = (f, g) => {
+ let done = false;
+ return (...args) => {
+ if (!done) {
+ done = true;
+ return f(...args);
+ } else {
+ return g(...args);
+ }
+ };
+}
+
+// 重写两种回调的高阶
+const onceAndAfter2 = (f, g) => {
+ let toCall = f;
+ return (...args) => {
+ let result = toCall(...args);
+ toCall = g;
+ return result;
+ };
+};
+
+// 测试
+
+const squeak = (x) => console.log(x, "squeak!!");
+const creak = (x) => console.log(x, "creak!!");
+const makeSound = onceAndAfter2(squeak, creak);
+makeSound("door"); // "door squeak!!"
+makeSound("door"); // "door creak!!"
+makeSound("door"); // "door creak!!"
+makeSound("door"); // "door creak!!"
+```
+::: tip 提示
+两种回调的高阶函数中，使用赋值的更替的方法，实现了和使用标志变量的同样的结果。
+:::
+
+
+
+
+
+
+
+
 
 
 
