@@ -134,6 +134,12 @@ primitive： 原始的，远古的
 unary: 一元
 
 
+maintain: 保持，维持
+
+functionality: 功能，函数性
+
+enhance: 增强；提高
+
 
 ### 短语
 declarative fashion: 声明式风格
